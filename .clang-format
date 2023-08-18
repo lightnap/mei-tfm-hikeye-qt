@@ -1,0 +1,23 @@
+## Clang format document.
+
+---
+# Use for global setting which will apply to all languages.
+BasedOnStyle: "Mozilla"
+ColumnLimit: 180
+IndentWidth: 4
+
+---
+# Use for settings which will only apply to cpp.
+Language: "Cpp"
+
+AlignConsecutiveDeclarations: "Consecutive"
+AllowAllArgumentsOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
+AlwaysBreakAfterDefinitionReturnType: "None"
+AlwaysBreakAfterReturnType: "None"
+BinPackArguments: false
+BinPackParameters: false
+BreakBeforeBraces: "Allman"
+Cpp11BracedListStyle: true
+SpaceBeforeCpp11BracedList: true
+...

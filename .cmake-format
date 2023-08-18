@@ -1,0 +1,20 @@
+---
+# This is an example cmake-format wirtten in yaml.
+# How wide to allow formatted cmake files
+line_width: 80
+
+# How many spaces to tab for indent
+tab_size: 4
+
+# If arglists are longer than this, break them always.
+max_subgroups_hwrap: 3
+
+# Additional FLAGS and KWARGS for custom commands
+additional_commands:
+  foo:
+    flags: [BAR, BAZ]
+    kwargs:
+      HEADERS : '*'
+      SOURCES : '*'
+      DEPENDS : '*'
+...
