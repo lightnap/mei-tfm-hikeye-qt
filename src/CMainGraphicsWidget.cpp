@@ -15,13 +15,13 @@ const GLuint      EMPTY_VAO {0};                    //!< Specifies that no verte
 const std::string SHADERS_PATH {"../src/shaders/"}; //!< Path to shader files.
 }
 
-CMainGraphicsWidget::CMainGraphicsWidget(QWidget* apParent)
-  : QOpenGLWidget(apParent)
-  , mShaderProgram(nullptr)
-  , mTriangleVAOId(0)
-  , mVertexAttributeId(0)
-  , mWindowWidth(100)
-  , mWindowHeight(100)
+CMainGraphicsWidget::CMainGraphicsWidget(QWidget* apParent) :
+  QOpenGLWidget(apParent),
+  mShaderProgram(nullptr),
+  mTriangleVAOId(0),
+  mVertexAttributeId(0),
+  mWindowWidth(100),
+  mWindowHeight(100)
 {
     setFocusPolicy(Qt::StrongFocus);
 }
@@ -32,6 +32,18 @@ CMainGraphicsWidget::~CMainGraphicsWidget()
     {
         delete mShaderProgram;
     }
+}
+
+void CMainGraphicsWidget::LoadModel()
+{
+    std::cout << "MainGraphicsWidget: Loading model" << std::endl;
+    // TODO: Implement this.
+}
+
+void CMainGraphicsWidget::LoadTexture()
+{
+    std::cout << "MainGraphicsWidget: Loading texture" << std::endl;
+    // TODO: Implement this.
 }
 
 void CMainGraphicsWidget::initializeGL()

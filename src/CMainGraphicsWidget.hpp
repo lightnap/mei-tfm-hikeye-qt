@@ -8,9 +8,7 @@
 /**
  * Main rendering widget class.
  */
-class CMainGraphicsWidget
-  : public QOpenGLWidget
-  , protected QOpenGLFunctions_4_3_Core
+class CMainGraphicsWidget : public QOpenGLWidget, protected QOpenGLFunctions_4_3_Core
 {
     Q_OBJECT
 
@@ -25,6 +23,16 @@ class CMainGraphicsWidget
      * @brief Destructor.
      */
     ~CMainGraphicsWidget();
+
+    /**
+     * @brief Loads 3D Terrain model.
+     */
+    void LoadModel();
+
+    /**
+     * @brief Loads texture and binds it to model.
+     */
+    void LoadTexture();
 
   protected:
     /**

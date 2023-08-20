@@ -18,6 +18,9 @@ AlwaysBreakAfterReturnType: "None"
 BinPackArguments: false
 BinPackParameters: false
 BreakBeforeBraces: "Allman"
+BreakConstructorInitializers: "BeforeComma"
+BreakInheritanceList: "BeforeComma"
 Cpp11BracedListStyle: true
+PackConstructorInitializers: "Never"
 SpaceBeforeCpp11BracedList: true
 ...
