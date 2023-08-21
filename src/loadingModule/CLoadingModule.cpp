@@ -1,6 +1,7 @@
 #include "CLoadingModule.hpp"
 
 #include <QStatusBar>
+#include <iostream>
 #include <string>
 
 const CLoadingModule::tResourcesPerType CLoadingModule::mResources {{eModuleType::Terrain, {eResource::HeightMap, eResource::Terrain}},
@@ -21,10 +22,15 @@ void CLoadingModule::LaunchLoader()
 
     const std::string ModuleType {ModuleTypeToString(mModuleType)};
     mStatusBar.showMessage(("Loading " + ModuleType).c_str(), 2000);
+
+    const auto FirstResource {mResources.at(mModuleType).at(mResourceIndex)};
+    LaunchResourceLoader(FirstResource);
 }
 
 void CLoadingModule::LaunchResourceLoader(eResource aResource)
 {
+    std::cout << "Loading resource" + ResourceToString(aResource) << std::endl;
+    ResourceFinishedLoading();
     // TODO: Launch resource Loaders.
 }
 

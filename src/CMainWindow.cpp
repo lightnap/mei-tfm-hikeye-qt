@@ -2,6 +2,7 @@
 #include "CLoadingModule.hpp"
 #include "CMainGraphicsWidget.hpp"
 
+#include <QPushButton>
 #include <iostream>
 
 namespace
@@ -27,18 +28,19 @@ void CMainWindow::CreateLoadingModules()
 
 void CMainWindow::BindActions()
 {
-    connect(mUi.LoadTerrainBtn, SIGNAL(clicked()), this, SLOT(LoadTerrain()));
-    connect(mUi.LoadTracksBtn, SIGNAL(clicked()), this, SLOT(LoadTracks()));
-    connect(mLoadingModulesMap[TERRAIN_MODULE_TYPE].get(), SIGNAL(FinishedSignal(eModuleType aType)), this, SLOT(LoadingModuleFinished(CLoadingModule::eModuleType aType)));
-    connect(mLoadingModulesMap[TRACKS_MODULE_TYPE].get(), SIGNAL(FinishedSignal(eModuleType aType)), this, SLOT(LoadingModuleFinished(CLoadingModule::eModuleType aType)));
+    connect(mUi.LoadTerrainBtn, &QPushButton::clicked, this, &CMainWindow::LoadTerrain);
+    connect(mUi.LoadTracksBtn, &QPushButton::clicked, this, &CMainWindow::LoadTracks);
+
+    connect(mLoadingModulesMap[TERRAIN_MODULE_TYPE].get(), &CLoadingModule::FinishedSignal, this, &CMainWindow::LoadingModuleFinished);
+    connect(mLoadingModulesMap[TRACKS_MODULE_TYPE].get(), &CLoadingModule::FinishedSignal, this, &CMainWindow::LoadingModuleFinished);
 
     void LoadingModuleFinished(CLoadingModule::eModuleType aModule);
 }
 
 void CMainWindow::LoadTerrain()
 {
-    const auto& TerrainLoadingModule {mLoadingModulesMap[CLoadingModule::eModuleType::Terrain]};
-    const auto& TracksLoadingModule {mLoadingModulesMap[CLoadingModule::eModuleType::Terrain]};
+    const auto& TerrainLoadingModule {mLoadingModulesMap.at(TERRAIN_MODULE_TYPE)};
+    const auto& TracksLoadingModule {mLoadingModulesMap.at(TRACKS_MODULE_TYPE)};
 
     if (TerrainLoadingModule->IsLoading())
     {
@@ -55,8 +57,8 @@ void CMainWindow::LoadTerrain()
 
 void CMainWindow::LoadTracks()
 {
-    const auto& TerrainLoadingModule {mLoadingModulesMap[CLoadingModule::eModuleType::Terrain]};
-    const auto& TracksLoadingModule {mLoadingModulesMap[CLoadingModule::eModuleType::Terrain]};
+    const auto& TerrainLoadingModule {mLoadingModulesMap.at(TERRAIN_MODULE_TYPE)};
+    const auto& TracksLoadingModule {mLoadingModulesMap.at(TRACKS_MODULE_TYPE)};
 
     if (!TerrainLoadingModule->IsLoaded())
     {
