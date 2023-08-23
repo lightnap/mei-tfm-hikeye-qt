@@ -1,6 +1,13 @@
 #!/bin/bash
 
 # This script tries to build the project.
+#TODO: Add help and description of flags. 
+
+# delete build directory if given the -c flag.
+if [[ $* == *-c* ]]
+then
+    rm -r "./build"
+fi
 
 # Create build folder if it doesnt exists.
 if [ ! -d "./build" ] 

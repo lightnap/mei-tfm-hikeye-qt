@@ -7,8 +7,8 @@
 
 namespace
 {
-const auto TERRAIN_MODULE_TYPE {CLoadingModule::eModuleType::Terrain}; //!< Enum for terrain loading module.
-const auto TRACKS_MODULE_TYPE {CLoadingModule::eModuleType::Tracks};   //!< Enum for track loading module.
+const auto TERRAIN_MODULE_TYPE {Types::eLoadingModule::Terrain}; //!< Enum for terrain loading module.
+const auto TRACKS_MODULE_TYPE {Types::eLoadingModule::Tracks};   //!< Enum for track loading module.
 }
 
 CMainWindow::CMainWindow(QWidget* aParent)
@@ -34,7 +34,7 @@ void CMainWindow::BindActions()
     connect(mLoadingModulesMap[TERRAIN_MODULE_TYPE].get(), &CLoadingModule::FinishedSignal, this, &CMainWindow::LoadingModuleFinished);
     connect(mLoadingModulesMap[TRACKS_MODULE_TYPE].get(), &CLoadingModule::FinishedSignal, this, &CMainWindow::LoadingModuleFinished);
 
-    void LoadingModuleFinished(CLoadingModule::eModuleType aModule);
+    void LoadingModuleFinished(Types::eLoadingModule aModule);
 }
 
 void CMainWindow::LoadTerrain()
@@ -76,7 +76,7 @@ void CMainWindow::LoadTracks()
     TracksLoadingModule->LaunchLoader();
 }
 
-void CMainWindow::LoadingModuleFinished(CLoadingModule::eModuleType aModule)
+void CMainWindow::LoadingModuleFinished(Types::eLoadingModule aModule)
 {
     if (aModule == TERRAIN_MODULE_TYPE)
     {

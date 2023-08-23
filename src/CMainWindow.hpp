@@ -2,6 +2,7 @@
 #define C_MAIN_WINDOW_H
 
 #include "CLoadingModule.hpp"
+#include "Types.hpp"
 #include "ui_CMainWindow.h"
 
 #include <map>
@@ -36,7 +37,7 @@ class CMainWindow : public QWidget
      * @brief Gets called when a loading module has finished.
      * @param aModule Type of the module that has finished loading.
      */
-    void LoadingModuleFinished(CLoadingModule::eModuleType aModule);
+    void LoadingModuleFinished(Types::eLoadingModule aModule);
 
   private:
     /**
@@ -50,7 +51,7 @@ class CMainWindow : public QWidget
     void CreateLoadingModules();
 
   private:
-    using tLoadingModulesMap = std::map<CLoadingModule::eModuleType, std::unique_ptr<CLoadingModule>>; //!< Type for relating loading modules and their type.
+    using tLoadingModulesMap = std::map<Types::eLoadingModule, std::unique_ptr<CLoadingModule>>; //!< Type for relating loading modules and their type.
 
     tLoadingModulesMap mLoadingModulesMap; //!< Map with all loaging modules.
     Ui::CMainWindow    mUi;                //!< Represents the Ui of this form.

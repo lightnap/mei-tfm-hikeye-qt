@@ -13,6 +13,7 @@ Language: "Cpp"
 AlignConsecutiveDeclarations: "Consecutive"
 AllowAllArgumentsOnNextLine: false
 AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortBlocksOnASingleLine: true
 AlwaysBreakAfterDefinitionReturnType: "None"
 AlwaysBreakAfterReturnType: "None"
 BinPackArguments: false

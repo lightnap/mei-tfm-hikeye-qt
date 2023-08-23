@@ -1,17 +1,24 @@
 #include "CLoadingModule.hpp"
+#include "Types.hpp"
 
 #include <QStatusBar>
 #include <iostream>
 #include <string>
 
-const CLoadingModule::tResourcesPerType CLoadingModule::mResources {{eModuleType::Terrain, {eResource::HeightMap, eResource::Terrain}},
-                                                                    {eModuleType::Tracks, {eResource::GroundTruth, eResource::Matches, eResource::Queries, eResource::Texture}}};
+// clang-format off
+const CLoadingModule::tResourcesPerType CLoadingModule::mResources
+{
+    {Types::eLoadingModule::Terrain, {Types::eResource::HeightMap, Types::eResource::Terrain}},
+    {Types::eLoadingModule::Tracks,  {Types::eResource::GroundTruth, Types::eResource::Matches, Types::eResource::Queries, Types::eResource::Texture},}
+};
+// clang-format on
 
-CLoadingModule::CLoadingModule(CLoadingModule::eModuleType aModuleType, QStatusBar& aStatusBar)
+CLoadingModule::CLoadingModule(Types::eLoadingModule aModuleType, QStatusBar& aStatusBar)
   : mResourceIndex(0U)
   , mModuleType(aModuleType)
   , mLoadingStatus(eLoadingStatus::UnLoaded)
   , mStatusBar(aStatusBar)
+  , mCurrentResourceLoader(nullptr)
 {
 }
 
@@ -20,23 +27,26 @@ void CLoadingModule::LaunchLoader()
     mLoadingStatus = eLoadingStatus::Loading;
     mResourceIndex = 0U;
 
-    const std::string ModuleType {ModuleTypeToString(mModuleType)};
+    const std::string ModuleType {Types::LoadingModuleToString(mModuleType)};
     mStatusBar.showMessage(("Loading " + ModuleType).c_str(), 2000);
 
     const auto FirstResource {mResources.at(mModuleType).at(mResourceIndex)};
     LaunchResourceLoader(FirstResource);
 }
 
-void CLoadingModule::LaunchResourceLoader(eResource aResource)
+void CLoadingModule::LaunchResourceLoader(Types::eResource aResource)
 {
-    std::cout << "Loading resource" + ResourceToString(aResource) << std::endl;
+    std::cout << "Loading resource" + Types::ResourceToString(aResource) << std::endl;
     ResourceFinishedLoading();
-    // TODO: Launch resource Loaders.
+    // TODO: Create new resource loader. Using a factory.
+    // mCurrentResourceLoader->start();
 }
 
 void CLoadingModule::ResourceFinishedLoading()
 {
     mResourceIndex++;
+    mCurrentResourceLoader.reset(nullptr);
+
     const auto& ResourcesOrder {mResources.at(mModuleType)};
 
     if (mResourceIndex < static_cast<u8>(ResourcesOrder.size()))
@@ -52,14 +62,14 @@ void CLoadingModule::ResourceFinishedLoading()
 void CLoadingModule::LoadFinished()
 {
     mLoadingStatus = eLoadingStatus::Loaded;
-    const std::string ModuleType {ModuleTypeToString(mModuleType)};
+    const std::string ModuleType {Types::LoadingModuleToString(mModuleType)};
     mStatusBar.showMessage(("Finished loading " + ModuleType).c_str(), 2000);
     emit FinishedSignal(mModuleType);
 }
 
 void CLoadingModule::CancelLoad()
 {
-    // TODO: Call ResourceLoaders[mResourceIndex].CancelLoad
+    mCurrentResourceLoader->quit();
     mLoadingStatus = eLoadingStatus::UnLoaded;
     mResourceIndex = 0U;
 }
@@ -77,70 +87,4 @@ bool CLoadingModule::IsLoading() const
 bool CLoadingModule::IsLoaded() const
 {
     return mLoadingStatus == eLoadingStatus::Loaded;
-}
-
-std::string CLoadingModule::ModuleTypeToString(CLoadingModule::eModuleType aModuleType)
-{
-    switch (aModuleType)
-    {
-        case eModuleType::Terrain:
-        {
-            return "Terrain";
-            break;
-        }
-        case eModuleType::Tracks:
-        {
-            return "Tracks";
-            break;
-        }
-        default:
-        {
-            break;
-        }
-    }
-    // TODO: Add an assert here.
-    return "";
-}
-
-std::string CLoadingModule::ResourceToString(CLoadingModule::eResource aResource)
-{
-    switch (aResource)
-    {
-        case eResource::HeightMap:
-        {
-            return "HeightMap";
-            break;
-        }
-        case eResource::Terrain:
-        {
-            return "Terrain";
-            break;
-        }
-        case eResource::GroundTruth:
-        {
-            return "GroundTruth";
-            break;
-        }
-        case eResource::Matches:
-        {
-            return "Matches";
-            break;
-        }
-        case eResource::Queries:
-        {
-            return "Queries";
-            break;
-        }
-        case eResource::Texture:
-        {
-            return "Texture";
-            break;
-        }
-        default:
-        {
-            break;
-        }
-    }
-    // TODO: Add an assertion here.
-    return "";
 }
