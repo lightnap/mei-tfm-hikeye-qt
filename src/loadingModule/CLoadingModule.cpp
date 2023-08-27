@@ -11,7 +11,7 @@ namespace
 {
 using tResourceLoadOrderType = std::vector<Types::eResource>;                      //!< Type for the order that resources have to be loaded.
 using tResourcesPerType = std::map<Types::eLoadingModule, tResourceLoadOrderType>; //!< Type that relates module types with the resource they load.
-                                                                                   //
+
 // clang-format off
 const tResourcesPerType MODULE_RESOURCES
 {

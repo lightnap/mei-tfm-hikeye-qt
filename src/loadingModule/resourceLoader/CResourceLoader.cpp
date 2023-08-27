@@ -29,6 +29,8 @@ void CResourceLoader::LoadResourceSlot(Types::eResource aResource)
     {
         LoadResource();
     }
+
+    quit();
 }
 
 void CResourceLoader::LoadResource()

@@ -23,6 +23,12 @@ HEADERS += \
     src/CMainGraphicsWidget.hpp \
     src/loadingModule/CLoadingModule.hpp \
     src/loadingModule/resourceLoader/CResourceLoader.hpp \
+    src/loadingModule/resourceLoader/CGroundTruthResourceLoader.hpp \
+    src/loadingModule/resourceLoader/CHeightMapResourceLoader.hpp \
+    src/loadingModule/resourceLoader/CMatchesResourceLoader.hpp \
+    src/loadingModule/resourceLoader/CQueriesResourceLoader.hpp \
+    src/loadingModule/resourceLoader/CTerrainResourceLoader.hpp \
+    src/loadingModule/resourceLoader/CTextureResourceLoader.hpp \
     src/loadingModule/resourceLoaderFactory/CResourceLoaderFactory.hpp \
     src/loadingModule/resourceLoaderFactory/IConcreteResourceLoaderFactory.hpp \
 
@@ -33,6 +39,12 @@ SOURCES += \
     src/CMainGraphicsWidget.cpp \
     src/loadingModule/CLoadingModule.cpp \
     src/loadingModule/resourceLoader/CResourceLoader.cpp \
+    src/loadingModule/resourceLoader/CGroundTruthResourceLoader.cpp \
+    src/loadingModule/resourceLoader/CHeightMapResourceLoader.cpp \
+    src/loadingModule/resourceLoader/CMatchesResourceLoader.cpp \
+    src/loadingModule/resourceLoader/CQueriesResourceLoader.cpp \
+    src/loadingModule/resourceLoader/CTerrainResourceLoader.cpp \
+    src/loadingModule/resourceLoader/CTextureResourceLoader.cpp \
     src/loadingModule/resourceLoaderFactory/CResourceLoaderFactory.cpp \
     src/loadingModule/resourceLoaderFactory/IConcreteResourceLoaderFactory.cpp \
 
