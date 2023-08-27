@@ -56,7 +56,7 @@ void CLoadingModule::LaunchLoader()
     mResourceIndex = 1U;
 
     const std::string ModuleType {Types::LoadingModuleToString(mModuleType)};
-    mStatusBar.showMessage(("Loading " + ModuleType).c_str(), 2000);
+    mStatusBar.showMessage(("Loading " + ModuleType).c_str());
 
     const auto FirstResource {MODULE_RESOURCES.at(mModuleType).at(mResourceIndex)};
     LaunchResourceLoader(FirstResource);
@@ -64,7 +64,6 @@ void CLoadingModule::LaunchLoader()
 
 void CLoadingModule::LaunchResourceLoader(Types::eResource aResource)
 {
-    std::cout << "Loading resource" + Types::ResourceToString(aResource) << std::endl;
     emit LaunchResourceLoaderSignal(aResource);
 }
 
