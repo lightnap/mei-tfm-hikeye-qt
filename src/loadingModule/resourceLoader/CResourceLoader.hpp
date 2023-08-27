@@ -36,7 +36,7 @@ class CResourceLoader : public QThread
      * @brief Emitted when we want to notify errors in the loading.
      * @param aErrorCode: Code depicting errors on the loading.
      */
-    void SendErrorCode(Types::eResourceLoadingError aErrorCode);
+    void SendErrorCode(int aErrorCode);
 
   protected:
     /**

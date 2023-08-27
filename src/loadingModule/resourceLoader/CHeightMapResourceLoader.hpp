@@ -20,7 +20,7 @@ class CHeightMapResourceLoader : public CResourceLoader
     /**
      * @brief Loads the corresponding resource.
      */
-    virtual void LoadResource();
+    void LoadResource() override;
 };
 
 #endif // C_HEIGHT_MAP_RESOURCE_LOADER_H

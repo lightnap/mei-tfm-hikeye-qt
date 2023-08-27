@@ -3,7 +3,6 @@
 #include "CMainGraphicsWidget.hpp"
 
 #include <QPushButton>
-#include <iostream>
 
 namespace
 {
@@ -51,10 +50,6 @@ void CMainWindow::LoadTerrainButtonPressed()
 
 void CMainWindow::LoadTracksButtonPressed()
 {
-    mUi.LoadTerrainBtn->setEnabled(false);
-    mUi.LoadTracksBtn->setEnabled(false);
-    mUi.CancelBtn->setEnabled(true);
-
     const auto& TerrainLoadingModule {mLoadingModulesMap.at(TERRAIN_MODULE_TYPE)};
     const auto& TracksLoadingModule {mLoadingModulesMap.at(TRACKS_MODULE_TYPE)};
 
@@ -62,10 +57,15 @@ void CMainWindow::LoadTracksButtonPressed()
     {
         const std::string Message {"WARNING: Terrain must be loaded before tracks can be loaded!"};
         mUi.StatusBar->showMessage(Message.c_str(), 5000);
-        return;
     }
+    else
+    {
+        mUi.LoadTerrainBtn->setEnabled(false);
+        mUi.LoadTracksBtn->setEnabled(false);
+        mUi.CancelBtn->setEnabled(true);
 
-    TracksLoadingModule->LaunchLoader();
+        TracksLoadingModule->LaunchLoader();
+    }
 }
 
 void CMainWindow::CancelLoadButtonPressed()
@@ -106,11 +106,13 @@ void CMainWindow::LoadingModuleFinished(Types::eLoadingModule aModule)
     if (aModule == TERRAIN_MODULE_TYPE)
     {
         mUi.MainGraphics->LoadModel();
-        mUi.LoadTerrainBtn->setEnabled(true);
     }
     else if (aModule == TRACKS_MODULE_TYPE)
     {
         mUi.MainGraphics->LoadTexture();
-        mUi.LoadTracksBtn->setEnabled(true);
     }
+
+    mUi.LoadTracksBtn->setEnabled(true);
+    mUi.LoadTerrainBtn->setEnabled(true);
+    mUi.CancelBtn->setEnabled(false);
 }

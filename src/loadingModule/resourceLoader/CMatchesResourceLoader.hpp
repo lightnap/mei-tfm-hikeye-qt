@@ -20,7 +20,7 @@ class CMatchesResourceLoader : public CResourceLoader
     /**
      * @brief Loads the corresponding resource.
      */
-    virtual void LoadResource();
+    void LoadResource() override;
 };
 
 #endif // C_MATCHES_RESOURCE_LOADER_H

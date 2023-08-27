@@ -20,7 +20,7 @@ class CTerrainResourceLoader : public CResourceLoader
     /**
      * @brief Loads the corresponding resource.
      */
-    virtual void LoadResource();
+    void LoadResource() override;
 };
 
 #endif // C_TERRAIN_RESOURCE_LOADER_H

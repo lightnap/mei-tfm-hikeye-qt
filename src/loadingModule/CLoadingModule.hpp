@@ -66,7 +66,7 @@ class CLoadingModule : public QObject
      * @brief Update info about the exit error code of the current resource loader.
      * @param aErrorCode: error code we want to notify.
      */
-    void UpdateResourceLoaderErrorCode(Types::eResourceLoadingError aErrorCode);
+    void UpdateResourceLoaderErrorCode(int aErrorCode);
 
     /**
      * @brief Gets called when a given resource loader finished.

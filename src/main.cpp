@@ -5,7 +5,7 @@
 
 int main(int argc, char** argv)
 {
-    QApplication Application(argc, argv);
+    QApplication   Application(argc, argv);
     QSurfaceFormat SurfaceFormat;
     SurfaceFormat.setVersion(4, 3);
     SurfaceFormat.setProfile(QSurfaceFormat::CoreProfile);

@@ -44,7 +44,7 @@ CLoadingModule::CLoadingModule(Types::eLoadingModule aModuleType, QStatusBar& aS
         auto& ResourceLoader {ResourceLoaderIt.second};
         connect(this, &CLoadingModule::LaunchResourceLoaderSignal, ResourceLoader.get(), &CResourceLoader::LoadResourceSlot);
         connect(ResourceLoader.get(), &CResourceLoader::finished, this, &CLoadingModule::ResourceLoaderFinished);
-        connect(ResourceLoader.get(), &CResourceLoader::finished, this, &CLoadingModule::ResourceLoaderFinished);
+        connect(ResourceLoader.get(), &CResourceLoader::SendErrorCode, this, &CLoadingModule::UpdateResourceLoaderErrorCode);
 
         ResourceLoader->start();
     }
@@ -68,9 +68,9 @@ void CLoadingModule::LaunchResourceLoader(Types::eResource aResource)
     emit LaunchResourceLoaderSignal(aResource);
 }
 
-void CLoadingModule::UpdateResourceLoaderErrorCode(Types::eResourceLoadingError aErrorCode)
+void CLoadingModule::UpdateResourceLoaderErrorCode(int aErrorCode)
 {
-    mResourceLoadErrorCode = aErrorCode;
+    mResourceLoadErrorCode = static_cast<Types::eResourceLoadingError>(aErrorCode);
 }
 
 void CLoadingModule::ResourceLoaderFinished()
