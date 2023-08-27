@@ -33,9 +33,9 @@ class CLoadingModule : public QObject
     void LaunchLoader();
 
     /**
-     * @brief Stops current loading process (if there is one).
+     * @brief Asks current loading proces to stop (if there is one).
      */
-    void CancelLoad();
+    void LaunchCancelLoad();
 
     /**
      * @brief Returns whether this module has started loading.
@@ -50,6 +50,12 @@ class CLoadingModule : public QObject
     [[nodiscard]] bool IsLoading() const;
 
     /**
+     * @brief Returns whether we are currenty canceling the load of this module.
+     * @return True if we are caneling, false otherwise.
+     */
+    [[nodiscard]] bool IsCanceling() const;
+
+    /**
      * @brief Returns whether this module is fully loaded.
      * @return True if module finished loading, false otherwise.
      */
@@ -57,9 +63,15 @@ class CLoadingModule : public QObject
 
   public slots:
     /**
-     * @brief Gets called when a resource finishes loading.
+     * @brief Update info about the exit error code of the current resource loader.
+     * @param aErrorCode: error code we want to notify.
      */
-    void ResourceFinishedLoading();
+    void UpdateResourceLoaderErrorCode(Types::eResourceLoadingError aErrorCode);
+
+    /**
+     * @brief Gets called when a given resource loader finished.
+     */
+    void ResourceLoaderFinished();
 
   signals:
     /**
@@ -67,6 +79,17 @@ class CLoadingModule : public QObject
      * @param aModuleType Type of the module that has finished.
      */
     void FinishedSignal(Types::eLoadingModule aType);
+
+    /**
+     * @brief Signal to notify loading module cancel finished.
+     */
+    void LoadCanceled();
+
+    /**
+     * @brief Signal to notify the resource loaders they should load a resource.
+     * @param aResource: resource loader we want to launch.
+     */
+    void LaunchResourceLoaderSignal(Types::eResource aResource);
 
   private:
     /**
@@ -76,12 +99,12 @@ class CLoadingModule : public QObject
     {
         UnLoaded = 0, //!< Loading has not started.
         Loading,      //!< Loading is in progress.
+        Canceling,    //!< We are cancelling the loading.
         Loaded,       //!< Loading has finished.
         Size          //!< Size of this enum.
     };
 
-    using tResourceLoadOrderType = std::vector<Types::eResource>;                      //!< Type for the order that resources have to be loaded.
-    using tResourcesPerType = std::map<Types::eLoadingModule, tResourceLoadOrderType>; //!< Type that relates module types with the resource they load.
+    using tResourcesMap = std::map<Types::eResource, std::unique_ptr<CResourceLoader>>; //!< Type that relates a resource type to its loader.
 
   private:
     /**
@@ -96,13 +119,13 @@ class CLoadingModule : public QObject
     void LoadFinished();
 
   private:
-    u8                    mResourceIndex; //!< Indicates which resource we are loading.
-    Types::eLoadingModule mModuleType;    //!< Indicates type of this module.
-    eLoadingStatus        mLoadingStatus; //!< Indicates the current loading status of the module.
-    QStatusBar&           mStatusBar;     //!< Bar that shows messages at the bottom of the screen.
+    u8                           mResourceIndex;         //!< Indicates which resource we are loading.
+    Types::eLoadingModule        mModuleType;            //!< Indicates type of this module.
+    Types::eResourceLoadingError mResourceLoadErrorCode; //!< Error code returned by the ResourceLoader thread.
+    eLoadingStatus               mLoadingStatus;         //!< Indicates the current loading status of the module.
+    QStatusBar&                  mStatusBar;             //!< Bar that shows messages at the bottom of the screen.
 
-    std::unique_ptr<CResourceLoader> mCurrentResourceLoader; //!< Loader loading the current resource.
-    const static tResourcesPerType   mResources;             //!< Indicates the resources (and their order) for each module type.
+    tResourcesMap mResourceLoaders; //!< Map of all the resource loaders of this module.
 };
 
 #endif // C_LOADING_MODULE_H

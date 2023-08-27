@@ -24,20 +24,30 @@ class CMainWindow : public QWidget
 
   public slots:
     /**
-     * @brief Begins the load terrain process.
+     * @brief Slot for reacting to load terrain button press.
      */
-    void LoadTerrain();
+    void LoadTerrainButtonPressed();
 
     /**
-     * @brief Begins the load tracks process.
+     * @brief Slot for reacting to load tracks button press.
      */
-    void LoadTracks();
+    void LoadTracksButtonPressed();
+
+    /**
+     * @brief Slot for reacting to cancel load button press.
+     */
+    void CancelLoadButtonPressed();
 
     /**
      * @brief Gets called when a loading module has finished.
      * @param aModule Type of the module that has finished loading.
      */
     void LoadingModuleFinished(Types::eLoadingModule aModule);
+
+    /**
+     * @brief Gets called when a loading module has sucessfully cancelled loading.
+     */
+    void CancelLoadFinished();
 
   private:
     /**

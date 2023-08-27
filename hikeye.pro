@@ -4,10 +4,6 @@ QT += core gui opengl
 CONFIG += c++14
 CONFIG += debug_and_release
 
-INCLUDEPATH += \
-    src \
-    src/loadingModule
-
 MOC_DIR     = moc
 OBJECTS_DIR = obj
 UI_DIR      = ui
@@ -15,15 +11,20 @@ RCC_DIR     = ./
 
 DESTDIR = ../bin
 
-FORMS += \
-    src/CMainWindow.ui
+INCLUDEPATH += \
+    src \
+    src/loadingModule \
+    src/loadingModule/resourceLoader \
+    src/loadingModule/resourceLoaderFactory \
 
 HEADERS += \
     src/Types.hpp \
     src/CMainWindow.hpp \
     src/CMainGraphicsWidget.hpp \
     src/loadingModule/CLoadingModule.hpp \
-    src/loadingModule/CResourceLoader.hpp
+    src/loadingModule/resourceLoader/CResourceLoader.hpp \
+    src/loadingModule/resourceLoaderFactory/CResourceLoaderFactory.hpp \
+    src/loadingModule/resourceLoaderFactory/IConcreteResourceLoaderFactory.hpp \
 
 SOURCES += \
     src/main.cpp \
@@ -31,6 +32,11 @@ SOURCES += \
     src/CMainWindow.cpp \
     src/CMainGraphicsWidget.cpp \
     src/loadingModule/CLoadingModule.cpp \
-    src/loadingModule/CResourceLoader.cpp
+    src/loadingModule/resourceLoader/CResourceLoader.cpp \
+    src/loadingModule/resourceLoaderFactory/CResourceLoaderFactory.cpp \
+    src/loadingModule/resourceLoaderFactory/IConcreteResourceLoaderFactory.cpp \
+
+FORMS += \
+    src/CMainWindow.ui
 
 #LIBS

@@ -28,52 +28,77 @@ void CMainWindow::CreateLoadingModules()
 
 void CMainWindow::BindActions()
 {
-    connect(mUi.LoadTerrainBtn, &QPushButton::clicked, this, &CMainWindow::LoadTerrain);
-    connect(mUi.LoadTracksBtn, &QPushButton::clicked, this, &CMainWindow::LoadTracks);
+    connect(mUi.LoadTerrainBtn, &QPushButton::clicked, this, &CMainWindow::LoadTerrainButtonPressed);
+    connect(mUi.LoadTracksBtn, &QPushButton::clicked, this, &CMainWindow::LoadTracksButtonPressed);
+    connect(mUi.CancelBtn, &QPushButton::clicked, this, &CMainWindow::CancelLoadButtonPressed);
 
     connect(mLoadingModulesMap[TERRAIN_MODULE_TYPE].get(), &CLoadingModule::FinishedSignal, this, &CMainWindow::LoadingModuleFinished);
     connect(mLoadingModulesMap[TRACKS_MODULE_TYPE].get(), &CLoadingModule::FinishedSignal, this, &CMainWindow::LoadingModuleFinished);
 
-    void LoadingModuleFinished(Types::eLoadingModule aModule);
+    connect(mLoadingModulesMap[TERRAIN_MODULE_TYPE].get(), &CLoadingModule::LoadCanceled, this, &CMainWindow::CancelLoadFinished);
+    connect(mLoadingModulesMap[TRACKS_MODULE_TYPE].get(), &CLoadingModule::LoadCanceled, this, &CMainWindow::CancelLoadFinished);
 }
 
-void CMainWindow::LoadTerrain()
+void CMainWindow::LoadTerrainButtonPressed()
 {
+    mUi.LoadTerrainBtn->setEnabled(false);
+    mUi.LoadTracksBtn->setEnabled(false);
+    mUi.CancelBtn->setEnabled(true);
+
     const auto& TerrainLoadingModule {mLoadingModulesMap.at(TERRAIN_MODULE_TYPE)};
-    const auto& TracksLoadingModule {mLoadingModulesMap.at(TRACKS_MODULE_TYPE)};
-
-    if (TerrainLoadingModule->IsLoading())
-    {
-        TerrainLoadingModule->CancelLoad();
-    }
-
-    if (TracksLoadingModule->IsLoading())
-    {
-        TracksLoadingModule->CancelLoad();
-    }
-
     TerrainLoadingModule->LaunchLoader();
 }
 
-void CMainWindow::LoadTracks()
+void CMainWindow::LoadTracksButtonPressed()
 {
+    mUi.LoadTerrainBtn->setEnabled(false);
+    mUi.LoadTracksBtn->setEnabled(false);
+    mUi.CancelBtn->setEnabled(true);
+
     const auto& TerrainLoadingModule {mLoadingModulesMap.at(TERRAIN_MODULE_TYPE)};
     const auto& TracksLoadingModule {mLoadingModulesMap.at(TRACKS_MODULE_TYPE)};
 
     if (!TerrainLoadingModule->IsLoaded())
     {
-        // Print warning message
-        std::string Message {"WARNING: Terrain must be loaded before tracks can be loaded!"};
+        const std::string Message {"WARNING: Terrain must be loaded before tracks can be loaded!"};
         mUi.StatusBar->showMessage(Message.c_str(), 5000);
         return;
     }
 
-    if (TracksLoadingModule->IsLoading())
-    {
-        TracksLoadingModule->CancelLoad();
-    }
-
     TracksLoadingModule->LaunchLoader();
+}
+
+void CMainWindow::CancelLoadButtonPressed()
+{
+    mUi.LoadTerrainBtn->setEnabled(false);
+    mUi.LoadTracksBtn->setEnabled(false);
+    mUi.CancelBtn->setEnabled(false);
+
+    const auto& TerrainLoadingModule {mLoadingModulesMap.at(TERRAIN_MODULE_TYPE)};
+    const auto& TracksLoadingModule {mLoadingModulesMap.at(TRACKS_MODULE_TYPE)};
+
+    if (TerrainLoadingModule->IsLoading())
+    {
+        TerrainLoadingModule->LaunchCancelLoad();
+        const std::string Message {"Canceling terrain load..."};
+        mUi.StatusBar->showMessage(Message.c_str());
+    }
+    else if (TracksLoadingModule->IsLoading())
+    {
+        TracksLoadingModule->LaunchCancelLoad();
+        const std::string Message {"Canceling tracks load..."};
+        mUi.StatusBar->showMessage(Message.c_str());
+    }
+}
+
+void CMainWindow::CancelLoadFinished()
+{
+    mUi.CancelBtn->setEnabled(false);
+    mUi.LoadTerrainBtn->setEnabled(true);
+    mUi.LoadTracksBtn->setEnabled(true);
+
+    const std::string Message {"Load sucessfully canceled. "};
+    mUi.StatusBar->showMessage(Message.c_str(), 4000);
 }
 
 void CMainWindow::LoadingModuleFinished(Types::eLoadingModule aModule)
@@ -81,9 +106,11 @@ void CMainWindow::LoadingModuleFinished(Types::eLoadingModule aModule)
     if (aModule == TERRAIN_MODULE_TYPE)
     {
         mUi.MainGraphics->LoadModel();
+        mUi.LoadTerrainBtn->setEnabled(true);
     }
     else if (aModule == TRACKS_MODULE_TYPE)
     {
         mUi.MainGraphics->LoadTexture();
+        mUi.LoadTracksBtn->setEnabled(true);
     }
 }
