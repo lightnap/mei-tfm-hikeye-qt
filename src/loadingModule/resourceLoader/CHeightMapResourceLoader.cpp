@@ -10,8 +10,10 @@ namespace
 [[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CHeightMapResourceLoader>::Register(Types::eResource::HeightMap)};
 }
 
-void CHeightMapResourceLoader::LoadResource()
+Types::eResourceLoadingError CHeightMapResourceLoader::LoadResource()
 {
     std::cout << "[HeightMapResource] Loading height map" << std::endl;
     // TODO: Fill this function.
+
+    return Types::eResourceLoadingError::Successful;
 }

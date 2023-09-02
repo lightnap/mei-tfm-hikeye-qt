@@ -17,22 +17,15 @@ CResourceLoader::CResourceLoader(Types::eResource aResource)
 
 void CResourceLoader::run()
 {
-    u32 ReturnValue {0U};
-    ReturnValue = exec();
-    emit SendErrorCode(static_cast<int>(ReturnValue));
+    const auto ReturnValue {LoadResource()};
+    emit       ResourceLoadedSignal(static_cast<int>(ReturnValue));
+    std::cout << "[RLoader] Finishing resource " << Types::ResourceToString(mResourceType) << std::endl;
 }
 
-void CResourceLoader::LoadResourceSlot(Types::eResource aResource)
-{
-    if (mResourceType == aResource)
-    {
-        LoadResource();
-        quit();
-    }
-}
-
-void CResourceLoader::LoadResource()
+Types::eResourceLoadingError CResourceLoader::LoadResource()
 {
     // TODO: Assert something here. This should not be called.
     std::cout << "WARNING: Called the LoadResource of the base module" << std::endl;
+
+    return Types::eResourceLoadingError::Size;
 }

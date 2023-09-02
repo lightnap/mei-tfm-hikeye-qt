@@ -5,18 +5,19 @@
 #include "Types.hpp"
 
 #include <QObject>
+#include <QPointer>
 #include <QStatusBar>
+
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
 
 /**
- * Class that represents a whole loading process.
+ * @brief Class that represents a whole loading process.
  */
 class CLoadingModule : public QObject
 {
-
     Q_OBJECT
 
   public:
@@ -63,15 +64,10 @@ class CLoadingModule : public QObject
 
   public slots:
     /**
-     * @brief Update info about the exit error code of the current resource loader.
+     * @brief Gets called when a given resource loader finished.
      * @param aErrorCode: error code we want to notify.
      */
-    void UpdateResourceLoaderErrorCode(int aErrorCode);
-
-    /**
-     * @brief Gets called when a given resource loader finished.
-     */
-    void ResourceLoaderFinished();
+    void ResourceLoaderFinished(int aErrorCode);
 
   signals:
     /**
@@ -84,12 +80,6 @@ class CLoadingModule : public QObject
      * @brief Signal to notify loading module cancel finished.
      */
     void LoadCanceled();
-
-    /**
-     * @brief Signal to notify the resource loaders they should load a resource.
-     * @param aResource: resource loader we want to launch.
-     */
-    void LaunchResourceLoaderSignal(Types::eResource aResource);
 
   private:
     /**
@@ -104,7 +94,7 @@ class CLoadingModule : public QObject
         Size          //!< Size of this enum.
     };
 
-    using tResourcesMap = std::map<Types::eResource, std::unique_ptr<CResourceLoader>>; //!< Type that relates a resource type to its loader.
+    using tResourcesMap = std::map<Types::eResource, QPointer<CResourceLoader>>; //!< Type that relates a resource type to its loader.
 
   private:
     /**
@@ -119,13 +109,12 @@ class CLoadingModule : public QObject
     void LoadFinished();
 
   private:
-    u8                           mResourceIndex;         //!< Indicates which resource we are loading.
-    Types::eLoadingModule        mModuleType;            //!< Indicates type of this module.
-    Types::eResourceLoadingError mResourceLoadErrorCode; //!< Error code returned by the ResourceLoader thread.
-    eLoadingStatus               mLoadingStatus;         //!< Indicates the current loading status of the module.
-    QStatusBar&                  mStatusBar;             //!< Bar that shows messages at the bottom of the screen.
+    u8                    mResourceIndex; //!< Indicates which resource we are loading.
+    Types::eLoadingModule mModuleType;    //!< Indicates type of this module.
+    eLoadingStatus        mLoadingStatus; //!< Indicates the current loading status of the module.
+    QStatusBar&           mStatusBar;     //!< Bar that shows messages at the bottom of the screen.
 
-    tResourcesMap mResourceLoaders; //!< Map of all the resource loaders of this module.
+    tResourcesMap mResourceLoaders; //!< Current resource loader thread.
 };
 
 #endif // C_LOADING_MODULE_H

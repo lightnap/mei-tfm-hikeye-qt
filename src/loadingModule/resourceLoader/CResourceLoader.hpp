@@ -24,25 +24,19 @@ class CResourceLoader : public QThread
      */
     void run() override;
 
-  public slots:
-    /**
-     * @brief Slot to launch the load of the corresponding resource.
-     * @param aResource: Type of resource we want to load.
-     */
-    void LoadResourceSlot(Types::eResource aResource);
-
   signals:
     /**
-     * @brief Emitted when we want to notify errors in the loading.
-     * @param aErrorCode: Code depicting errors on the loading.
+     * @brief Emitted when resource has finished loading.
+     * @param aErrorCode: Code depicting loading result.
      */
-    void SendErrorCode(int aErrorCode);
+    void ResourceLoadedSignal(int aErrorCode);
 
   protected:
     /**
      * @brief Loads the corresponding resource.
+     * @return Code depicting the loading result.
      */
-    virtual void LoadResource();
+    virtual Types::eResourceLoadingError LoadResource();
 
   private:
     Types::eResource mResourceType; //!< Type of resource this loader loads.

@@ -1,7 +1,9 @@
 #include "CLoadingModule.hpp"
+#include "CResourceLoader.hpp"
 #include "CResourceLoaderFactory.hpp"
 #include "Types.hpp"
 
+#include <QPointer>
 #include <QStatusBar>
 #include <iostream>
 #include <memory>
@@ -24,29 +26,15 @@ const tResourcesPerType MODULE_RESOURCES
 CLoadingModule::CLoadingModule(Types::eLoadingModule aModuleType, QStatusBar& aStatusBar)
   : mResourceIndex(0U)
   , mModuleType(aModuleType)
-  , mResourceLoadErrorCode(Types::eResourceLoadingError::Size)
   , mLoadingStatus(eLoadingStatus::UnLoaded)
   , mStatusBar(aStatusBar)
   , mResourceLoaders()
 {
-    for (const auto Resource : MODULE_RESOURCES.at(mModuleType))
+    const auto& ResourcesToLoad {MODULE_RESOURCES.at(mModuleType)};
+
+    for (const auto& Resource : ResourcesToLoad)
     {
-        auto Result {mResourceLoaders.emplace(Resource, std::unique_ptr<CResourceLoader>(CResourceLoaderFactory::Create(Resource)))};
-
-        if (!Result.second)
-        {
-            // TODO: Make an assert which says we are emplacing the smae resource twice, and that is not supported.
-        }
-    }
-
-    for (const auto& ResourceLoaderIt : mResourceLoaders)
-    {
-        auto& ResourceLoader {ResourceLoaderIt.second};
-        connect(this, &CLoadingModule::LaunchResourceLoaderSignal, ResourceLoader.get(), &CResourceLoader::LoadResourceSlot);
-        connect(ResourceLoader.get(), &CResourceLoader::finished, this, &CLoadingModule::ResourceLoaderFinished);
-        connect(ResourceLoader.get(), &CResourceLoader::SendErrorCode, this, &CLoadingModule::UpdateResourceLoaderErrorCode);
-
-        ResourceLoader->start();
+        mResourceLoaders[Resource] = nullptr;
     }
 }
 
@@ -64,25 +52,27 @@ void CLoadingModule::LaunchLoader()
 
 void CLoadingModule::LaunchResourceLoader(Types::eResource aResource)
 {
-    emit LaunchResourceLoaderSignal(aResource);
+    mResourceLoaders.at(aResource) = CResourceLoaderFactory::Create(aResource);
+
+    connect(mResourceLoaders.at(aResource), &CResourceLoader::ResourceLoadedSignal, this, &CLoadingModule::ResourceLoaderFinished);
+    connect(mResourceLoaders.at(aResource), &CResourceLoader::finished, this, &CResourceLoader::deleteLater);
+
+    mResourceLoaders.at(aResource)->start();
 }
 
-void CLoadingModule::UpdateResourceLoaderErrorCode(int aErrorCode)
+void CLoadingModule::ResourceLoaderFinished(int aErrorCode)
 {
-    mResourceLoadErrorCode = static_cast<Types::eResourceLoadingError>(aErrorCode);
-}
-
-void CLoadingModule::ResourceLoaderFinished()
-{
+    const auto ErrorCode = static_cast<Types::eResourceLoadingError>(aErrorCode);
     const auto ResourcesOrder {MODULE_RESOURCES.at(mModuleType)};
-    const auto FinishingResource {ResourcesOrder.at(mResourceIndex)};
-    mResourceLoaders.at(FinishingResource)->start();
 
-    switch (mResourceLoadErrorCode)
+    switch (ErrorCode)
     {
         case Types::eResourceLoadingError::Successful:
         {
+
+            std::cout << "[LModule] Resource success: " << mResourceIndex << std::endl;
             mResourceIndex++;
+
             const u8 ResourceNumber {static_cast<u8>(ResourcesOrder.size())};
             if (mResourceIndex == ResourceNumber)
             {
@@ -96,6 +86,7 @@ void CLoadingModule::ResourceLoaderFinished()
         }
         case Types::eResourceLoadingError::UserInterruption:
         {
+            mResourceIndex = 0U;
             mLoadingStatus = eLoadingStatus::UnLoaded;
             emit LoadCanceled();
         }
@@ -104,12 +95,12 @@ void CLoadingModule::ResourceLoaderFinished()
             break;
         }
     }
-
-    mResourceLoadErrorCode = Types::eResourceLoadingError::Size;
 }
 
 void CLoadingModule::LoadFinished()
 {
+
+    std::cout << "[LModule] All resource loaded" << std::endl;
     mLoadingStatus = eLoadingStatus::Loaded;
     const std::string ModuleType {Types::LoadingModuleToString(mModuleType)};
     mStatusBar.showMessage(("Finished loading " + ModuleType).c_str(), 2000);
@@ -120,12 +111,7 @@ void CLoadingModule::LaunchCancelLoad()
 {
     const auto CurrentResource {MODULE_RESOURCES.at(mModuleType).at(mResourceIndex)};
     mResourceLoaders.at(CurrentResource)->requestInterruption();
-
-    const auto UserInterruptionErrorCode {Types::eResourceLoadingError::UserInterruption};
-    mResourceLoaders.at(CurrentResource)->exit(static_cast<u32>(UserInterruptionErrorCode));
-
     mLoadingStatus = eLoadingStatus::Canceling;
-    mResourceIndex = 0U;
 }
 
 bool CLoadingModule::IsUnLoaded() const

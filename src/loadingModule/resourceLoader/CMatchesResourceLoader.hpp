@@ -2,6 +2,7 @@
 #define C_MATCHES_RESOURCE_LOADER_H
 
 #include "CResourceLoader.hpp"
+#include "Types.hpp"
 
 /**
  * @brief Class that loads the track mathces.
@@ -19,8 +20,9 @@ class CMatchesResourceLoader : public CResourceLoader
   private:
     /**
      * @brief Loads the corresponding resource.
+     * @return Code indicating the load result.
      */
-    void LoadResource() override;
+    Types::eResourceLoadingError LoadResource() override;
 };
 
 #endif // C_MATCHES_RESOURCE_LOADER_H

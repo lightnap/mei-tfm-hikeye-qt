@@ -2,6 +2,7 @@
 #define C_GROUND_TRUTH_RESOURCE_LOADER_H
 
 #include "CResourceLoader.hpp"
+#include "Types.hpp"
 
 /**
  * @brief Class that loads the ground truth.
@@ -19,8 +20,9 @@ class CGroundTruthResourceLoader : public CResourceLoader
   private:
     /**
      * @brief Loads the corresponding resource.
+     * @return Code depicting the loading result.
      */
-    void LoadResource() override;
+    Types::eResourceLoadingError LoadResource() override;
 };
 
 #endif // C_GROUND_TRUTH_RESOURCE_LOADER_H

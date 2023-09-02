@@ -10,8 +10,10 @@ namespace
 [[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CTerrainResourceLoader>::Register(Types::eResource::Terrain)};
 }
 
-void CTerrainResourceLoader::LoadResource()
+Types::eResourceLoadingError CTerrainResourceLoader::LoadResource()
 {
-    std::cout << "[HeightMapResource] Loading height map" << std::endl;
+    std::cout << "[TerrainResource] Loading terrain model" << std::endl;
     // TODO: Fill this function.
+
+    return Types::eResourceLoadingError::Successful;
 }

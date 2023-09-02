@@ -2,6 +2,7 @@
 #define C_QUERIES_RESOURCE_LOADER_H
 
 #include "CResourceLoader.hpp"
+#include "Types.hpp"
 
 /**
  * @brief Class that enriches the ground truth with data through queries.
@@ -19,8 +20,9 @@ class CQueriesResourceLoader : public CResourceLoader
   private:
     /**
      * @brief Loads the corresponding resource.
+     * @return Code indicating the load result.
      */
-    void LoadResource() override;
+    Types::eResourceLoadingError LoadResource() override;
 };
 
 #endif // C_QUERIES_RESOURCE_LOADER_H
