@@ -31,7 +31,7 @@ class CLoadingModule : public QObject
     /**
      * @brief Starts the loading process.
      */
-    void LaunchLoader();
+    void LaunchLoadingModule();
 
     /**
      * @brief Asks current loading proces to stop (if there is one).

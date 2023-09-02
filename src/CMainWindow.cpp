@@ -45,7 +45,7 @@ void CMainWindow::LoadTerrainButtonPressed()
     mUi.CancelBtn->setEnabled(true);
 
     const auto& TerrainLoadingModule {mLoadingModulesMap.at(TERRAIN_MODULE_TYPE)};
-    TerrainLoadingModule->LaunchLoader();
+    TerrainLoadingModule->LaunchLoadingModule();
 }
 
 void CMainWindow::LoadTracksButtonPressed()
@@ -64,7 +64,7 @@ void CMainWindow::LoadTracksButtonPressed()
         mUi.LoadTracksBtn->setEnabled(false);
         mUi.CancelBtn->setEnabled(true);
 
-        TracksLoadingModule->LaunchLoader();
+        TracksLoadingModule->LaunchLoadingModule();
     }
 }
 

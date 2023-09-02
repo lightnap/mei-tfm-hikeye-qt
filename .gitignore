@@ -5,6 +5,9 @@
 build/
 bin/
 
+#visual studio code
+.vscode
+
 
 # C++ objects and libs
 *.slo

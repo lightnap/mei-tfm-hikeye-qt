@@ -38,7 +38,7 @@ CLoadingModule::CLoadingModule(Types::eLoadingModule aModuleType, QStatusBar& aS
     }
 }
 
-void CLoadingModule::LaunchLoader()
+void CLoadingModule::LaunchLoadingModule()
 {
     mLoadingStatus = eLoadingStatus::Loading;
     mResourceIndex = 1U;
