@@ -19,7 +19,6 @@ void CResourceLoader::run()
 {
     const auto ReturnValue {LoadResource()};
     emit       ResourceLoadedSignal(static_cast<int>(ReturnValue));
-    std::cout << "[RLoader] Finishing resource " << Types::ResourceToString(mResourceType) << std::endl;
 }
 
 Types::eResourceLoadingError CResourceLoader::LoadResource()

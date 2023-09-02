@@ -18,7 +18,7 @@ using tResourcesPerType = std::map<Types::eLoadingModule, tResourceLoadOrderType
 const tResourcesPerType MODULE_RESOURCES
 {
     {Types::eLoadingModule::Terrain, {Types::eResource::None, Types::eResource::HeightMap, Types::eResource::Terrain}},
-    {Types::eLoadingModule::Tracks,  {Types::eResource::None, Types::eResource::GroundTruth, Types::eResource::Matches, Types::eResource::Queries, Types::eResource::Texture},}
+    {Types::eLoadingModule::Tracks,  {Types::eResource::None, Types::eResource::GroundTruth, Types::eResource::Matches, Types::eResource::Queries, Types::eResource::Texture}}
 }; //!< Indicates the resources (and their order) for each module type.
 // clang-format on
 }
@@ -54,8 +54,8 @@ void CLoadingModule::LaunchResourceLoader(Types::eResource aResource)
 {
     mResourceLoaders.at(aResource) = CResourceLoaderFactory::Create(aResource);
 
-    connect(mResourceLoaders.at(aResource), &CResourceLoader::ResourceLoadedSignal, this, &CLoadingModule::ResourceLoaderFinished);
-    connect(mResourceLoaders.at(aResource), &CResourceLoader::finished, this, &CResourceLoader::deleteLater);
+    connect(mResourceLoaders.at(aResource), &CResourceLoader::ResourceLoadedSignal, this, &CLoadingModule::ResourceLoaderFinished, Qt::QueuedConnection);
+    connect(mResourceLoaders.at(aResource), &CResourceLoader::finished, mResourceLoaders.at(aResource), &CResourceLoader::deleteLater, Qt::QueuedConnection);
 
     mResourceLoaders.at(aResource)->start();
 }
@@ -69,8 +69,6 @@ void CLoadingModule::ResourceLoaderFinished(int aErrorCode)
     {
         case Types::eResourceLoadingError::Successful:
         {
-
-            std::cout << "[LModule] Resource success: " << mResourceIndex << std::endl;
             mResourceIndex++;
 
             const u8 ResourceNumber {static_cast<u8>(ResourcesOrder.size())};
@@ -99,8 +97,6 @@ void CLoadingModule::ResourceLoaderFinished(int aErrorCode)
 
 void CLoadingModule::LoadFinished()
 {
-
-    std::cout << "[LModule] All resource loaded" << std::endl;
     mLoadingStatus = eLoadingStatus::Loaded;
     const std::string ModuleType {Types::LoadingModuleToString(mModuleType)};
     mStatusBar.showMessage(("Finished loading " + ModuleType).c_str(), 2000);
