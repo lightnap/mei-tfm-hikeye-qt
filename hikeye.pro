@@ -13,6 +13,7 @@ DESTDIR = ../bin
 
 INCLUDEPATH += \
     src \
+    src/dataStructures \
     src/loadingModule \
     src/loadingModule/resourceLoader \
     src/loadingModule/resourceLoaderFactory \
@@ -20,8 +21,8 @@ INCLUDEPATH += \
 HEADERS += \
     src/Types.hpp \
     src/CMainWindow.hpp \
-    src/CDataManager.hpp \
     src/CMainGraphicsWidget.hpp \
+    src/dataStructures/CDataManager.hpp \
     src/loadingModule/CLoadingModule.hpp \
     src/loadingModule/resourceLoader/CResourceLoader.hpp \
     src/loadingModule/resourceLoader/CGroundTruthResourceLoader.hpp \
@@ -37,8 +38,8 @@ SOURCES += \
     src/main.cpp \
     src/Types.cpp \
     src/CMainWindow.cpp \
-    src/CDataManager.cpp \
     src/CMainGraphicsWidget.cpp \
+    src/dataStructures/CDataManager.cpp \
     src/loadingModule/CLoadingModule.cpp \
     src/loadingModule/resourceLoader/CResourceLoader.cpp \
     src/loadingModule/resourceLoader/CGroundTruthResourceLoader.cpp \

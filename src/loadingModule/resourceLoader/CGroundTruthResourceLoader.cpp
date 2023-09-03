@@ -10,10 +10,10 @@ namespace
 [[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CGroundTruthResourceLoader>::Register(Types::eResource::GroundTruth)};
 }
 
-Types::eResourceLoadingError CGroundTruthResourceLoader::LoadResource()
+Types::eLoadResult CGroundTruthResourceLoader::LoadResource()
 {
     std::cout << "[GroundTruthResource] Loading ground truth" << std::endl;
     // TODO: Fill this function.
 
-    return Types::eResourceLoadingError::Successful;
+    return Types::eLoadResult::Successful;
 }

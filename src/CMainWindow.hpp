@@ -51,11 +51,22 @@ class CMainWindow : public QWidget
     void LoadingModuleFinished(Types::eLoadingModule aModule);
 
     /**
-     * @brief Gets called when a loading module has sucessfully cancelled loading.
+     * @brief Gets called when a loading module has interrupted its loading.
      */
-    void CancelLoadFinished();
+    void OnLoadInterrupted();
 
   private:
+    /**
+     * Enumdescribing the possible states of the buttons in the layout.
+     */
+    enum class eButtonsEnabledLayout
+    {
+        Rest = 0,  //!< App is at rest.
+        Loading,   //!< App is performing a load process.
+        Canceling, //!< App is performing a canceling process.
+        Size       //!< Size of this enum.
+    };
+
     /**
      * @brief Binds all slots and signals of this window.
      */
@@ -65,6 +76,12 @@ class CMainWindow : public QWidget
      * @brief Creates loading modules.
      */
     void CreateLoadingModules();
+
+    /**
+     * @brief Sets the app buttons enabled/disabled, based on a layout.
+     * @param aLayout: Layout we use to determine which buttons are enabled.
+     */
+    void SetButtonsEnabled(eButtonsEnabledLayout aLayout);
 
   private:
     using tLoadingModulesMap = std::map<Types::eLoadingModule, std::unique_ptr<CLoadingModule>>; //!< Type for relating loading modules and their type.

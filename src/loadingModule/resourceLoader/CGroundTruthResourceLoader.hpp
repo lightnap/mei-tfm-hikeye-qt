@@ -22,7 +22,7 @@ class CGroundTruthResourceLoader : public CResourceLoader
      * @brief Loads the corresponding resource.
      * @return Code depicting the loading result.
      */
-    Types::eResourceLoadingError LoadResource() override;
+    Types::eLoadResult LoadResource() override;
 };
 
 #endif // C_GROUND_TRUTH_RESOURCE_LOADER_H

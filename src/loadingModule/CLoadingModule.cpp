@@ -63,14 +63,14 @@ void CLoadingModule::LaunchResourceLoader(Types::eResource aResource)
     mResourceLoaders.at(aResource)->start();
 }
 
-void CLoadingModule::ResourceLoaderFinished(int aErrorCode)
+void CLoadingModule::ResourceLoaderFinished(int aErrorCode, QString aErrorMessage)
 {
-    const auto ErrorCode = static_cast<Types::eResourceLoadingError>(aErrorCode);
+    const auto ErrorCode = static_cast<Types::eLoadResult>(aErrorCode);
     const auto ResourcesOrder {MODULE_RESOURCES.at(mModuleType)};
 
     switch (ErrorCode)
     {
-        case Types::eResourceLoadingError::Successful:
+        case Types::eLoadResult::Successful:
         {
             mResourceIndex++;
 
@@ -85,11 +85,25 @@ void CLoadingModule::ResourceLoaderFinished(int aErrorCode)
             }
             break;
         }
-        case Types::eResourceLoadingError::UserInterruption:
+        case Types::eLoadResult::Interrupted:
+        {
+            const QString Message {"Load sucessfully canceled."};
+            mStatusBar.showMessage(Message, 4000);
+
+            mResourceIndex = 0U;
+            mLoadingStatus = eLoadingStatus::UnLoaded;
+            emit LoadInterrupted();
+            break;
+        }
+        case Types::eLoadResult::Error:
         {
             mResourceIndex = 0U;
             mLoadingStatus = eLoadingStatus::UnLoaded;
-            emit LoadCanceled();
+            emit LoadInterrupted();
+
+            const QString Message {"ERROR: "};
+            mStatusBar.showMessage(Message + aErrorMessage, 4000);
+            break;
         }
         default:
         {
@@ -108,9 +122,9 @@ void CLoadingModule::LoadFinished()
 
 void CLoadingModule::LaunchCancelLoad()
 {
+    mLoadingStatus = eLoadingStatus::Canceling;
     const auto CurrentResource {MODULE_RESOURCES.at(mModuleType).at(mResourceIndex)};
     mResourceLoaders.at(CurrentResource)->requestInterruption();
-    mLoadingStatus = eLoadingStatus::Canceling;
 }
 
 bool CLoadingModule::IsUnLoaded() const

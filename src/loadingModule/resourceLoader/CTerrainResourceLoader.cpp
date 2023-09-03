@@ -10,7 +10,7 @@ namespace
 [[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CTerrainResourceLoader>::Register(Types::eResource::Terrain)};
 }
 
-Types::eResourceLoadingError CTerrainResourceLoader::LoadResource()
+Types::eLoadResult CTerrainResourceLoader::LoadResource()
 {
     std::cout << "[TerrainResource] Loading terrain model" << std::endl;
     // TODO: Fill this function.
@@ -22,9 +22,9 @@ Types::eResourceLoadingError CTerrainResourceLoader::LoadResource()
         sleep(1);
         if (isInterruptionRequested())
         {
-            return Types::eResourceLoadingError::UserInterruption;
+            return Types::eLoadResult::Interrupted;
         }
     }
 
-    return Types::eResourceLoadingError::Successful;
+    return Types::eLoadResult::Successful;
 }

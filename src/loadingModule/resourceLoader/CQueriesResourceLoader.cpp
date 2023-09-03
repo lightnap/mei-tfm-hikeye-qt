@@ -10,10 +10,10 @@ namespace
 [[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CQueriesResourceLoader>::Register(Types::eResource::Queries)};
 }
 
-Types::eResourceLoadingError CQueriesResourceLoader::LoadResource()
+Types::eLoadResult CQueriesResourceLoader::LoadResource()
 {
     std::cout << "[QueriesResource] Loading queries" << std::endl;
     // TODO: Fill this function.
 
-    return Types::eResourceLoadingError::Successful;
+    return Types::eLoadResult::Successful;
 }

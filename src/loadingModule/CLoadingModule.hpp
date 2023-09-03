@@ -68,8 +68,9 @@ class CLoadingModule : public QObject
     /**
      * @brief Gets called when a given resource loader finished.
      * @param aErrorCode: error code we want to notify.
+     * @patam aErrorMessage: a brief message describing the error.
      */
-    void ResourceLoaderFinished(int aErrorCode);
+    void ResourceLoaderFinished(int aErrorCode, QString aErrorMessage);
 
   signals:
     /**
@@ -81,7 +82,7 @@ class CLoadingModule : public QObject
     /**
      * @brief Signal to notify loading module cancel finished.
      */
-    void LoadCanceled();
+    void LoadInterrupted();
 
   private:
     /**

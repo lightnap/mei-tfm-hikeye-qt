@@ -4,6 +4,9 @@
 #include "CResourceLoaderFactory.hpp"
 #include "Types.hpp"
 
+#include <QDir>
+#include <QString>
+
 #include <iostream> //TODO: Remove this.
 
 namespace
@@ -13,20 +16,28 @@ namespace
 
 CResourceLoader::CResourceLoader(Types::eResource aResource, CDataManager& aDataManager)
   : mDataManager(aDataManager)
+  , mLoadErrorMessage("")
   , mResourceType(aResource)
 {
 }
 
 void CResourceLoader::run()
 {
+    mLoadErrorMessage = "";
     const auto ReturnValue {LoadResource()};
-    emit       ResourceLoadedSignal(static_cast<int>(ReturnValue));
+    emit       ResourceLoadedSignal(static_cast<int>(ReturnValue), mLoadErrorMessage);
 }
 
-Types::eResourceLoadingError CResourceLoader::LoadResource()
+Types::eLoadResult CResourceLoader::LoadResource()
 {
     // TODO: Assert something here. This should not be called.
     std::cout << "WARNING: Called the LoadResource of the base module" << std::endl;
 
-    return Types::eResourceLoadingError::Size;
+    return Types::eLoadResult::Size;
+}
+
+QString CResourceLoader::GetResourceFilePath(QString& aFile) const
+{
+    QString AreaFolderPath {mDataManager.GetFolderPath()};
+    return QDir::cleanPath(AreaFolderPath) + QDir::separator() + aFile;
 }

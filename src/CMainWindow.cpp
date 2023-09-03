@@ -42,8 +42,8 @@ void CMainWindow::BindActions()
     connect(mLoadingModulesMap[TERRAIN_MODULE_TYPE].get(), &CLoadingModule::FinishedSignal, this, &CMainWindow::LoadingModuleFinished);
     connect(mLoadingModulesMap[TRACKS_MODULE_TYPE].get(), &CLoadingModule::FinishedSignal, this, &CMainWindow::LoadingModuleFinished);
 
-    connect(mLoadingModulesMap[TERRAIN_MODULE_TYPE].get(), &CLoadingModule::LoadCanceled, this, &CMainWindow::CancelLoadFinished);
-    connect(mLoadingModulesMap[TRACKS_MODULE_TYPE].get(), &CLoadingModule::LoadCanceled, this, &CMainWindow::CancelLoadFinished);
+    connect(mLoadingModulesMap[TERRAIN_MODULE_TYPE].get(), &CLoadingModule::LoadInterrupted, this, &CMainWindow::OnLoadInterrupted);
+    connect(mLoadingModulesMap[TRACKS_MODULE_TYPE].get(), &CLoadingModule::LoadInterrupted, this, &CMainWindow::OnLoadInterrupted);
 }
 
 void CMainWindow::FolderButtonPressed()
@@ -59,11 +59,7 @@ void CMainWindow::FolderButtonPressed()
 
 void CMainWindow::LoadTerrainButtonPressed()
 {
-    mUi.OpenFolderBtn->setEnabled(false);
-    mUi.LoadTerrainBtn->setEnabled(false);
-    mUi.LoadTracksBtn->setEnabled(false);
-    mUi.CancelBtn->setEnabled(true);
-
+    SetButtonsEnabled(eButtonsEnabledLayout::Loading);
     const auto& TerrainLoadingModule {mLoadingModulesMap.at(TERRAIN_MODULE_TYPE)};
     TerrainLoadingModule->LaunchLoadingModule();
 }
@@ -80,21 +76,14 @@ void CMainWindow::LoadTracksButtonPressed()
     }
     else
     {
-        mUi.OpenFolderBtn->setEnabled(false);
-        mUi.LoadTerrainBtn->setEnabled(false);
-        mUi.LoadTracksBtn->setEnabled(false);
-        mUi.CancelBtn->setEnabled(true);
-
+        SetButtonsEnabled(eButtonsEnabledLayout::Loading);
         TracksLoadingModule->LaunchLoadingModule();
     }
 }
 
 void CMainWindow::CancelLoadButtonPressed()
 {
-    mUi.OpenFolderBtn->setEnabled(false);
-    mUi.LoadTerrainBtn->setEnabled(false);
-    mUi.LoadTracksBtn->setEnabled(false);
-    mUi.CancelBtn->setEnabled(false);
+    SetButtonsEnabled(eButtonsEnabledLayout::Canceling);
 
     const auto& TerrainLoadingModule {mLoadingModulesMap.at(TERRAIN_MODULE_TYPE)};
     const auto& TracksLoadingModule {mLoadingModulesMap.at(TRACKS_MODULE_TYPE)};
@@ -113,15 +102,9 @@ void CMainWindow::CancelLoadButtonPressed()
     }
 }
 
-void CMainWindow::CancelLoadFinished()
+void CMainWindow::OnLoadInterrupted()
 {
-    mUi.OpenFolderBtn->setEnabled(true);
-    mUi.LoadTerrainBtn->setEnabled(true);
-    mUi.LoadTracksBtn->setEnabled(true);
-    mUi.CancelBtn->setEnabled(false);
-
-    const std::string Message {"Load sucessfully canceled. "};
-    mUi.StatusBar->showMessage(Message.c_str(), 4000);
+    SetButtonsEnabled(eButtonsEnabledLayout::Rest);
 }
 
 void CMainWindow::LoadingModuleFinished(Types::eLoadingModule aModule)
@@ -135,8 +118,42 @@ void CMainWindow::LoadingModuleFinished(Types::eLoadingModule aModule)
         mUi.MainGraphics->LoadTexture();
     }
 
-    mUi.OpenFolderBtn->setEnabled(true);
-    mUi.LoadTracksBtn->setEnabled(true);
-    mUi.LoadTerrainBtn->setEnabled(true);
-    mUi.CancelBtn->setEnabled(false);
+    SetButtonsEnabled(eButtonsEnabledLayout::Rest);
+}
+
+void CMainWindow::SetButtonsEnabled(eButtonsEnabledLayout aLayout)
+{
+    std::vector<bool> ButtonsEnabled(4, false);
+
+    switch (aLayout)
+    {
+        case eButtonsEnabledLayout::Rest:
+        {
+            ButtonsEnabled.clear();
+            ButtonsEnabled = {true, true, true, false};
+            break;
+        }
+        case eButtonsEnabledLayout::Loading:
+        {
+            ButtonsEnabled.clear();
+            ButtonsEnabled = {false, false, false, true};
+            break;
+        }
+        case eButtonsEnabledLayout::Canceling:
+        {
+            ButtonsEnabled.clear();
+            ButtonsEnabled = {false, false, false, false};
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+
+    // TODO: This could be turned into an enum.
+    mUi.OpenFolderBtn->setEnabled(ButtonsEnabled.at(0U));
+    mUi.LoadTracksBtn->setEnabled(ButtonsEnabled.at(1U));
+    mUi.LoadTerrainBtn->setEnabled(ButtonsEnabled.at(2U));
+    mUi.CancelBtn->setEnabled(ButtonsEnabled.at(3U));
 }

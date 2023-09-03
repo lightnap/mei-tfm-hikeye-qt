@@ -3,18 +3,34 @@
 #include "CResourceLoaderFactory.hpp"
 #include "Types.hpp"
 
+#include <QDir>
+#include <QFile>
+#include <QImage>
+#include <QString>
+
 #include <iostream> // TODO: Remove this.
 
 namespace
 {
+QString FILE_NAME {"dem.png"};
+
 [[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CHeightMapResourceLoader>::Register(Types::eResource::HeightMap)};
 }
 
-Types::eResourceLoadingError CHeightMapResourceLoader::LoadResource()
+Types::eLoadResult CHeightMapResourceLoader::LoadResource()
 {
+    QString ResourceFilePath {GetResourceFilePath(FILE_NAME)};
+    std::cout << "[Height] LoadingFile: " << ResourceFilePath.toStdString() << std::endl;
 
-    // Open file, return error if not found.
-    // Create QImage from file.
+    if (!QFile::exists(ResourceFilePath))
+    {
+        mLoadErrorMessage = "Height map file not found.";
+        return Types::eLoadResult::Error;
+    }
+
+    QImage HeightMapTexture;
+    HeightMapTexture.load(ResourceFilePath);
+
     // Create a HeightMap structure for saving things
     // Pass it to the data manager.
 
@@ -27,11 +43,10 @@ Types::eResourceLoadingError CHeightMapResourceLoader::LoadResource()
         sleep(1);
         if (isInterruptionRequested())
         {
-            return Types::eResourceLoadingError::UserInterruption;
+            mLoadErrorMessage = "Interrupted by user";
+            return Types::eLoadResult::Interrupted;
         }
     }
 
-    std::cout << "[Height] DataManager contains: " << mDataManager.GetFolderPath().toStdString() << std::endl;
-
-    return Types::eResourceLoadingError::Successful;
+    return Types::eLoadResult::Successful;
 }

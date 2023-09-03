@@ -10,10 +10,10 @@ namespace
 [[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CMatchesResourceLoader>::Register(Types::eResource::Matches)};
 }
 
-Types::eResourceLoadingError CMatchesResourceLoader::LoadResource()
+Types::eLoadResult CMatchesResourceLoader::LoadResource()
 {
     std::cout << "[MatchesResource] Loading matches" << std::endl;
     // TODO: Fill this function.
 
-    return Types::eResourceLoadingError::Successful;
+    return Types::eLoadResult::Successful;
 }
