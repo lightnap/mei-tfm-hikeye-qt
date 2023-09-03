@@ -4,6 +4,8 @@
 #include <QMutex>
 #include <QString>
 
+#include "CHeightMap.hpp"
+
 #include <memory>
 
 /**
@@ -29,8 +31,21 @@ class CDataManager
      */
     QString GetFolderPath() const;
 
+    /**
+     * @brief Sets the area height map. Takes ownership of the object.
+     * @param aHeightMap: pointer to the height map.
+     */
+    void SetHeightMap(std::unique_ptr<CHeightMap> aHeightMap);
+
+    /**
+     * @brief Gets the area height map.
+     * @return A reference to the area height map.
+     */
+    const CHeightMap& GetHeightMap() const;
+
   private:
-    QString                 mDataFolderPath; //!< Folder path in which we store/load all area files.
-    std::unique_ptr<QMutex> mDataMutex;      //!< Mutex for safely accessing all data.
+    QString                     mDataFolderPath; //!< Folder path in which we store/load all area files.
+    std::unique_ptr<QMutex>     mDataMutex;      //!< Mutex for safely accessing all data.
+    std::unique_ptr<CHeightMap> mHeightMap;      //!< Height map of the area.
 };
 #endif // C_DATA_MANAGER_H

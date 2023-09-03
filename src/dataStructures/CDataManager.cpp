@@ -1,6 +1,9 @@
 #include "CDataManager.hpp"
 
+#include "CHeightMap.hpp"
+
 #include <QString>
+#include <utility>
 
 CDataManager::CDataManager()
   : mDataFolderPath("")
@@ -18,4 +21,14 @@ void CDataManager::SetFolderPath(QString aFolderPath)
 QString CDataManager::GetFolderPath() const
 {
     return mDataFolderPath;
+}
+
+void CDataManager::SetHeightMap(std::unique_ptr<CHeightMap> aHeightMap)
+{
+    mHeightMap = std::move(aHeightMap);
+}
+
+const CHeightMap& CDataManager::GetHeightMap() const
+{
+    return *mHeightMap;
 }

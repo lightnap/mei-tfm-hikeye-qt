@@ -1,5 +1,6 @@
 #include "CHeightMapResourceLoader.hpp"
 
+#include "CHeightMap.hpp"
 #include "CResourceLoaderFactory.hpp"
 #include "Types.hpp"
 
@@ -30,22 +31,13 @@ Types::eLoadResult CHeightMapResourceLoader::LoadResource()
 
     QImage HeightMapTexture;
     HeightMapTexture.load(ResourceFilePath);
+    auto HeightMap {std::make_unique<CHeightMap>(HeightMapTexture)};
+    mDataManager.SetHeightMap(std::move(HeightMap));
 
-    // Create a HeightMap structure for saving things
-    // Pass it to the data manager.
-
-    std::cout << "[HeightMapResource] Loading height map" << std::endl;
-    // TODO: Fill this function.
-    for (int i = 0; i < 5; i++)
+    if (isInterruptionRequested())
     {
-        std::cout << "[Height] Doing work: " << i << std::endl;
-
-        sleep(1);
-        if (isInterruptionRequested())
-        {
-            mLoadErrorMessage = "Interrupted by user";
-            return Types::eLoadResult::Interrupted;
-        }
+        mLoadErrorMessage = "Interrupted by user";
+        return Types::eLoadResult::Interrupted;
     }
 
     return Types::eLoadResult::Successful;

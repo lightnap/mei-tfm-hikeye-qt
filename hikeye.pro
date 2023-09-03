@@ -23,6 +23,7 @@ HEADERS += \
     src/CMainWindow.hpp \
     src/CMainGraphicsWidget.hpp \
     src/dataStructures/CDataManager.hpp \
+    src/dataStructures/CHeightMap.hpp \
     src/loadingModule/CLoadingModule.hpp \
     src/loadingModule/resourceLoader/CResourceLoader.hpp \
     src/loadingModule/resourceLoader/CGroundTruthResourceLoader.hpp \
@@ -40,6 +41,7 @@ SOURCES += \
     src/CMainWindow.cpp \
     src/CMainGraphicsWidget.cpp \
     src/dataStructures/CDataManager.cpp \
+    src/dataStructures/CHeightMap.cpp \
     src/loadingModule/CLoadingModule.cpp \
     src/loadingModule/resourceLoader/CResourceLoader.cpp \
     src/loadingModule/resourceLoader/CGroundTruthResourceLoader.cpp \
