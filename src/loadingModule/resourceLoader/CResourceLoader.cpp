@@ -1,5 +1,6 @@
 #include "CResourceLoader.hpp"
 
+#include "CDataManager.hpp"
 #include "CResourceLoaderFactory.hpp"
 #include "Types.hpp"
 
@@ -10,8 +11,9 @@ namespace
 [[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CResourceLoader>::Register(Types::eResource::None)};
 }
 
-CResourceLoader::CResourceLoader(Types::eResource aResource)
-  : mResourceType(aResource)
+CResourceLoader::CResourceLoader(Types::eResource aResource, CDataManager& aDataManager)
+  : mDataManager(aDataManager)
+  , mResourceType(aResource)
 {
 }
 

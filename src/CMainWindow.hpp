@@ -1,6 +1,7 @@
 #ifndef C_MAIN_WINDOW_H
 #define C_MAIN_WINDOW_H
 
+#include "CDataManager.hpp"
 #include "CLoadingModule.hpp"
 #include "Types.hpp"
 #include "ui_CMainWindow.h"
@@ -63,8 +64,9 @@ class CMainWindow : public QWidget
   private:
     using tLoadingModulesMap = std::map<Types::eLoadingModule, std::unique_ptr<CLoadingModule>>; //!< Type for relating loading modules and their type.
 
-    tLoadingModulesMap mLoadingModulesMap; //!< Map with all loaging modules.
-    Ui::CMainWindow    mUi;                //!< Represents the Ui of this form.
+    tLoadingModulesMap            mLoadingModulesMap; //!< Map with all loaging modules.
+    Ui::CMainWindow               mUi;                //!< Represents the Ui of this form.
+    std::unique_ptr<CDataManager> mDataManager;       //!< Data manager.
 };
 
 #endif // C_MAIN_WINDOW_H

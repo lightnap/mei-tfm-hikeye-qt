@@ -4,6 +4,8 @@
 
 #include <QPushButton>
 
+#include <memory>
+
 namespace
 {
 const auto TERRAIN_MODULE_TYPE {Types::eLoadingModule::Terrain}; //!< Enum for terrain loading module.
@@ -14,6 +16,8 @@ CMainWindow::CMainWindow(QWidget* aParent)
   : QWidget(aParent)
 {
     mUi.setupUi(this);
+    mDataManager = std::make_unique<CDataManager>();
+    mDataManager->SetFolderPath("HelloThere");
 
     CreateLoadingModules();
     BindActions();
@@ -21,8 +25,8 @@ CMainWindow::CMainWindow(QWidget* aParent)
 
 void CMainWindow::CreateLoadingModules()
 {
-    mLoadingModulesMap[TERRAIN_MODULE_TYPE] = std::make_unique<CLoadingModule>(TERRAIN_MODULE_TYPE, *mUi.StatusBar);
-    mLoadingModulesMap[TRACKS_MODULE_TYPE] = std::make_unique<CLoadingModule>(TRACKS_MODULE_TYPE, *mUi.StatusBar);
+    mLoadingModulesMap[TERRAIN_MODULE_TYPE] = std::make_unique<CLoadingModule>(TERRAIN_MODULE_TYPE, *mDataManager, *mUi.StatusBar);
+    mLoadingModulesMap[TRACKS_MODULE_TYPE] = std::make_unique<CLoadingModule>(TRACKS_MODULE_TYPE, *mDataManager, *mUi.StatusBar);
 }
 
 void CMainWindow::BindActions()

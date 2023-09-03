@@ -20,6 +20,7 @@ INCLUDEPATH += \
 HEADERS += \
     src/Types.hpp \
     src/CMainWindow.hpp \
+    src/CDataManager.hpp \
     src/CMainGraphicsWidget.hpp \
     src/loadingModule/CLoadingModule.hpp \
     src/loadingModule/resourceLoader/CResourceLoader.hpp \
@@ -36,6 +37,7 @@ SOURCES += \
     src/main.cpp \
     src/Types.cpp \
     src/CMainWindow.cpp \
+    src/CDataManager.cpp \
     src/CMainGraphicsWidget.cpp \
     src/loadingModule/CLoadingModule.cpp \
     src/loadingModule/resourceLoader/CResourceLoader.cpp \

@@ -1,6 +1,8 @@
 #ifndef C_RESOURCE_LOADER_H
 #define C_RESOURCE_LOADER_H
 
+#include "CDataManager.hpp"
+
 #include "Types.hpp"
 
 #include <QThread>
@@ -16,11 +18,12 @@ class CResourceLoader : public QThread
     /**
      * @brief Constructor.
      * @param aResource: Type of the resource this loader will load.
+     * @param aDataManager: Reference to the data manager.
      */
-    CResourceLoader(Types::eResource aResouce);
+    CResourceLoader(Types::eResource aResouce, CDataManager& aDataManager);
 
     /**
-     * Gets called when this thread is started.
+     * @brief Gets called when this thread is started.
      */
     void run() override;
 
@@ -37,6 +40,9 @@ class CResourceLoader : public QThread
      * @return Code depicting the loading result.
      */
     virtual Types::eResourceLoadingError LoadResource();
+
+  protected:
+    CDataManager& mDataManager; //!< Reference to the datamanager.
 
   private:
     Types::eResource mResourceType; //!< Type of resource this loader loads.

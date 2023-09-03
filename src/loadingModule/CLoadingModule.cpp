@@ -1,4 +1,6 @@
 #include "CLoadingModule.hpp"
+
+#include "CDataManager.hpp"
 #include "CResourceLoader.hpp"
 #include "CResourceLoaderFactory.hpp"
 #include "Types.hpp"
@@ -23,10 +25,11 @@ const tResourcesPerType MODULE_RESOURCES
 // clang-format on
 }
 
-CLoadingModule::CLoadingModule(Types::eLoadingModule aModuleType, QStatusBar& aStatusBar)
+CLoadingModule::CLoadingModule(Types::eLoadingModule aModuleType, CDataManager& aDataManager, QStatusBar& aStatusBar)
   : mResourceIndex(0U)
   , mModuleType(aModuleType)
   , mLoadingStatus(eLoadingStatus::UnLoaded)
+  , mDataManager(aDataManager)
   , mStatusBar(aStatusBar)
   , mResourceLoaders()
 {
@@ -52,7 +55,7 @@ void CLoadingModule::LaunchLoadingModule()
 
 void CLoadingModule::LaunchResourceLoader(Types::eResource aResource)
 {
-    mResourceLoaders.at(aResource) = CResourceLoaderFactory::Create(aResource);
+    mResourceLoaders.at(aResource) = CResourceLoaderFactory::Create(aResource, mDataManager);
 
     connect(mResourceLoaders.at(aResource), &CResourceLoader::ResourceLoadedSignal, this, &CLoadingModule::ResourceLoaderFinished, Qt::QueuedConnection);
     connect(mResourceLoaders.at(aResource), &CResourceLoader::finished, mResourceLoaders.at(aResource), &CResourceLoader::deleteLater, Qt::QueuedConnection);

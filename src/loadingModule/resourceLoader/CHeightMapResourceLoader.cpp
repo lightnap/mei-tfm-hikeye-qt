@@ -24,5 +24,8 @@ Types::eResourceLoadingError CHeightMapResourceLoader::LoadResource()
             return Types::eResourceLoadingError::UserInterruption;
         }
     }
+
+    std::cout << "[Height] DataManager contains: " << mDataManager.GetFolderPath().toStdString() << std::endl;
+
     return Types::eResourceLoadingError::Successful;
 }
