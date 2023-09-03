@@ -12,6 +12,12 @@ namespace
 
 Types::eResourceLoadingError CHeightMapResourceLoader::LoadResource()
 {
+
+    // Open file, return error if not found.
+    // Create QImage from file.
+    // Create a HeightMap structure for saving things
+    // Pass it to the data manager.
+
     std::cout << "[HeightMapResource] Loading height map" << std::endl;
     // TODO: Fill this function.
     for (int i = 0; i < 5; i++)
