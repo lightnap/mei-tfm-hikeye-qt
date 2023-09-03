@@ -2,6 +2,7 @@
 #include "CLoadingModule.hpp"
 #include "CMainGraphicsWidget.hpp"
 
+#include <QFileDialog>
 #include <QPushButton>
 
 #include <memory>
@@ -17,7 +18,9 @@ CMainWindow::CMainWindow(QWidget* aParent)
 {
     mUi.setupUi(this);
     mDataManager = std::make_unique<CDataManager>();
-    mDataManager->SetFolderPath("HelloThere");
+
+    QString DefaultFolderPath {mUi.FolderPathDisplay->text()};
+    mDataManager->SetFolderPath(DefaultFolderPath);
 
     CreateLoadingModules();
     BindActions();
@@ -34,12 +37,24 @@ void CMainWindow::BindActions()
     connect(mUi.LoadTerrainBtn, &QPushButton::clicked, this, &CMainWindow::LoadTerrainButtonPressed);
     connect(mUi.LoadTracksBtn, &QPushButton::clicked, this, &CMainWindow::LoadTracksButtonPressed);
     connect(mUi.CancelBtn, &QPushButton::clicked, this, &CMainWindow::CancelLoadButtonPressed);
+    connect(mUi.OpenFolderBtn, &QPushButton::clicked, this, &CMainWindow::FolderButtonPressed);
 
     connect(mLoadingModulesMap[TERRAIN_MODULE_TYPE].get(), &CLoadingModule::FinishedSignal, this, &CMainWindow::LoadingModuleFinished);
     connect(mLoadingModulesMap[TRACKS_MODULE_TYPE].get(), &CLoadingModule::FinishedSignal, this, &CMainWindow::LoadingModuleFinished);
 
     connect(mLoadingModulesMap[TERRAIN_MODULE_TYPE].get(), &CLoadingModule::LoadCanceled, this, &CMainWindow::CancelLoadFinished);
     connect(mLoadingModulesMap[TRACKS_MODULE_TYPE].get(), &CLoadingModule::LoadCanceled, this, &CMainWindow::CancelLoadFinished);
+}
+
+void CMainWindow::FolderButtonPressed()
+{
+    QString AreaFolderPath {QFileDialog::getExistingDirectory(this, tr("Open Directory"), "", QFileDialog::ShowDirsOnly)};
+
+    if (!AreaFolderPath.isEmpty())
+    {
+        mUi.FolderPathDisplay->setText(AreaFolderPath);
+        mDataManager->SetFolderPath(AreaFolderPath);
+    }
 }
 
 void CMainWindow::LoadTerrainButtonPressed()

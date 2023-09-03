@@ -25,6 +25,11 @@ class CMainWindow : public QWidget
 
   public slots:
     /**
+     * @brief Slots for reacting to open folder button press.
+     */
+    void FolderButtonPressed();
+
+    /**
      * @brief Slot for reacting to load terrain button press.
      */
     void LoadTerrainButtonPressed();

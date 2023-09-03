@@ -15,7 +15,7 @@ Types::eResourceLoadingError CTerrainResourceLoader::LoadResource()
     std::cout << "[TerrainResource] Loading terrain model" << std::endl;
     // TODO: Fill this function.
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 5; i++)
     {
         std::cout << "[Terrain] Doing work: " << i << std::endl;
 

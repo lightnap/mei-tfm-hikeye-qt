@@ -14,7 +14,7 @@ Types::eResourceLoadingError CHeightMapResourceLoader::LoadResource()
 {
     std::cout << "[HeightMapResource] Loading height map" << std::endl;
     // TODO: Fill this function.
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 5; i++)
     {
         std::cout << "[Height] Doing work: " << i << std::endl;
 
