@@ -59,6 +59,7 @@ void CMainWindow::FolderButtonPressed()
 
 void CMainWindow::LoadTerrainButtonPressed()
 {
+    mUi.OpenFolderBtn->setEnabled(false);
     mUi.LoadTerrainBtn->setEnabled(false);
     mUi.LoadTracksBtn->setEnabled(false);
     mUi.CancelBtn->setEnabled(true);
@@ -79,6 +80,7 @@ void CMainWindow::LoadTracksButtonPressed()
     }
     else
     {
+        mUi.OpenFolderBtn->setEnabled(false);
         mUi.LoadTerrainBtn->setEnabled(false);
         mUi.LoadTracksBtn->setEnabled(false);
         mUi.CancelBtn->setEnabled(true);
@@ -89,6 +91,7 @@ void CMainWindow::LoadTracksButtonPressed()
 
 void CMainWindow::CancelLoadButtonPressed()
 {
+    mUi.OpenFolderBtn->setEnabled(false);
     mUi.LoadTerrainBtn->setEnabled(false);
     mUi.LoadTracksBtn->setEnabled(false);
     mUi.CancelBtn->setEnabled(false);
@@ -112,9 +115,10 @@ void CMainWindow::CancelLoadButtonPressed()
 
 void CMainWindow::CancelLoadFinished()
 {
-    mUi.CancelBtn->setEnabled(false);
+    mUi.OpenFolderBtn->setEnabled(true);
     mUi.LoadTerrainBtn->setEnabled(true);
     mUi.LoadTracksBtn->setEnabled(true);
+    mUi.CancelBtn->setEnabled(false);
 
     const std::string Message {"Load sucessfully canceled. "};
     mUi.StatusBar->showMessage(Message.c_str(), 4000);
@@ -131,6 +135,7 @@ void CMainWindow::LoadingModuleFinished(Types::eLoadingModule aModule)
         mUi.MainGraphics->LoadTexture();
     }
 
+    mUi.OpenFolderBtn->setEnabled(true);
     mUi.LoadTracksBtn->setEnabled(true);
     mUi.LoadTerrainBtn->setEnabled(true);
     mUi.CancelBtn->setEnabled(false);
