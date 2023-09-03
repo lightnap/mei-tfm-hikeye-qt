@@ -4,6 +4,8 @@
 #include <QMutex>
 #include <QString>
 
+#include <memory>
+
 /**
  * @brief Class that stores and manages all data from the various areas.
  */
@@ -28,6 +30,7 @@ class CDataManager
     QString GetFolderPath() const;
 
   private:
-    QString mDataFolderPath; //!< Folder path in which we store/load all area files.
+    QString                 mDataFolderPath; //!< Folder path in which we store/load all area files.
+    std::unique_ptr<QMutex> mDataMutex;      //!< Mutex for safely accessing all data.
 };
 #endif // C_DATA_MANAGER_H
