@@ -1,5 +1,6 @@
 #include "CTerrainResourceLoader.hpp"
 
+#include "CHeightMap.hpp"
 #include "CResourceLoaderFactory.hpp"
 #include "Types.hpp"
 
@@ -13,17 +14,18 @@ namespace
 Types::eLoadResult CTerrainResourceLoader::LoadResource()
 {
     std::cout << "[TerrainResource] Loading terrain model" << std::endl;
-    // TODO: Fill this function.
+    // TODO: Fill this function
 
-    for (int i = 0; i < 5; i++)
+    const auto& HeightMap {mDataManager.GetHeightMap()};
+
+    // Create vector of vertices
+    // Create vector of triangles
+    // Create a structure containign both
+    // Pass it to the data manager
+
+    if (isInterruptionRequested())
     {
-        std::cout << "[Terrain] Doing work: " << i << std::endl;
-
-        sleep(1);
-        if (isInterruptionRequested())
-        {
-            return Types::eLoadResult::Interrupted;
-        }
+        return Types::eLoadResult::Interrupted;
     }
 
     return Types::eLoadResult::Successful;

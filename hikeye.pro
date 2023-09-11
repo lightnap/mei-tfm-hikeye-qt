@@ -13,15 +13,17 @@ DESTDIR = ../bin
 
 INCLUDEPATH += \
     src \
+    src/common \
     src/dataStructures \
     src/loadingModule \
     src/loadingModule/resourceLoader \
     src/loadingModule/resourceLoaderFactory \
 
 HEADERS += \
-    src/Types.hpp \
     src/CMainWindow.hpp \
     src/CMainGraphicsWidget.hpp \
+    src/common/Types.hpp \
+    src/common/Utils.hpp \
     src/dataStructures/CDataManager.hpp \
     src/dataStructures/CHeightMap.hpp \
     src/loadingModule/CLoadingModule.hpp \
@@ -37,9 +39,10 @@ HEADERS += \
 
 SOURCES += \
     src/main.cpp \
-    src/Types.cpp \
     src/CMainWindow.cpp \
     src/CMainGraphicsWidget.cpp \
+    src/common/Types.cpp \
+    src/common/Utils.cpp \
     src/dataStructures/CDataManager.cpp \
     src/dataStructures/CHeightMap.cpp \
     src/loadingModule/CLoadingModule.cpp \
