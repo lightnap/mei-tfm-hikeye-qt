@@ -19,6 +19,12 @@ class CHeightMap
      */
     CHeightMap(QImage& aTexture);
 
+    /**
+     * @brief Gets the heights vector.
+     * @return The heights vector.
+     */
+    const std::vector<f64>& GetHeights() const;
+
   private:
     std::vector<f64> mHeights; //!< Vector containing all heights.
 };

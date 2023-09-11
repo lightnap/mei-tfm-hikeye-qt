@@ -9,6 +9,7 @@ CHeightMap::CHeightMap(QImage& aTexture)
     mHeights.clear();
 
     // TODO: This could be moven to the height map resource loader so that it can be interrupted if it takes a long time.
+    // Then this whole class could be just a struct really.
     const u32 SizeX {static_cast<u32>(aTexture.width())};
     const u32 SizeY {static_cast<u32>(aTexture.height())};
 
@@ -25,4 +26,9 @@ CHeightMap::CHeightMap(QImage& aTexture)
             VertexIndex++;
         }
     }
+}
+
+const std::vector<f64>& CHeightMap::GetHeights() const
+{
+    return mHeights;
 }

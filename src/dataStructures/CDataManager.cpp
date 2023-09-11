@@ -5,6 +5,8 @@
 #include <QString>
 #include <utility>
 
+// TODO: Think about thread safety and whether data mutexes are worth it.
+
 CDataManager::CDataManager()
   : mDataFolderPath("")
 {
@@ -31,4 +33,14 @@ void CDataManager::SetHeightMap(std::unique_ptr<CHeightMap> aHeightMap)
 const CHeightMap& CDataManager::GetHeightMap() const
 {
     return *mHeightMap;
+}
+
+void CDataManager::SetTerrain(std::unique_ptr<CTerrain> aTerrain)
+{
+    mTerrain = std::move(aTerrain);
+}
+
+const CTerrain& CDataManager::GetTerrain() const
+{
+    return *mTerrain;
 }

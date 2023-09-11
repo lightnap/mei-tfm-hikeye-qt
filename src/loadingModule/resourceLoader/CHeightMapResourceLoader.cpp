@@ -10,6 +10,8 @@
 #include <QString>
 
 #include <iostream> // TODO: Remove this.
+#include <memory>
+#include <utility>
 
 namespace
 {

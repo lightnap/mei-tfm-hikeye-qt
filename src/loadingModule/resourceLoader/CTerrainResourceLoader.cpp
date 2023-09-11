@@ -2,9 +2,12 @@
 
 #include "CHeightMap.hpp"
 #include "CResourceLoaderFactory.hpp"
+#include "CTerrain.hpp"
 #include "Types.hpp"
 
 #include <iostream> //TODO: Remove this.
+#include <memory>
+#include <utility>
 
 namespace
 {
@@ -14,17 +17,14 @@ namespace
 Types::eLoadResult CTerrainResourceLoader::LoadResource()
 {
     std::cout << "[TerrainResource] Loading terrain model" << std::endl;
-    // TODO: Fill this function
 
-    const auto& HeightMap {mDataManager.GetHeightMap()};
-
-    // Create vector of vertices
-    // Create vector of triangles
-    // Create a structure containign both
-    // Pass it to the data manager
+    const auto& HeightMap {mDataManager.GetHeightMap().GetHeights()};
+    auto        Terrain {std::make_unique<CTerrain>(HeightMap)};
+    mDataManager.SetTerrain(std::move(Terrain));
 
     if (isInterruptionRequested())
     {
+        mLoadErrorMessage = "Interrupted by user";
         return Types::eLoadResult::Interrupted;
     }
 

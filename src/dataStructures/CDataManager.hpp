@@ -5,6 +5,7 @@
 #include <QString>
 
 #include "CHeightMap.hpp"
+#include "CTerrain.hpp"
 
 #include <memory>
 
@@ -43,9 +44,21 @@ class CDataManager
      */
     const CHeightMap& GetHeightMap() const;
 
+    /**
+     * @brief Sets the arez terrain model. Takes ownership of the object.
+     * @param aTerrain: poiter to the height map.
+     */
+    void SetTerrain(std::unique_ptr<CTerrain> aTerrain);
+
+    /**
+     * @brief Gets the area terrain model.
+     */
+    const CTerrain& GetTerrain() const;
+
   private:
     QString                     mDataFolderPath; //!< Folder path in which we store/load all area files.
     std::unique_ptr<QMutex>     mDataMutex;      //!< Mutex for safely accessing all data.
     std::unique_ptr<CHeightMap> mHeightMap;      //!< Height map of the area.
+    std::unique_ptr<CTerrain>   mTerrain;        //!< 3D model of area terrain.
 };
 #endif // C_DATA_MANAGER_H
