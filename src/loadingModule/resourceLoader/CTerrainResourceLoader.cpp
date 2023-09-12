@@ -1,8 +1,8 @@
 #include "CTerrainResourceLoader.hpp"
 
-#include "CHeightMap.hpp"
 #include "CResourceLoaderFactory.hpp"
-#include "CTerrain.hpp"
+#include "SHeightMap.hpp"
+#include "STerrain.hpp"
 #include "Types.hpp"
 
 #include <iostream> //TODO: Remove this.
@@ -18,8 +18,8 @@ Types::eLoadResult CTerrainResourceLoader::LoadResource()
 {
     std::cout << "[TerrainResource] Loading terrain model" << std::endl;
 
-    const auto& HeightMap {mDataManager.GetHeightMap().GetHeights()};
-    auto        Terrain {std::make_unique<CTerrain>(HeightMap)};
+    const auto& HeightMap {mDataManager.GetHeightMap().oHeights};
+    auto        Terrain {std::make_unique<STerrain>(HeightMap)};
     mDataManager.SetTerrain(std::move(Terrain));
 
     if (isInterruptionRequested())

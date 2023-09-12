@@ -1,6 +1,7 @@
 #include "CDataManager.hpp"
 
-#include "CHeightMap.hpp"
+#include "SHeightMap.hpp"
+#include "STerrain.hpp"
 
 #include <QString>
 #include <utility>
@@ -25,22 +26,22 @@ QString CDataManager::GetFolderPath() const
     return mDataFolderPath;
 }
 
-void CDataManager::SetHeightMap(std::unique_ptr<CHeightMap> aHeightMap)
+void CDataManager::SetHeightMap(std::unique_ptr<SHeightMap> aHeightMap)
 {
     mHeightMap = std::move(aHeightMap);
 }
 
-const CHeightMap& CDataManager::GetHeightMap() const
+const SHeightMap& CDataManager::GetHeightMap() const
 {
     return *mHeightMap;
 }
 
-void CDataManager::SetTerrain(std::unique_ptr<CTerrain> aTerrain)
+void CDataManager::SetTerrain(std::unique_ptr<STerrain> aTerrain)
 {
     mTerrain = std::move(aTerrain);
 }
 
-const CTerrain& CDataManager::GetTerrain() const
+const STerrain& CDataManager::GetTerrain() const
 {
     return *mTerrain;
 }

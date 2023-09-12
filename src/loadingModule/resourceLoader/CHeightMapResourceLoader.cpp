@@ -1,7 +1,7 @@
 #include "CHeightMapResourceLoader.hpp"
 
-#include "CHeightMap.hpp"
 #include "CResourceLoaderFactory.hpp"
+#include "SHeightMap.hpp"
 #include "Types.hpp"
 
 #include <QDir>
@@ -33,7 +33,7 @@ Types::eLoadResult CHeightMapResourceLoader::LoadResource()
 
     QImage HeightMapTexture;
     HeightMapTexture.load(ResourceFilePath);
-    auto HeightMap {std::make_unique<CHeightMap>(HeightMapTexture)};
+    auto HeightMap {std::make_unique<SHeightMap>(HeightMapTexture)};
     mDataManager.SetHeightMap(std::move(HeightMap));
 
     if (isInterruptionRequested())

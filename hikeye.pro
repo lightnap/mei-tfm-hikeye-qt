@@ -25,8 +25,8 @@ HEADERS += \
     src/common/Types.hpp \
     src/common/Utils.hpp \
     src/dataStructures/CDataManager.hpp \
-    src/dataStructures/CHeightMap.hpp \
-    src/dataStructures/CTerrain.hpp \
+    src/dataStructures/SHeightMap.hpp \
+    src/dataStructures/STerrain.hpp \
     src/loadingModule/CLoadingModule.hpp \
     src/loadingModule/resourceLoader/CResourceLoader.hpp \
     src/loadingModule/resourceLoader/CGroundTruthResourceLoader.hpp \
@@ -45,8 +45,8 @@ SOURCES += \
     src/common/Types.cpp \
     src/common/Utils.cpp \
     src/dataStructures/CDataManager.cpp \
-    src/dataStructures/CTerrain.cpp \
-    src/dataStructures/CHeightMap.cpp \
+    src/dataStructures/STerrain.cpp \
+    src/dataStructures/SHeightMap.cpp \
     src/loadingModule/CLoadingModule.cpp \
     src/loadingModule/resourceLoader/CResourceLoader.cpp \
     src/loadingModule/resourceLoader/CGroundTruthResourceLoader.cpp \

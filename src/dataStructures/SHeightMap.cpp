@@ -1,19 +1,18 @@
-#include "CHeightMap.hpp"
+#include "SHeightMap.hpp"
 
 #include "Types.hpp"
 
 #include <QImage>
 
-CHeightMap::CHeightMap(QImage& aTexture)
+SHeightMap::SHeightMap(QImage& aTexture)
 {
-    mHeights.clear();
+    oHeights.clear();
 
     // TODO: This could be moven to the height map resource loader so that it can be interrupted if it takes a long time.
-    // Then this whole class could be just a struct really.
     const u32 SizeX {static_cast<u32>(aTexture.width())};
     const u32 SizeY {static_cast<u32>(aTexture.height())};
 
-    mHeights.resize(SizeX * SizeY);
+    oHeights.resize(SizeX * SizeY);
 
     u32 VertexIndex {0U};
 
@@ -22,13 +21,11 @@ CHeightMap::CHeightMap(QImage& aTexture)
     {
         for (u32 j = 0U; j < SizeY; j++)
         {
-            mHeights[VertexIndex] = qRed(aTexture.pixel(i, j)) / 255.0;
+            oHeights[VertexIndex] = qRed(aTexture.pixel(i, j)) / 255.0;
             VertexIndex++;
         }
     }
-}
 
-const std::vector<f64>& CHeightMap::GetHeights() const
-{
-    return mHeights;
+    oResolution.oX = SizeX;
+    oResolution.oY = SizeY;
 }

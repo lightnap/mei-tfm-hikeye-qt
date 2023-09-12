@@ -8,14 +8,14 @@
 /**
  * @brief Class that represents a model of the terrain.
  */
-class CTerrain
+struct STerrain
 {
   public:
     /**
      * @brief Constructor.
      * @param aHeights: Reference to the height map we will use to construct the terrain.
      */
-    CTerrain(const std::vector<f64>& aHeights);
+    STerrain(const std::vector<f64>& aHeights);
 };
 
 #endif // C_TERRAIN_H
