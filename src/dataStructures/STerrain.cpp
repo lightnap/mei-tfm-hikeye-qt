@@ -1,52 +1,71 @@
 #include "STerrain.hpp"
 
+#include "CConfigs.hpp"
+#include "SHeightMap.hpp"
 #include "Types.hpp"
+
+#include <QOpenGLFunctions>
+
 #include <vector>
 
-STerrain::STerrain(const std::vector<f64>& aHeights)
+STerrain::STerrain(const SHeightMap& aHeightMap, const STerrainConfig& aConfig)
 {
-    // TODO: Maybe move this to the resource loader so that it can be interrupted by user.
+    CreateVertices(aHeightMap, aConfig);
+    CreateTriangles(aHeightMap);
+}
 
-    // TODO: FIll this function:
-    // Create vector of vertices
-    // Create vector of triangles
-    // Create a structure containign both
+void STerrain::CreateVertices(const SHeightMap& aHeightMap, const STerrainConfig& aConfig)
+{
+    s32 RowCount = aHeightMap.oResolution.oX;
+    s32 ColumnCount = aHeightMap.oResolution.oY;
 
-    // verts
-    /*int                  idx = 0;
-    std::vector<GLfloat> verts(3 * nx * ny);
+    Types::SVector2D Origin {aConfig.oBounds.oMin};
+    f64              CellSize {aConfig.oCellSize};
 
-    for (int i = 0; i < nx; i++)
+    mVertices.clear();
+    mVertices.reserve(3 * RowCount * ColumnCount);
+
+    u32 Index {0U};
+    for (s32 Row {0}; Row < RowCount; Row++)
     {
-        for (int j = 0; j < ny; j++)
+        for (s32 Column {0}; Column < ColumnCount; Column++)
         {
-            Vector3 p = hf.vertex(i, j);
-            verts[idx++] = GLfloat(p[0]);
-            verts[idx++] = GLfloat(p[1]);
-            verts[idx++] = GLfloat(p[2]);
+            mVertices[Index++] = GLfloat(Origin.oX + Row * CellSize);
+            mVertices[Index++] = GLfloat(Origin.oY + Column * CellSize);
+            mVertices[Index++] = GLfloat(aHeightMap.oHeights[Row * ColumnCount + Column]);
         }
     }
+}
 
-    // tris
-    numTriangles = (nx - 1) * (ny - 1) * 2;
-    idx = 0;
-    std::vector<GLuint> indices(numTriangles * 3);
-    for (int i = 1; i < nx; i++)
+void STerrain::CreateTriangles(const SHeightMap& aHeightMap)
+{
+    s32  RowCount = aHeightMap.oResolution.oX;
+    s32  ColumnCount = aHeightMap.oResolution.oY;
+    s32& RowSize {ColumnCount};
+    s32& ColumnSize {RowCount};
+
+    s32 TrianglesCount = 2 * (RowSize - 1) * (ColumnSize - 1);
+
+    mTriangles.clear();
+    mTriangles.reserve(3 * TrianglesCount);
+
+    u32 Index {0U};
+    for (s32 Row {1}; Row < RowCount; Row++)
     {
-        for (int j = 1; j < ny; j++)
+        for (s32 Column {1}; Column < ColumnCount; Column++)
         {
-            GLuint v00 = (i - 1) * ny + j - 1;
-            GLuint v01 = (i - 1) * ny + j;
-            GLuint v10 = i * ny + j - 1;
-            GLuint v11 = i * ny + j;
+            GLuint v00 = (Row - 1) * RowSize + Column - 1;
+            GLuint v01 = (Row - 1) * RowSize + Column;
+            GLuint v10 = Row * RowSize + Column - 1;
+            GLuint v11 = Row * RowSize + Column;
 
-            indices[idx++] = v00;
-            indices[idx++] = v01;
-            indices[idx++] = v10;
+            mTriangles[Index++] = v00;
+            mTriangles[Index++] = v01;
+            mTriangles[Index++] = v10;
 
-            indices[idx++] = v10;
-            indices[idx++] = v01;
-            indices[idx++] = v11;
+            mTriangles[Index++] = v10;
+            mTriangles[Index++] = v01;
+            mTriangles[Index++] = v11;
         }
-    }*/
+    }
 }

@@ -1,19 +1,21 @@
 #include "SHeightMap.hpp"
 
+#include "CConfigs.hpp"
 #include "Types.hpp"
+#include "Utils.hpp"
 
 #include <QImage>
 
-SHeightMap::SHeightMap(QImage& aTexture)
+SHeightMap::SHeightMap(QImage& aTexture, const SHeightMapConfig& aConfig)
 {
     oHeights.clear();
 
-    // TODO: This could be moven to the height map resource loader so that it can be interrupted if it takes a long time.
     const u32 SizeX {static_cast<u32>(aTexture.width())};
     const u32 SizeY {static_cast<u32>(aTexture.height())};
+    const f64 MinHeight {static_cast<f64>(aConfig.oMinHeight)};
+    const f64 MaxHeight {static_cast<f64>(aConfig.oMaxHeight)};
 
     oHeights.resize(SizeX * SizeY);
-
     u32 VertexIndex {0U};
 
     // TODO: Why dont we use more performing funcions, like constBits or ScanLine?
@@ -21,7 +23,8 @@ SHeightMap::SHeightMap(QImage& aTexture)
     {
         for (u32 j = 0U; j < SizeY; j++)
         {
-            oHeights[VertexIndex] = qRed(aTexture.pixel(i, j)) / 255.0;
+            f64 NormalizedHeight {qRed(aTexture.pixel(i, j)) / 255.0};
+            oHeights[VertexIndex] = Utils::Lerp(MinHeight, MaxHeight, NormalizedHeight);
             VertexIndex++;
         }
     }

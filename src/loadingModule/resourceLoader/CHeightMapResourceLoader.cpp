@@ -1,5 +1,6 @@
 #include "CHeightMapResourceLoader.hpp"
 
+#include "CConfigs.hpp"
 #include "CResourceLoaderFactory.hpp"
 #include "SHeightMap.hpp"
 #include "Types.hpp"
@@ -23,6 +24,8 @@ QString FILE_NAME {"dem.png"};
 Types::eLoadResult CHeightMapResourceLoader::LoadResource()
 {
     QString ResourceFilePath {GetResourceFilePath(FILE_NAME)};
+
+    // TODO: Remove this.
     std::cout << "[Height] LoadingFile: " << ResourceFilePath.toStdString() << std::endl;
 
     if (!QFile::exists(ResourceFilePath))
@@ -30,10 +33,12 @@ Types::eLoadResult CHeightMapResourceLoader::LoadResource()
         mLoadErrorMessage = "Height map file not found.";
         return Types::eLoadResult::Error;
     }
-
     QImage HeightMapTexture;
     HeightMapTexture.load(ResourceFilePath);
-    auto HeightMap {std::make_unique<SHeightMap>(HeightMapTexture)};
+
+    SHeightMapConfig Config(0, 1);
+
+    auto HeightMap {std::make_unique<SHeightMap>(HeightMapTexture, Config)};
     mDataManager.SetHeightMap(std::move(HeightMap));
 
     if (isInterruptionRequested())

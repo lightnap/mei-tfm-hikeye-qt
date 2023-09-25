@@ -25,6 +25,7 @@ HEADERS += \
     src/common/Types.hpp \
     src/common/Utils.hpp \
     src/dataStructures/CDataManager.hpp \
+    src/dataStructures/CConfigs.hpp \
     src/dataStructures/SHeightMap.hpp \
     src/dataStructures/STerrain.hpp \
     src/loadingModule/CLoadingModule.hpp \

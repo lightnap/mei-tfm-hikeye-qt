@@ -56,6 +56,38 @@ enum class eLoadResult
 };
 
 /**
+ * @brief Struct defining a two dimensional vector.
+ */
+struct SVector2D
+{
+    /**
+     * @brief Default constructor.
+     */
+    SVector2D() = default;
+
+    /**
+     * @brief Constructor.
+     * @param aX: X dimension of the vector.
+     * @param aY: Y dimesnion of the vector.
+     */
+    SVector2D(f64 aX, f64 aY)
+      : oX(aX)
+      , oY(aY) {};
+
+    f64 oX {0.0}; //!< X coordinate of the vector.
+    f64 oY {0.0}; //!< Y coordinate of the vector.
+};
+
+/**
+ * @brief Struct describing a 2D Box.
+ */
+struct SBox2D
+{
+    SVector2D oMin {}; //!< Minimum bounds point.
+    SVector2D oMax {}; //!< Maximum bounds point.
+};
+
+/**
  * @brief Reflection for the eResource Enum.
  * @param aModuleType Moduletype enum we want to turn into string.
  * @retrun String version of the Moduletype enum.
