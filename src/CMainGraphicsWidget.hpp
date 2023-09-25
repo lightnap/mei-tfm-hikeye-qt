@@ -5,10 +5,14 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLWidget>
 
+struct STerrain;
+
 /**
  * Main rendering widget class.
  */
-class CMainGraphicsWidget : public QOpenGLWidget, protected QOpenGLFunctions_4_3_Core
+class CMainGraphicsWidget
+  : public QOpenGLWidget
+  , protected QOpenGLFunctions_4_3_Core
 {
     Q_OBJECT
 
@@ -26,8 +30,9 @@ class CMainGraphicsWidget : public QOpenGLWidget, protected QOpenGLFunctions_4_3
 
     /**
      * @brief Loads 3D Terrain model.
+     * @param aTerrain: Information on the terrain model to load.
      */
-    void LoadModel();
+    void LoadModel(const STerrain& aTerrain);
 
     /**
      * @brief Loads texture and binds it to model.

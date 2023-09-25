@@ -111,7 +111,7 @@ void CMainWindow::LoadingModuleFinished(Types::eLoadingModule aModule)
 {
     if (aModule == TERRAIN_MODULE_TYPE)
     {
-        mUi.MainGraphics->LoadModel();
+        mUi.MainGraphics->LoadModel(mDataManager->GetTerrain());
     }
     else if (aModule == TRACKS_MODULE_TYPE)
     {

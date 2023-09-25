@@ -1,5 +1,7 @@
 #include "CMainGraphicsWidget.hpp"
 
+#include "STerrain.hpp"
+
 //#include <GL/glew.h>
 #include <QOpenGLFunctions_4_3_Core>
 #include <QOpenGLShader>
@@ -34,9 +36,10 @@ CMainGraphicsWidget::~CMainGraphicsWidget()
     }
 }
 
-void CMainGraphicsWidget::LoadModel()
+void CMainGraphicsWidget::LoadModel(const STerrain& aTerrain)
 {
-    std::cout << "[MainGraphicsWidget]: Loading terrain model" << std::endl;
+
+    std::cout << "[MainGraphicsWidget]: Loading terrain model with # vertices = : " << aTerrain.oVertices.size() << std::endl;
     // TODO: Implement this.
 }
 

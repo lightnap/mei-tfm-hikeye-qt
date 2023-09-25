@@ -22,17 +22,17 @@ void STerrain::CreateVertices(const SHeightMap& aHeightMap, const STerrainConfig
     Types::SVector2D Origin {aConfig.oBounds.oMin};
     f64              CellSize {aConfig.oCellSize};
 
-    mVertices.clear();
-    mVertices.reserve(3 * RowCount * ColumnCount);
+    oVertices.clear();
+    oVertices.reserve(3 * RowCount * ColumnCount);
 
     u32 Index {0U};
     for (s32 Row {0}; Row < RowCount; Row++)
     {
         for (s32 Column {0}; Column < ColumnCount; Column++)
         {
-            mVertices[Index++] = GLfloat(Origin.oX + Row * CellSize);
-            mVertices[Index++] = GLfloat(Origin.oY + Column * CellSize);
-            mVertices[Index++] = GLfloat(aHeightMap.oHeights[Row * ColumnCount + Column]);
+            oVertices[Index++] = GLfloat(Origin.oX + Row * CellSize);
+            oVertices[Index++] = GLfloat(Origin.oY + Column * CellSize);
+            oVertices[Index++] = GLfloat(aHeightMap.oHeights[Row * ColumnCount + Column]);
         }
     }
 }
@@ -46,8 +46,8 @@ void STerrain::CreateTriangles(const SHeightMap& aHeightMap)
 
     s32 TrianglesCount = 2 * (RowSize - 1) * (ColumnSize - 1);
 
-    mTriangles.clear();
-    mTriangles.reserve(3 * TrianglesCount);
+    oTriangles.clear();
+    oTriangles.reserve(3 * TrianglesCount);
 
     u32 Index {0U};
     for (s32 Row {1}; Row < RowCount; Row++)
@@ -59,13 +59,13 @@ void STerrain::CreateTriangles(const SHeightMap& aHeightMap)
             GLuint v10 = Row * RowSize + Column - 1;
             GLuint v11 = Row * RowSize + Column;
 
-            mTriangles[Index++] = v00;
-            mTriangles[Index++] = v01;
-            mTriangles[Index++] = v10;
+            oTriangles[Index++] = v00;
+            oTriangles[Index++] = v01;
+            oTriangles[Index++] = v10;
 
-            mTriangles[Index++] = v10;
-            mTriangles[Index++] = v01;
-            mTriangles[Index++] = v11;
+            oTriangles[Index++] = v10;
+            oTriangles[Index++] = v01;
+            oTriangles[Index++] = v11;
         }
     }
 }

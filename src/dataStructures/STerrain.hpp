@@ -38,8 +38,8 @@ struct STerrain
     void CreateTriangles(const SHeightMap& aHeightMap);
 
   public:
-    std::vector<GLfloat> mVertices;  //!< Vector containing the vertices of the model. 3 entries make a vertex.
-    std::vector<GLuint>  mTriangles; //!< Vector containing vertex indices for triangles of the model.
+    std::vector<GLfloat> oVertices;  //!< Vector containing the vertices of the model. 3 entries make a vertex.
+    std::vector<GLuint>  oTriangles; //!< Vector containing vertex indices for triangles of the model.
 };
 
 #endif // C_TERRAIN_H
