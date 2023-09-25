@@ -25,14 +25,13 @@ void STerrain::CreateVertices(const SHeightMap& aHeightMap, const STerrainConfig
     oVertices.clear();
     oVertices.reserve(3 * RowCount * ColumnCount);
 
-    u32 Index {0U};
     for (s32 Row {0}; Row < RowCount; Row++)
     {
         for (s32 Column {0}; Column < ColumnCount; Column++)
         {
-            oVertices[Index++] = GLfloat(Origin.oX + Row * CellSize);
-            oVertices[Index++] = GLfloat(Origin.oY + Column * CellSize);
-            oVertices[Index++] = GLfloat(aHeightMap.oHeights[Row * ColumnCount + Column]);
+            oVertices.push_back(GLfloat(Origin.oX + Row * CellSize));
+            oVertices.push_back(GLfloat(Origin.oY + Column * CellSize));
+            oVertices.push_back(GLfloat(aHeightMap.oHeights[Row * ColumnCount + Column]));
         }
     }
 }
@@ -49,7 +48,6 @@ void STerrain::CreateTriangles(const SHeightMap& aHeightMap)
     oTriangles.clear();
     oTriangles.reserve(3 * TrianglesCount);
 
-    u32 Index {0U};
     for (s32 Row {1}; Row < RowCount; Row++)
     {
         for (s32 Column {1}; Column < ColumnCount; Column++)
@@ -59,13 +57,13 @@ void STerrain::CreateTriangles(const SHeightMap& aHeightMap)
             GLuint v10 = Row * RowSize + Column - 1;
             GLuint v11 = Row * RowSize + Column;
 
-            oTriangles[Index++] = v00;
-            oTriangles[Index++] = v01;
-            oTriangles[Index++] = v10;
+            oTriangles.push_back(v00);
+            oTriangles.push_back(v01);
+            oTriangles.push_back(v10);
 
-            oTriangles[Index++] = v10;
-            oTriangles[Index++] = v01;
-            oTriangles[Index++] = v11;
+            oTriangles.push_back(v10);
+            oTriangles.push_back(v01);
+            oTriangles.push_back(v11);
         }
     }
 }

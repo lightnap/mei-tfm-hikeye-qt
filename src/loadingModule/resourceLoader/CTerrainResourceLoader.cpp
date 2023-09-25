@@ -17,9 +17,8 @@ namespace
 
 Types::eLoadResult CTerrainResourceLoader::LoadResource()
 {
-    std::cout << "[TerrainResource] Loading terrain model" << std::endl;
-
     const auto& HeightMap {mDataManager.GetHeightMap()};
+    std::cout << "[TerrainResource] Loading terrain model" << std::endl;
 
     STerrainConfig Config;
     Config.oCellSize = 2.0;
