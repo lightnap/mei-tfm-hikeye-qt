@@ -5,6 +5,11 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLWidget>
 
+#include <CCamera.hpp>
+#include <Types.hpp>
+
+#include <memory>
+
 struct STerrain;
 
 /**
@@ -15,6 +20,33 @@ class CMainGraphicsWidget
   , protected QOpenGLFunctions_4_3_Core
 {
     Q_OBJECT
+
+    // TODO: Add comments to these.
+  public slots:
+
+    /**
+     * @brief Gets called each time the mouse is pressed.
+     * @param aMouseInfo: Info (event) about the mouse.
+     */
+    virtual void mousePressEvent(QMouseEvent* aMouseInfo) override;
+
+    /**
+     * @brief Gets called each time the mouse is moved.
+     * @param aMouseInfo: Info (event) about the mouse.
+     */
+    virtual void mouseMoveEvent(QMouseEvent* aMouseInfo) override;
+
+    /**
+     * @brief Gets called each time a mouse button is released.
+     * @param aMouseInfo: Info (event) about the mouse.
+     */
+    virtual void mouseReleaseEvent(QMouseEvent* aMouseInfo) override;
+
+    /**
+     * @brief Gets called each time the mousewheel is moved.
+     * @param aWheelInfo: Info (event) about the mouse wheel.
+     */
+    virtual void wheelEvent(QWheelEvent* aWheelInfo) override;
 
   public:
     /**
@@ -75,6 +107,10 @@ class CMainGraphicsWidget
     GLuint mVertexAttributeId; //!< Identifier for shader attribute "vertex".
     GLint  mWindowWidth;       //!< Current window width.
     GLint  mWindowHeight;      //!< Current window height.
+
+    std::unique_ptr<CCamera> mCamera;            //!< Camera of the scene.
+    s32                      mLastClickPosX {0}; //!< Last position where the mouse clicked, X coordinate.
+    s32                      mLastClickPosY {0}; //!< Last position where the mouse clicked, Y coordinate. // TODO: Turn into a vector of int.
 };
 
 #endif // C_MAIN_GRAPHICS_WIDGET_H

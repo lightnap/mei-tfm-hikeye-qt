@@ -1,6 +1,8 @@
 #include "STerrain.hpp"
 
 #include "CConfigs.hpp"
+#include "Math.hpp"
+
 #include "SHeightMap.hpp"
 #include "Types.hpp"
 
@@ -19,8 +21,8 @@ void STerrain::CreateVertices(const SHeightMap& aHeightMap, const STerrainConfig
     s32 RowCount = aHeightMap.oResolution.oX;
     s32 ColumnCount = aHeightMap.oResolution.oY;
 
-    Types::SVector2D Origin {aConfig.oBounds.oMin};
-    f64              CellSize {aConfig.oCellSize};
+    Math::Vector2D Origin {aConfig.oBounds.oMin};
+    f64            CellSize {aConfig.oCellSize};
 
     oVertices.clear();
     oVertices.reserve(3 * RowCount * ColumnCount);

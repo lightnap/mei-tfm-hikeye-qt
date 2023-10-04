@@ -15,15 +15,17 @@ INCLUDEPATH += \
     src \
     src/common \
     src/dataStructures \
+    src/graphics \
     src/loadingModule \
     src/loadingModule/resourceLoader \
     src/loadingModule/resourceLoaderFactory \
 
 HEADERS += \
     src/CMainWindow.hpp \
-    src/CMainGraphicsWidget.hpp \
+    src/graphics/CMainGraphicsWidget.hpp \
+    src/graphics/CCamera.hpp \
     src/common/Types.hpp \
-    src/common/Utils.hpp \
+    src/common/Math.hpp \
     src/dataStructures/CDataManager.hpp \
     src/dataStructures/CConfigs.hpp \
     src/dataStructures/SHeightMap.hpp \
@@ -42,9 +44,10 @@ HEADERS += \
 SOURCES += \
     src/main.cpp \
     src/CMainWindow.cpp \
-    src/CMainGraphicsWidget.cpp \
+    src/graphics/CMainGraphicsWidget.cpp \
+    src/graphics/CCamera.cpp \
     src/common/Types.cpp \
-    src/common/Utils.cpp \
+    src/common/Math.cpp \
     src/dataStructures/CDataManager.cpp \
     src/dataStructures/STerrain.cpp \
     src/dataStructures/SHeightMap.cpp \

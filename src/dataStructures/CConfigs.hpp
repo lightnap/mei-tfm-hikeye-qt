@@ -1,6 +1,7 @@
 #ifndef C_CONFIGS_H
 #define C_CONFIGS_H
 
+#include "Math.hpp"
 #include "Types.hpp"
 
 /**
@@ -28,8 +29,8 @@ struct SHeightMapConfig
  */
 struct STerrainConfig
 {
-    f64           oCellSize {0.0}; //!< Real world distance between two points in the height map.
-    Types::SBox2D oBounds {};      //!< Dimensions of the terrain.
+    f64         oCellSize {0.0}; //!< Real world distance between two points in the height map.
+    Math::Box2D oBounds {};      //!< Dimensions of the terrain.
 };
 
 #endif // C_CONFIGS_H

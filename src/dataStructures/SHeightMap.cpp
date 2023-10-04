@@ -1,8 +1,8 @@
 #include "SHeightMap.hpp"
 
 #include "CConfigs.hpp"
+#include "Math.hpp"
 #include "Types.hpp"
-#include "Utils.hpp"
 
 #include <QImage>
 
@@ -24,7 +24,7 @@ SHeightMap::SHeightMap(QImage& aTexture, const SHeightMapConfig& aConfig)
         for (u32 j = 0U; j < SizeY; j++)
         {
             f64 NormalizedHeight {qRed(aTexture.pixel(i, j)) / 255.0};
-            oHeights[VertexIndex] = Utils::Lerp(MinHeight, MaxHeight, NormalizedHeight);
+            oHeights[VertexIndex] = Math::Lerp(MinHeight, MaxHeight, NormalizedHeight);
             VertexIndex++;
         }
     }
