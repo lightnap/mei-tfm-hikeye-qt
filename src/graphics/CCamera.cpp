@@ -11,8 +11,8 @@ CCamera::CCamera()
   , mInitialFieldOfView(60.0)
   , mNearPlane(1.0)
   , mFarPlane(1000.0)
-  , mEye(0.0, 0.0, 0.0)
-  , mAt(0.0, 1.0, 0.0)
+  , mEye(2.0, 2.0, 2.0)
+  , mAt(0.0, 0.0, 0.0)
   , mUp(0.0, 0.0, 1.0) {};
 
 Math::Vector3D CCamera::GetViewDirection()

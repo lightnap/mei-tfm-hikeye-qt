@@ -3,6 +3,7 @@
 #include "STerrain.hpp"
 
 //#include <GL/glew.h>
+#include <QMatrix4x4> // TODO: Consider using the glm library.
 #include <QMouseEvent>
 #include <QOpenGLFunctions_4_3_Core>
 #include <QOpenGLShader>
@@ -56,6 +57,8 @@ void CMainGraphicsWidget::initializeGL()
 {
     initializeOpenGLFunctions();
 
+    // setMouseTracking(true);
+    glEnable(GL_DEPTH_TEST);
     glClearColor(BACKGROUND_COLOR.x(), BACKGROUND_COLOR.y(), BACKGROUND_COLOR.z(), 1.0);
     LoadShaders();
     CreateGLBuffers();
@@ -73,12 +76,16 @@ void CMainGraphicsWidget::paintGL()
 
     glViewport(0, 0, mWindowWidth, mWindowHeight);
 
+    QMatrix4x4 TransformMatrix {mCamera->GetProjectionMatrix() * mCamera->GetViewMatrix()};
+
+    glUniformMatrix4fv(mTransformUniformId, 1, GL_FALSE, TransformMatrix.data());
+
     // Clear frame buffer.
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Draw scene.
     glBindVertexArray(mTriangleVAOId);
-    glDrawArrays(GL_TRIANGLES, 0, 9);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(EMPTY_VAO);
 }
 
@@ -92,15 +99,10 @@ void CMainGraphicsWidget::resizeGL(int aWidth, int aHeight)
 
 void CMainGraphicsWidget::CreateGLBuffers()
 {
-    QVector3D TriangleVertices[9] {{0.0, 0.0, 0.0},
-                                   {1.0, 0.0, 0.0},
-                                   {0.5, 1.0, 0.0},
-                                   {0.0, -1.0, 0.0},
-                                   {1.0, -1.0, 0.0},
-                                   {0.0, 0.0, 0.0},
-                                   {0.0, 0.0, 0.0},
-                                   {1.0, -1.0, 0.0},
-                                   {1.0, 0.0, 0.0}};
+    QVector3D TriangleVertices[36] {{-1, -1, 1},  {1, -1, 1},  {1, 1, 1},   {-1, -1, 1},  {1, 1, 1},    {-1, 1, 1},  {1, -1, 1},  {1, -1, -1}, {1, 1, -1},
+                                    {1, -1, 1},   {1, 1, -1},  {1, 1, 1},   {1, -1, -1},  {-1, -1, -1}, {-1, 1, -1}, {1, -1, -1}, {-1, 1, -1}, {1, 1, -1},
+                                    {-1, -1, -1}, {-1, -1, 1}, {-1, 1, 1},  {-1, -1, -1}, {-1, 1, 1},   {-1, 1, -1}, {-1, 1, 1},  {1, 1, 1},   {1, 1, -1},
+                                    {-1, 1, 1},   {1, 1, -1},  {-1, 1, -1}, {1, -1, 1},   {-1, -1, -1}, {1, -1, -1}, {1, -1, 1},  {-1, -1, 1}, {-1, -1, -1}};
 
     // Genrate Vertex array object (VAO).
     glGenVertexArrays(1, &mTriangleVAOId);
@@ -143,6 +145,9 @@ void CMainGraphicsWidget::LoadShaders()
 
     // TODO: Move shader attributes to unordered map if there are more of them.
     mVertexAttributeId = glGetAttribLocation(mShaderProgram->programId(), "vertex");
+
+    // TODO: Move shader uniforms to unodrdered map if there are more of them.
+    mTransformUniformId = glGetUniformLocation(mShaderProgram->programId(), "transformMatrix");
 }
 
 void CMainGraphicsWidget::mousePressEvent(QMouseEvent* aMouseInfo)
@@ -158,16 +163,16 @@ void CMainGraphicsWidget::mouseMoveEvent(QMouseEvent* aMouseInfo)
     const s32 CurrentMouseX {aMouseInfo->globalX()}; // TODO: Turn this into a vector of int.
     const s32 CurrentMouseY {aMouseInfo->globalY()};
 
-    const s32 MouseDisplacedX {mLastClickPosX - CurrentMouseX};
-    const s32 MouseDisplacedY {mLastClickPosY - CurrentMouseY};
+    const s32 MouseDisplacedX {CurrentMouseX - mLastClickPosX};
+    const s32 MouseDisplacedY {CurrentMouseY - mLastClickPosY};
 
     if (aMouseInfo->buttons() & Qt::LeftButton)
     {
         const f64 SPIN_SPEED_X {0.01};
         const f64 SPIN_SPEED_Y {0.005};
 
-        const f64 DisplacementX {MouseDisplacedX * SPIN_SPEED_X};
-        const f64 DisplacementY {MouseDisplacedY * SPIN_SPEED_Y};
+        const f64 DisplacementX {-MouseDisplacedX * SPIN_SPEED_X};
+        const f64 DisplacementY {-MouseDisplacedY * SPIN_SPEED_Y};
         mCamera->HorizontalRotateArroundAt(DisplacementX);
         mCamera->VerticalRotateArroundAt(DisplacementY);
     }
@@ -184,8 +189,9 @@ void CMainGraphicsWidget::mouseMoveEvent(QMouseEvent* aMouseInfo)
     }
     else if (aMouseInfo->buttons() & Qt::MidButton)
     {
-        const f64 TRANSLATE_SPEED_X {1.0};
-        const f64 TRANSLATE_SPEED_Y {1.0};
+        // TODO: Put all these speed constansts in the same place.
+        const f64 TRANSLATE_SPEED_X {0.03};
+        const f64 TRANSLATE_SPEED_Y {0.03};
 
         mCamera->HorizontalTranslate(MouseDisplacedX * TRANSLATE_SPEED_X);
         mCamera->VerticalTranslate(MouseDisplacedY * TRANSLATE_SPEED_Y);

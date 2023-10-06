@@ -21,7 +21,6 @@ class CMainGraphicsWidget
 {
     Q_OBJECT
 
-    // TODO: Add comments to these.
   public slots:
 
     /**
@@ -103,10 +102,11 @@ class CMainGraphicsWidget
   private:
     QOpenGLShaderProgram* mShaderProgram; //!< Shader program.
 
-    GLuint mTriangleVAOId;     //!< Id of the VAO of the triangle we want to draw.
-    GLuint mVertexAttributeId; //!< Identifier for shader attribute "vertex".
-    GLint  mWindowWidth;       //!< Current window width.
-    GLint  mWindowHeight;      //!< Current window height.
+    GLuint mTriangleVAOId;      //!< Id of the VAO of the triangle we want to draw.
+    GLuint mVertexAttributeId;  //!< Identifier for shader attribute "vertex".
+    GLuint mTransformUniformId; //!< Identifier for shader uniform "transformMatrix".
+    GLint  mWindowWidth;        //!< Current window width.
+    GLint  mWindowHeight;       //!< Current window height.
 
     std::unique_ptr<CCamera> mCamera;            //!< Camera of the scene.
     s32                      mLastClickPosX {0}; //!< Last position where the mouse clicked, X coordinate.
