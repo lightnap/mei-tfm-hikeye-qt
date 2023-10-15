@@ -13,14 +13,23 @@ DESTDIR = ../bin
 
 INCLUDEPATH += \
     src \
+    src/common \
+    src/dataStructures \
+    src/graphics \
     src/loadingModule \
     src/loadingModule/resourceLoader \
     src/loadingModule/resourceLoaderFactory \
 
 HEADERS += \
-    src/Types.hpp \
     src/CMainWindow.hpp \
-    src/CMainGraphicsWidget.hpp \
+    src/graphics/CMainGraphicsWidget.hpp \
+    src/graphics/CCamera.hpp \
+    src/common/Types.hpp \
+    src/common/Math.hpp \
+    src/dataStructures/CDataManager.hpp \
+    src/dataStructures/CConfigs.hpp \
+    src/dataStructures/SHeightMap.hpp \
+    src/dataStructures/STerrain.hpp \
     src/loadingModule/CLoadingModule.hpp \
     src/loadingModule/resourceLoader/CResourceLoader.hpp \
     src/loadingModule/resourceLoader/CGroundTruthResourceLoader.hpp \
@@ -34,9 +43,14 @@ HEADERS += \
 
 SOURCES += \
     src/main.cpp \
-    src/Types.cpp \
     src/CMainWindow.cpp \
-    src/CMainGraphicsWidget.cpp \
+    src/graphics/CMainGraphicsWidget.cpp \
+    src/graphics/CCamera.cpp \
+    src/common/Types.cpp \
+    src/common/Math.cpp \
+    src/dataStructures/CDataManager.cpp \
+    src/dataStructures/STerrain.cpp \
+    src/dataStructures/SHeightMap.cpp \
     src/loadingModule/CLoadingModule.cpp \
     src/loadingModule/resourceLoader/CResourceLoader.cpp \
     src/loadingModule/resourceLoader/CGroundTruthResourceLoader.cpp \

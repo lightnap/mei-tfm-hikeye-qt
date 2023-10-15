@@ -1,6 +1,7 @@
 #ifndef C_MAIN_WINDOW_H
 #define C_MAIN_WINDOW_H
 
+#include "CDataManager.hpp"
 #include "CLoadingModule.hpp"
 #include "Types.hpp"
 #include "ui_CMainWindow.h"
@@ -24,6 +25,11 @@ class CMainWindow : public QWidget
 
   public slots:
     /**
+     * @brief Slots for reacting to open folder button press.
+     */
+    void FolderButtonPressed();
+
+    /**
      * @brief Slot for reacting to load terrain button press.
      */
     void LoadTerrainButtonPressed();
@@ -45,11 +51,22 @@ class CMainWindow : public QWidget
     void LoadingModuleFinished(Types::eLoadingModule aModule);
 
     /**
-     * @brief Gets called when a loading module has sucessfully cancelled loading.
+     * @brief Gets called when a loading module has interrupted its loading.
      */
-    void CancelLoadFinished();
+    void OnLoadInterrupted();
 
   private:
+    /**
+     * Enumdescribing the possible states of the buttons in the layout.
+     */
+    enum class eButtonsEnabledLayout
+    {
+        Rest = 0,  //!< App is at rest.
+        Loading,   //!< App is performing a load process.
+        Canceling, //!< App is performing a canceling process.
+        Size       //!< Size of this enum.
+    };
+
     /**
      * @brief Binds all slots and signals of this window.
      */
@@ -60,11 +77,18 @@ class CMainWindow : public QWidget
      */
     void CreateLoadingModules();
 
+    /**
+     * @brief Sets the app buttons enabled/disabled, based on a layout.
+     * @param aLayout: Layout we use to determine which buttons are enabled.
+     */
+    void SetButtonsEnabled(eButtonsEnabledLayout aLayout);
+
   private:
     using tLoadingModulesMap = std::map<Types::eLoadingModule, std::unique_ptr<CLoadingModule>>; //!< Type for relating loading modules and their type.
 
-    tLoadingModulesMap mLoadingModulesMap; //!< Map with all loaging modules.
-    Ui::CMainWindow    mUi;                //!< Represents the Ui of this form.
+    tLoadingModulesMap            mLoadingModulesMap; //!< Map with all loaging modules.
+    Ui::CMainWindow               mUi;                //!< Represents the Ui of this form.
+    std::unique_ptr<CDataManager> mDataManager;       //!< Data manager.
 };
 
 #endif // C_MAIN_WINDOW_H

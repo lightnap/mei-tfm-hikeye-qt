@@ -2,7 +2,10 @@
 #include "CLoadingModule.hpp"
 #include "CMainGraphicsWidget.hpp"
 
+#include <QFileDialog>
 #include <QPushButton>
+
+#include <memory>
 
 namespace
 {
@@ -14,6 +17,10 @@ CMainWindow::CMainWindow(QWidget* aParent)
   : QWidget(aParent)
 {
     mUi.setupUi(this);
+    mDataManager = std::make_unique<CDataManager>();
+
+    QString DefaultFolderPath {mUi.FolderPathDisplay->text()};
+    mDataManager->SetFolderPath(DefaultFolderPath);
 
     CreateLoadingModules();
     BindActions();
@@ -21,8 +28,8 @@ CMainWindow::CMainWindow(QWidget* aParent)
 
 void CMainWindow::CreateLoadingModules()
 {
-    mLoadingModulesMap[TERRAIN_MODULE_TYPE] = std::make_unique<CLoadingModule>(TERRAIN_MODULE_TYPE, *mUi.StatusBar);
-    mLoadingModulesMap[TRACKS_MODULE_TYPE] = std::make_unique<CLoadingModule>(TRACKS_MODULE_TYPE, *mUi.StatusBar);
+    mLoadingModulesMap[TERRAIN_MODULE_TYPE] = std::make_unique<CLoadingModule>(TERRAIN_MODULE_TYPE, *mDataManager, *mUi.StatusBar);
+    mLoadingModulesMap[TRACKS_MODULE_TYPE] = std::make_unique<CLoadingModule>(TRACKS_MODULE_TYPE, *mDataManager, *mUi.StatusBar);
 }
 
 void CMainWindow::BindActions()
@@ -30,20 +37,29 @@ void CMainWindow::BindActions()
     connect(mUi.LoadTerrainBtn, &QPushButton::clicked, this, &CMainWindow::LoadTerrainButtonPressed);
     connect(mUi.LoadTracksBtn, &QPushButton::clicked, this, &CMainWindow::LoadTracksButtonPressed);
     connect(mUi.CancelBtn, &QPushButton::clicked, this, &CMainWindow::CancelLoadButtonPressed);
+    connect(mUi.OpenFolderBtn, &QPushButton::clicked, this, &CMainWindow::FolderButtonPressed);
 
     connect(mLoadingModulesMap[TERRAIN_MODULE_TYPE].get(), &CLoadingModule::FinishedSignal, this, &CMainWindow::LoadingModuleFinished);
     connect(mLoadingModulesMap[TRACKS_MODULE_TYPE].get(), &CLoadingModule::FinishedSignal, this, &CMainWindow::LoadingModuleFinished);
 
-    connect(mLoadingModulesMap[TERRAIN_MODULE_TYPE].get(), &CLoadingModule::LoadCanceled, this, &CMainWindow::CancelLoadFinished);
-    connect(mLoadingModulesMap[TRACKS_MODULE_TYPE].get(), &CLoadingModule::LoadCanceled, this, &CMainWindow::CancelLoadFinished);
+    connect(mLoadingModulesMap[TERRAIN_MODULE_TYPE].get(), &CLoadingModule::LoadInterrupted, this, &CMainWindow::OnLoadInterrupted);
+    connect(mLoadingModulesMap[TRACKS_MODULE_TYPE].get(), &CLoadingModule::LoadInterrupted, this, &CMainWindow::OnLoadInterrupted);
+}
+
+void CMainWindow::FolderButtonPressed()
+{
+    QString AreaFolderPath {QFileDialog::getExistingDirectory(this, tr("Open Directory"), "", QFileDialog::ShowDirsOnly)};
+
+    if (!AreaFolderPath.isEmpty())
+    {
+        mUi.FolderPathDisplay->setText(AreaFolderPath);
+        mDataManager->SetFolderPath(AreaFolderPath);
+    }
 }
 
 void CMainWindow::LoadTerrainButtonPressed()
 {
-    mUi.LoadTerrainBtn->setEnabled(false);
-    mUi.LoadTracksBtn->setEnabled(false);
-    mUi.CancelBtn->setEnabled(true);
-
+    SetButtonsEnabled(eButtonsEnabledLayout::Loading);
     const auto& TerrainLoadingModule {mLoadingModulesMap.at(TERRAIN_MODULE_TYPE)};
     TerrainLoadingModule->LaunchLoadingModule();
 }
@@ -60,19 +76,14 @@ void CMainWindow::LoadTracksButtonPressed()
     }
     else
     {
-        mUi.LoadTerrainBtn->setEnabled(false);
-        mUi.LoadTracksBtn->setEnabled(false);
-        mUi.CancelBtn->setEnabled(true);
-
+        SetButtonsEnabled(eButtonsEnabledLayout::Loading);
         TracksLoadingModule->LaunchLoadingModule();
     }
 }
 
 void CMainWindow::CancelLoadButtonPressed()
 {
-    mUi.LoadTerrainBtn->setEnabled(false);
-    mUi.LoadTracksBtn->setEnabled(false);
-    mUi.CancelBtn->setEnabled(false);
+    SetButtonsEnabled(eButtonsEnabledLayout::Canceling);
 
     const auto& TerrainLoadingModule {mLoadingModulesMap.at(TERRAIN_MODULE_TYPE)};
     const auto& TracksLoadingModule {mLoadingModulesMap.at(TRACKS_MODULE_TYPE)};
@@ -91,28 +102,58 @@ void CMainWindow::CancelLoadButtonPressed()
     }
 }
 
-void CMainWindow::CancelLoadFinished()
+void CMainWindow::OnLoadInterrupted()
 {
-    mUi.CancelBtn->setEnabled(false);
-    mUi.LoadTerrainBtn->setEnabled(true);
-    mUi.LoadTracksBtn->setEnabled(true);
-
-    const std::string Message {"Load sucessfully canceled. "};
-    mUi.StatusBar->showMessage(Message.c_str(), 4000);
+    SetButtonsEnabled(eButtonsEnabledLayout::Rest);
 }
 
 void CMainWindow::LoadingModuleFinished(Types::eLoadingModule aModule)
 {
     if (aModule == TERRAIN_MODULE_TYPE)
     {
-        mUi.MainGraphics->LoadModel();
+        mUi.MainGraphics->LoadModel(mDataManager->GetTerrain());
     }
     else if (aModule == TRACKS_MODULE_TYPE)
     {
         mUi.MainGraphics->LoadTexture();
     }
 
-    mUi.LoadTracksBtn->setEnabled(true);
-    mUi.LoadTerrainBtn->setEnabled(true);
-    mUi.CancelBtn->setEnabled(false);
+    SetButtonsEnabled(eButtonsEnabledLayout::Rest);
+}
+
+void CMainWindow::SetButtonsEnabled(eButtonsEnabledLayout aLayout)
+{
+    std::vector<bool> ButtonsEnabled(4, false);
+
+    switch (aLayout)
+    {
+        case eButtonsEnabledLayout::Rest:
+        {
+            ButtonsEnabled.clear();
+            ButtonsEnabled = {true, true, true, false};
+            break;
+        }
+        case eButtonsEnabledLayout::Loading:
+        {
+            ButtonsEnabled.clear();
+            ButtonsEnabled = {false, false, false, true};
+            break;
+        }
+        case eButtonsEnabledLayout::Canceling:
+        {
+            ButtonsEnabled.clear();
+            ButtonsEnabled = {false, false, false, false};
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+
+    // TODO: This could be turned into an enum.
+    mUi.OpenFolderBtn->setEnabled(ButtonsEnabled.at(0U));
+    mUi.LoadTracksBtn->setEnabled(ButtonsEnabled.at(1U));
+    mUi.LoadTerrainBtn->setEnabled(ButtonsEnabled.at(2U));
+    mUi.CancelBtn->setEnabled(ButtonsEnabled.at(3U));
 }

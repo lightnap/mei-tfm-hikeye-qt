@@ -22,7 +22,7 @@ class CQueriesResourceLoader : public CResourceLoader
      * @brief Loads the corresponding resource.
      * @return Code indicating the load result.
      */
-    Types::eResourceLoadingError LoadResource() override;
+    Types::eLoadResult LoadResource() override;
 };
 
 #endif // C_QUERIES_RESOURCE_LOADER_H

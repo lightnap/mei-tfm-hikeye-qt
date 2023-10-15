@@ -1,30 +1,40 @@
 #include "CTerrainResourceLoader.hpp"
 
+#include "CConfigs.hpp"
 #include "CResourceLoaderFactory.hpp"
+#include "SHeightMap.hpp"
+#include "STerrain.hpp"
 #include "Types.hpp"
 
 #include <iostream> //TODO: Remove this.
+#include <memory>
+#include <utility>
 
 namespace
 {
 [[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CTerrainResourceLoader>::Register(Types::eResource::Terrain)};
 }
 
-Types::eResourceLoadingError CTerrainResourceLoader::LoadResource()
+Types::eLoadResult CTerrainResourceLoader::LoadResource()
 {
+    const auto& HeightMap {mDataManager.GetHeightMap()};
     std::cout << "[TerrainResource] Loading terrain model" << std::endl;
-    // TODO: Fill this function.
 
-    for (int i = 0; i < 10; i++)
+    STerrainConfig Config;
+    Config.oCellSize = 2.0;
+    Config.oBounds.oMin.oX = 0.0;
+    Config.oBounds.oMin.oY = 0.0;
+    Config.oBounds.oMax.oX = Config.oCellSize * HeightMap.oResolution.oX;
+    Config.oBounds.oMax.oY = Config.oCellSize * HeightMap.oResolution.oY;
+
+    auto Terrain {std::make_unique<STerrain>(HeightMap, Config)};
+    mDataManager.SetTerrain(std::move(Terrain));
+
+    if (isInterruptionRequested())
     {
-        std::cout << "[Terrain] Doing work: " << i << std::endl;
-
-        sleep(1);
-        if (isInterruptionRequested())
-        {
-            return Types::eResourceLoadingError::UserInterruption;
-        }
+        mLoadErrorMessage = "Interrupted by user";
+        return Types::eLoadResult::Interrupted;
     }
 
-    return Types::eResourceLoadingError::Successful;
+    return Types::eLoadResult::Successful;
 }

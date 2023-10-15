@@ -4,7 +4,7 @@
 
 #include <utility>
 
-CResourceLoader* CResourceLoaderFactory::Create(Types::eResource aResource)
+CResourceLoader* CResourceLoaderFactory::Create(Types::eResource aResource, CDataManager& aDataManager)
 {
     auto FactoryIt {GetFactories().find(aResource)};
 
@@ -13,7 +13,7 @@ CResourceLoader* CResourceLoaderFactory::Create(Types::eResource aResource)
         // TODO: Make an assert here.
     }
 
-    return FactoryIt->second->MakeResourceLoader(aResource);
+    return FactoryIt->second->MakeResourceLoader(aResource, aDataManager);
 }
 
 bool CResourceLoaderFactory::Register(Types::eResource aResourceType, tConcreteFactoryUnique apResourceLoaderFactory)

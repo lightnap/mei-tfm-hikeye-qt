@@ -1,6 +1,7 @@
 #ifndef C_LOADING_MODULE_H
 #define C_LOADING_MODULE_H
 
+#include "CDataManager.hpp"
 #include "CResourceLoader.hpp"
 #include "Types.hpp"
 
@@ -23,10 +24,11 @@ class CLoadingModule : public QObject
   public:
     /**
      * @brief Constructor.
-     * @param aModuleType Type of the module we want to contruct.
-     * @param aStatusBar Reference to CMainWindow's StatusBar.
+     * @param aModuleType: Type of the module we want to construct.
+     * @param aDataManager: reference to the data manager.
+     * @param aStatusBar: Reference to CMainWindow's StatusBar.
      */
-    CLoadingModule(Types::eLoadingModule aModuleType, QStatusBar& aStatusBar);
+    CLoadingModule(Types::eLoadingModule aModuleType, CDataManager& aDataManager, QStatusBar& aStatusBar);
 
     /**
      * @brief Starts the loading process.
@@ -66,8 +68,9 @@ class CLoadingModule : public QObject
     /**
      * @brief Gets called when a given resource loader finished.
      * @param aErrorCode: error code we want to notify.
+     * @patam aErrorMessage: a brief message describing the error.
      */
-    void ResourceLoaderFinished(int aErrorCode);
+    void ResourceLoaderFinished(int aErrorCode, QString aErrorMessage);
 
   signals:
     /**
@@ -79,7 +82,7 @@ class CLoadingModule : public QObject
     /**
      * @brief Signal to notify loading module cancel finished.
      */
-    void LoadCanceled();
+    void LoadInterrupted();
 
   private:
     /**
@@ -112,6 +115,7 @@ class CLoadingModule : public QObject
     u8                    mResourceIndex; //!< Indicates which resource we are loading.
     Types::eLoadingModule mModuleType;    //!< Indicates type of this module.
     eLoadingStatus        mLoadingStatus; //!< Indicates the current loading status of the module.
+    CDataManager&         mDataManager;   //!< Reference to the data manager.
     QStatusBar&           mStatusBar;     //!< Bar that shows messages at the bottom of the screen.
 
     tResourcesMap mResourceLoaders; //!< Current resource loader thread.

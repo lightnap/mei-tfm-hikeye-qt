@@ -7,6 +7,7 @@
 #include <memory>
 #include <unordered_map>
 
+class CDataManager;
 class CResourceLoader;
 
 /**
@@ -20,10 +21,11 @@ class CResourceLoaderFactory
   public:
     /**
      * @brief Creates an instance of the indicated resource loader.
-     * @param aResourceType Type of the resource loader we want to create.
+     * @param aResourceType: Type of the resource loader we want to create.
+     * @param aDataManager: Reference to the dataManager.
      * @return The created resource loader.
      */
-    static CResourceLoader* Create(Types::eResource aResourceType);
+    static CResourceLoader* Create(Types::eResource aResourceType, CDataManager& aDataManager);
 
     /**
      * Registers a factory for creating a new type of resource loader.
@@ -63,9 +65,10 @@ class CConcreteResourceLoaderFactory : public IConcreteResourceLoaderFactory
     /**
      * @brief Fabricates the action node.
      * @param aResource: Type of the resource loader.
+     * @param aDataMager: Reference to the dataManager.
      * @return Pointer to the fabricated node.
      */
-    CResourceLoader* MakeResourceLoader(Types::eResource aResource) override { return new tResourceLoader(aResource); }
+    CResourceLoader* MakeResourceLoader(Types::eResource aResource, CDataManager& aDataManager) override { return new tResourceLoader(aResource, aDataManager); }
 };
 
 #endif // C_RESOURCE_LOADER_FACTORY_H

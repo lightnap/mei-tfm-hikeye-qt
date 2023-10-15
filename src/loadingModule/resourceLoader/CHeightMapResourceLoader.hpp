@@ -22,7 +22,7 @@ class CHeightMapResourceLoader : public CResourceLoader
      * @brief Loads the corresponding resource.
      * @return Error code depicting the loading result.
      */
-    Types::eResourceLoadingError LoadResource() override;
+    Types::eLoadResult LoadResource() override;
 };
 
 #endif // C_HEIGHT_MAP_RESOURCE_LOADER_H

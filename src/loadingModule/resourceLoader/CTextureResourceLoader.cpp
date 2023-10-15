@@ -10,10 +10,10 @@ namespace
 [[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CTextureResourceLoader>::Register(Types::eResource::Texture)};
 }
 
-Types::eResourceLoadingError CTextureResourceLoader::LoadResource()
+Types::eLoadResult CTextureResourceLoader::LoadResource()
 {
     std::cout << "[TextureResource] Loading texture" << std::endl;
     // TODO: Fill this function.
 
-    return Types::eResourceLoadingError::Successful;
+    return Types::eLoadResult::Successful;
 }

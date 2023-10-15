@@ -1,3 +1,7 @@
+# Hikeye gitignore
+
+# Project
+data/
 
 # Emacs
 .ccls-cache/
@@ -7,7 +11,6 @@ bin/
 
 #visual studio code
 .vscode
-
 
 # C++ objects and libs
 *.slo

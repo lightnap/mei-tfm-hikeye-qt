@@ -1,28 +1,51 @@
 #include "CHeightMapResourceLoader.hpp"
 
+#include "CConfigs.hpp"
 #include "CResourceLoaderFactory.hpp"
+#include "SHeightMap.hpp"
 #include "Types.hpp"
 
+#include <QDir>
+#include <QFile>
+#include <QImage>
+#include <QString>
+
 #include <iostream> // TODO: Remove this.
+#include <memory>
+#include <utility>
 
 namespace
 {
+QString FILE_NAME {"dem.png"};
+
 [[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CHeightMapResourceLoader>::Register(Types::eResource::HeightMap)};
 }
 
-Types::eResourceLoadingError CHeightMapResourceLoader::LoadResource()
+Types::eLoadResult CHeightMapResourceLoader::LoadResource()
 {
-    std::cout << "[HeightMapResource] Loading height map" << std::endl;
-    // TODO: Fill this function.
-    for (int i = 0; i < 10; i++)
-    {
-        std::cout << "[Height] Doing work: " << i << std::endl;
+    QString ResourceFilePath {GetResourceFilePath(FILE_NAME)};
 
-        sleep(1);
-        if (isInterruptionRequested())
-        {
-            return Types::eResourceLoadingError::UserInterruption;
-        }
+    // TODO: Remove this.
+    std::cout << "[Height] LoadingFile: " << ResourceFilePath.toStdString() << std::endl;
+
+    if (!QFile::exists(ResourceFilePath))
+    {
+        mLoadErrorMessage = "Height map file not found.";
+        return Types::eLoadResult::Error;
     }
-    return Types::eResourceLoadingError::Successful;
+    QImage HeightMapTexture;
+    HeightMapTexture.load(ResourceFilePath);
+
+    SHeightMapConfig Config(0, 1000);
+
+    auto HeightMap {std::make_unique<SHeightMap>(HeightMapTexture, Config)};
+    mDataManager.SetHeightMap(std::move(HeightMap));
+
+    if (isInterruptionRequested())
+    {
+        mLoadErrorMessage = "Interrupted by user";
+        return Types::eLoadResult::Interrupted;
+    }
+
+    return Types::eLoadResult::Successful;
 }

@@ -47,11 +47,12 @@ enum class eResource
 /**
  * @brief Enum describing possible errors while loading resource.
  */
-enum class eResourceLoadingError
+enum class eLoadResult
 {
-    Successful = 0,   //!< No error while loading.
-    UserInterruption, //!< Load interrupted by user.
-    Size              //!< Size of this enum.
+    Successful = 0, //!< No error while loading.
+    Interrupted,    //!< Load interrupted by user.
+    Error,          //!< Load stopped due to error.
+    Size            //!< Size of this enum.
 };
 
 /**
