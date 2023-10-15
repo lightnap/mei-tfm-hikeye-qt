@@ -12,8 +12,10 @@
 
 STerrain::STerrain(const SHeightMap& aHeightMap, const STerrainConfig& aConfig)
 {
+    oTriangleCount = 0;
     CreateVertices(aHeightMap, aConfig);
     CreateTriangles(aHeightMap);
+    CreateBounds(aHeightMap, aConfig);
 }
 
 void STerrain::CreateVertices(const SHeightMap& aHeightMap, const STerrainConfig& aConfig)
@@ -45,10 +47,9 @@ void STerrain::CreateTriangles(const SHeightMap& aHeightMap)
     s32& RowSize {ColumnCount};
     s32& ColumnSize {RowCount};
 
-    s32 TrianglesCount = 2 * (RowSize - 1) * (ColumnSize - 1);
-
+    oTriangleCount = 2 * (RowSize - 1) * (ColumnSize - 1);
     oTriangles.clear();
-    oTriangles.reserve(3 * TrianglesCount);
+    oTriangles.reserve(3 * oTriangleCount);
 
     for (s32 Row {1}; Row < RowCount; Row++)
     {
@@ -68,4 +69,10 @@ void STerrain::CreateTriangles(const SHeightMap& aHeightMap)
             oTriangles.push_back(v11);
         }
     }
+}
+
+void STerrain::CreateBounds(const SHeightMap& aHeightMap, const STerrainConfig& aConfig)
+{
+    oBounds.oMin = Math::Vector3D(aConfig.oBounds.oMin.oX, aConfig.oBounds.oMin.oY, aHeightMap.oMinHeight);
+    oBounds.oMax = Math::Vector3D(aConfig.oBounds.oMax.oX, aConfig.oBounds.oMax.oY, aHeightMap.oMaxHeight);
 }

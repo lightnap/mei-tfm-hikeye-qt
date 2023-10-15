@@ -34,6 +34,8 @@ struct SHeightMap
   public:
     std::vector<f64> oHeights;    //!< Vector containing all heights.
     SResolution      oResolution; //!< Resolution of the image.
+    s32              oMaxHeight;  //!< Maximum height of the terrain.
+    s32              oMinHeight;  //!< Minimum height of the terrain.
 };
 
 #endif // S_HEIGHT_MAP_H

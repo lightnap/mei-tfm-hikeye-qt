@@ -7,6 +7,8 @@
 #include <QImage>
 
 SHeightMap::SHeightMap(QImage& aTexture, const SHeightMapConfig& aConfig)
+  : oMaxHeight(aConfig.oMaxHeight)
+  , oMinHeight(aConfig.oMinHeight)
 {
     oHeights.clear();
 
@@ -19,9 +21,9 @@ SHeightMap::SHeightMap(QImage& aTexture, const SHeightMapConfig& aConfig)
     u32 VertexIndex {0U};
 
     // TODO: Why dont we use more performing funcions, like constBits or ScanLine?
-    for (u32 i = 0U; i < SizeX; i++)
+    for (u32 i {0U}; i < SizeX; i++)
     {
-        for (u32 j = 0U; j < SizeY; j++)
+        for (u32 j {0U}; j < SizeY; j++)
         {
             f64 NormalizedHeight {qRed(aTexture.pixel(i, j)) / 255.0};
             oHeights[VertexIndex] = Math::Lerp(MinHeight, MaxHeight, NormalizedHeight);

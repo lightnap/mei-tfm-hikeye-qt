@@ -36,7 +36,7 @@ Types::eLoadResult CHeightMapResourceLoader::LoadResource()
     QImage HeightMapTexture;
     HeightMapTexture.load(ResourceFilePath);
 
-    SHeightMapConfig Config(0, 1);
+    SHeightMapConfig Config(0, 1000);
 
     auto HeightMap {std::make_unique<SHeightMap>(HeightMapTexture, Config)};
     mDataManager.SetHeightMap(std::move(HeightMap));

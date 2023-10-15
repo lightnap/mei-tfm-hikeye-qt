@@ -25,7 +25,7 @@ void CCamera::LookAt(const Math::Box3D& aBox)
 {
     Math::Vector3D MinToCenter {0.5 * (aBox.oMax - aBox.oMin)};
     Math::Vector3D MinToBaseCenter {MinToCenter.oX, MinToCenter.oY, 0.0};
-    const f64      Radius = Math::Norm(MinToBaseCenter);
+    const f64      Radius {Math::Norm(MinToBaseCenter)};
     Math::Vector3D CameraEyeOffset {2 * MinToBaseCenter.oX, 2 * MinToBaseCenter.oY, -Radius};
 
     mEye = aBox.GetCenter() - CameraEyeOffset;

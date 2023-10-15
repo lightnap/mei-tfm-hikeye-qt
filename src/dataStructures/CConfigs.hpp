@@ -5,7 +5,7 @@
 #include "Types.hpp"
 
 /**
- * @breif Structure describing the data we must pass to a height map in order for it to be built.
+ * @brief Structure describing the data we must pass to a height map in order for it to be built.
  */
 struct SHeightMapConfig
 {

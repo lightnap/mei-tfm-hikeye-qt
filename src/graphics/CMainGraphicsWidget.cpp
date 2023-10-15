@@ -16,17 +16,23 @@
 namespace
 {
 const QVector3D   BACKGROUND_COLOR {0.5, 0.7, 1.0}; //!< Scene background color.
-const GLuint      EMPTY_VAO {0};                    //!< Specifies that no vertex array object is being bound.
+const GLuint      EMPTY_VAO {0U};                   //!< Specifies that no vertex array object is being bound.
+const GLuint      EMPTY_SHADER {0U};                //!< Specifies that no shader program is being bound.
 const std::string SHADERS_PATH {"../src/shaders/"}; //!< Path to shader files.
 }
 
 CMainGraphicsWidget::CMainGraphicsWidget(QWidget* apParent)
   : QOpenGLWidget(apParent)
   , mShaderProgram(nullptr)
-  , mTriangleVAOId(0)
-  , mVertexAttributeId(0)
+  , mModelLoaded(false)
+  , mTriangleVAOId(0U)
+  , mVertexAttributeId(0U)
+  , mTransformUniformId(0U)
+  , mTerrainData()
   , mWindowWidth(100)
   , mWindowHeight(100)
+  , mLastClickPosX(0)
+  , mLastClickPosY(0)
 {
     setFocusPolicy(Qt::StrongFocus);
     mCamera = std::make_unique<CCamera>();
@@ -42,9 +48,61 @@ CMainGraphicsWidget::~CMainGraphicsWidget()
 
 void CMainGraphicsWidget::LoadModel(const STerrain& aTerrain)
 {
+    makeCurrent();
 
     std::cout << "[MainGraphicsWidget]: Loading terrain model with # vertices = : " << aTerrain.oVertices.size() << std::endl;
-    // TODO: Implement this.
+
+    // TODO: Clean this.
+
+    ResetTerrainBuffers();
+
+    mTerrainData.oTriangleCount = aTerrain.oTriangleCount;
+    glGenVertexArrays(1, &mTerrainData.oVertexAttributeId);
+    glBindVertexArray(mTerrainData.oVertexAttributeId);
+
+    // glUseProgram(mShaderProgram);
+
+    // GLuint attribVertexLoc = glGetAttribLocation(mShaderProgram, "a_position");
+
+    const auto& Vertices {aTerrain.oVertices};
+    const auto& Triangles {aTerrain.oTriangles};
+
+    glGenBuffers(1, &mTerrainData.oVertexBufferId);
+    glBindBuffer(GL_ARRAY_BUFFER, mTerrainData.oVertexBufferId);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * Vertices.size(), &Vertices[0], GL_STATIC_DRAW);
+    glVertexAttribPointer(mVertexAttributeId, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(mVertexAttributeId);
+
+    glGenBuffers(1, &mTerrainData.oTriangleBufferId);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mTerrainData.oTriangleBufferId);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * Triangles.size(), &Triangles[0], GL_STATIC_DRAW);
+
+    glBindVertexArray(EMPTY_VAO);
+    // glUseProgram(EMPTY_SHADER);
+
+    mModelLoaded = true;
+    mCamera->LookAt(aTerrain.oBounds);
+    update();
+}
+
+void CMainGraphicsWidget::ResetTerrainBuffers()
+{
+    if (mTerrainData.oVertexBufferId > 0)
+    {
+        glDeleteBuffers(1, &(mTerrainData.oVertexBufferId));
+    }
+
+    if (mTerrainData.oTriangleBufferId > 0)
+    {
+        glDeleteBuffers(1, &(mTerrainData.oTriangleBufferId));
+    }
+
+    if (mTerrainData.oVertexAttributeId > 0)
+    {
+        glDeleteBuffers(1, &(mTerrainData.oVertexAttributeId));
+    }
+
+    mTerrainData.oTriangleCount = 0;
 }
 
 void CMainGraphicsWidget::LoadTexture()
@@ -84,8 +142,17 @@ void CMainGraphicsWidget::paintGL()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Draw scene.
-    glBindVertexArray(mTriangleVAOId);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    if (!mModelLoaded)
+    {
+        glBindVertexArray(mTriangleVAOId);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
+    else
+    {
+        glBindVertexArray(mTerrainData.oVertexAttributeId);
+        glDrawElements(GL_TRIANGLES, 3 * mTerrainData.oTriangleCount, GL_UNSIGNED_INT, 0);
+    }
+
     glBindVertexArray(EMPTY_VAO);
 }
 
@@ -150,6 +217,9 @@ void CMainGraphicsWidget::LoadShaders()
     mTransformUniformId = glGetUniformLocation(mShaderProgram->programId(), "transformMatrix");
 }
 
+// TODO: Move all these functions to a camera controller that wraps the camera and has the speeds and all.
+// Oooh camera operator is a good name...
+// TODO: Change camera controls so that you can fly around and get close to interesting places.
 void CMainGraphicsWidget::mousePressEvent(QMouseEvent* aMouseInfo)
 {
     mLastClickPosX = aMouseInfo->globalX();
