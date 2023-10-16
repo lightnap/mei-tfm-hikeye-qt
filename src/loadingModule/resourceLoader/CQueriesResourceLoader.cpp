@@ -3,7 +3,7 @@
 #include "CResourceLoaderFactory.hpp"
 #include "Types.hpp"
 
-#include <iostream> //TODO: Remove this.
+#include <iostream> //TODO: HK-24 Remove this.
 
 namespace
 {
@@ -13,7 +13,7 @@ namespace
 Types::eLoadResult CQueriesResourceLoader::LoadResource()
 {
     std::cout << "[QueriesResource] Loading queries" << std::endl;
-    // TODO: Fill this function.
+    // TODO: HK-24 Fill this function.
 
     return Types::eLoadResult::Successful;
 }
