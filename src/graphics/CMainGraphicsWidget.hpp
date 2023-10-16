@@ -130,9 +130,9 @@ class CMainGraphicsWidget
 
     std::unique_ptr<CCamera> mCamera; //!< Camera of the scene.
 
-    // TODO: Turn this into a Vector or something.
+    // TODO: HK-47 Turn this into a Vector or something.
     s32 mLastClickPosX {0}; //!< Last position where the mouse clicked, X coordinate.
-    s32 mLastClickPosY {0}; //!< Last position where the mouse clicked, Y coordinate. // TODO: Turn into a vector of int.
+    s32 mLastClickPosY {0}; //!< Last position where the mouse clicked, Y coordinate. // TODO: HK-47 Turn into a vector of int.
 };
 
 #endif // C_MAIN_GRAPHICS_WIDGET_H

@@ -1,7 +1,7 @@
 #include "CCamera.hpp"
 
-#include <QMatrix4x4> // TODO: Consider using glm library.
-#include <QVector3D>  // TODO: Consider using glm library.
+#include <QMatrix4x4> // TODO: HK-47 Consider using glm library.
+#include <QVector3D>  // TODO: HK-47 Consider using glm library.
 
 #include <cmath>
 
@@ -20,7 +20,7 @@ Math::Vector3D CCamera::GetViewDirection()
     return Math::Normalize(mAt - mEye);
 }
 
-// TODO: Fix these so that they work even upside down (maybe quaternions?)
+// TODO: HK-43 Fix these so that they work even upside down (maybe quaternions?)
 void CCamera::LookAt(const Math::Box3D& aBox)
 {
     Math::Vector3D MinToCenter {0.5 * (aBox.oMax - aBox.oMin)};
@@ -117,7 +117,7 @@ void CCamera::UpdateAspectRatio(f64 aNewRatio)
 
 QMatrix4x4 CCamera::GetViewMatrix()
 {
-    // TODO: Consider using glm library.
+    // TODO: HK-47 Consider using glm library.
     QMatrix4x4      ViewMatrix;
     const QVector3D Eye(mEye.oX, mEye.oY, mEye.oZ);
     const QVector3D At(mAt.oX, mAt.oY, mAt.oZ);
@@ -129,7 +129,7 @@ QMatrix4x4 CCamera::GetViewMatrix()
 
 QMatrix4x4 CCamera::GetProjectionMatrix()
 {
-    // TODO: Consider using glm library.
+    // TODO: HK-47 Consider using glm library.
     QMatrix4x4 ProjectionMatrix;
     ProjectionMatrix.perspective(mFieldOfView, mAspectRatio, mNearPlane, mFarPlane);
     return ProjectionMatrix;

@@ -4,7 +4,7 @@
 #include "Math.hpp"
 #include "Types.hpp"
 
-#include <QMatrix4x4> //TODO: Consider using the glm library.
+#include <QMatrix4x4> //TODO: HK-47 Consider using the glm library.
 
 /**
  * @brief Class depicting a camera.
@@ -41,14 +41,14 @@ class CCamera
      */
     Math::Vector3D GetAt() const { return mAt; }
 
-    // TODO: Delete these.
+    // TODO: HK-43 Delete these.
     // Math::Vector3D getUp() const { return mUp; }
     // double    getNearPlane() const { return mNearPlane; }
     // double    getFarPlane() const { return mFarPlane; }
     // double    getAngleOfViewH(double, double) const;
     // double    getAngleOfViewV(double, double) const;
 
-    // TODO: This should not be necessary.
+    // TODO: HK-43 This should not be necessary.
     /**
      * @brief Sets the point the camera is looking at.
      * @param aAt: The point we want the camera to look at.
@@ -59,7 +59,7 @@ class CCamera
         mUp = Math::Vector3D {0.0, 0.0, 1.0};
     }
 
-    // TODO: This should not be necessary.
+    // TODO: HK-43 This should not be necessary.
     /**
      * @brief Sets the camera position.
      * @param aEye: The new camera position.

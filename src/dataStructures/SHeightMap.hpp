@@ -17,7 +17,7 @@ struct SHeightMap
     /**
      * @brief Structrure to save the resolution of the image.
      */
-    struct SResolution // TODO: Turn this into a Vector2D<u32>
+    struct SResolution // TODO: HK-47 Turn this into a Vector2D<u32>
     {
         u32 oX {0U}; //!< Number of pixels on the X dimension.
         u32 oY {0U}; //!< Number of pixels on the Y dimension.

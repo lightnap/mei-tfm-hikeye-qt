@@ -20,7 +20,7 @@ SHeightMap::SHeightMap(QImage& aTexture, const SHeightMapConfig& aConfig)
     oHeights.resize(SizeX * SizeY);
     u32 VertexIndex {0U};
 
-    // TODO: Why dont we use more performing funcions, like constBits or ScanLine?
+    // TODO: HK-42 Why dont we use more performing funcions, like constBits or ScanLine?
     for (u32 i {0U}; i < SizeX; i++)
     {
         for (u32 j {0U}; j < SizeY; j++)

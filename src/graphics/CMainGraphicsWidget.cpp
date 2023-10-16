@@ -3,12 +3,12 @@
 #include "STerrain.hpp"
 
 //#include <GL/glew.h>
-#include <QMatrix4x4> // TODO: Consider using the glm library.
+#include <QMatrix4x4> // TODO: HK-47 Consider using the glm library.
 #include <QMouseEvent>
 #include <QOpenGLFunctions_4_3_Core>
 #include <QOpenGLShader>
 #include <QOpenGLShaderProgram>
-#include <QVector3D> // TODO: Consider using the glm library.
+#include <QVector3D> // TODO: HK-47 Consider using the glm library.
 #include <iostream>
 #include <memory>
 #include <string>
@@ -48,12 +48,12 @@ CMainGraphicsWidget::~CMainGraphicsWidget()
 
 void CMainGraphicsWidget::LoadModel(const STerrain& aTerrain)
 {
-    makeCurrent();
 
     std::cout << "[MainGraphicsWidget]: Loading terrain model with # vertices = : " << aTerrain.oVertices.size() << std::endl;
 
-    // TODO: Clean this.
+    // TODO: HK-45 Clean this.
 
+    makeCurrent();
     ResetTerrainBuffers();
 
     mTerrainData.oTriangleCount = aTerrain.oTriangleCount;
@@ -108,7 +108,7 @@ void CMainGraphicsWidget::ResetTerrainBuffers()
 void CMainGraphicsWidget::LoadTexture()
 {
     std::cout << "[MainGraphicsWidget]: Loading terrain texture" << std::endl;
-    // TODO: Implement this.
+    // TODO: HK-25 Implement this.
 }
 
 void CMainGraphicsWidget::initializeGL()
@@ -194,15 +194,15 @@ void CMainGraphicsWidget::CreateGLBuffers()
 
 void CMainGraphicsWidget::LoadShaders()
 {
-    // TODO: Create shader for sky.
+    // TODO: HK-46 Create shader for sky.
     QOpenGLShader FragmentShader(QOpenGLShader::Fragment, this);
     QOpenGLShader VertexShader(QOpenGLShader::Vertex, this);
 
-    // TODO: Move shader names to variables.
+    // TODO: HK-46 Move shader names to variables.
     FragmentShader.compileSourceFile((SHADERS_PATH + "basicShader.frag").c_str());
     VertexShader.compileSourceFile((SHADERS_PATH + "basicShader.vert").c_str());
 
-    // TODO: Turn this into a smart pointer.
+    // TODO: HK-46 Turn this into a smart pointer.
     mShaderProgram = new QOpenGLShaderProgram(this);
 
     mShaderProgram->addShader(&FragmentShader);
@@ -210,16 +210,16 @@ void CMainGraphicsWidget::LoadShaders()
     mShaderProgram->link();
     mShaderProgram->bind();
 
-    // TODO: Move shader attributes to unordered map if there are more of them.
+    // TODO: HK-46 Move shader attributes to unordered map if there are more of them.
     mVertexAttributeId = glGetAttribLocation(mShaderProgram->programId(), "vertex");
 
-    // TODO: Move shader uniforms to unodrdered map if there are more of them.
+    // TODO: HK-46 Move shader uniforms to unodrdered map if there are more of them.
     mTransformUniformId = glGetUniformLocation(mShaderProgram->programId(), "transformMatrix");
 }
 
-// TODO: Move all these functions to a camera controller that wraps the camera and has the speeds and all.
+// TODO: HK-43 Move all these functions to a camera controller that wraps the camera and has the speeds and all.
 // Oooh camera operator is a good name...
-// TODO: Change camera controls so that you can fly around and get close to interesting places.
+// TODO: HK-43 Change camera controls so that you can fly around and get close to interesting places.
 void CMainGraphicsWidget::mousePressEvent(QMouseEvent* aMouseInfo)
 {
     mLastClickPosX = aMouseInfo->globalX();
@@ -230,7 +230,7 @@ void CMainGraphicsWidget::mousePressEvent(QMouseEvent* aMouseInfo)
 
 void CMainGraphicsWidget::mouseMoveEvent(QMouseEvent* aMouseInfo)
 {
-    const s32 CurrentMouseX {aMouseInfo->globalX()}; // TODO: Turn this into a vector of int.
+    const s32 CurrentMouseX {aMouseInfo->globalX()}; // TODO: HK-47 Turn this into a vector of int.
     const s32 CurrentMouseY {aMouseInfo->globalY()};
 
     const s32 MouseDisplacedX {CurrentMouseX - mLastClickPosX};
@@ -250,7 +250,7 @@ void CMainGraphicsWidget::mouseMoveEvent(QMouseEvent* aMouseInfo)
     {
         const f64 ZOOM_SPEED {0.002f};
 
-        // TODO: Could use move radial with MoveAt = false.
+        // TODO: HK-43 Could use move radial with MoveAt = false.
         const Math::Vector3D PreviousAt {mCamera->GetAt()};
         const f64            ViewDistance {Math::Norm(mCamera->GetAt() - mCamera->GetEye())};
 
@@ -259,7 +259,7 @@ void CMainGraphicsWidget::mouseMoveEvent(QMouseEvent* aMouseInfo)
     }
     else if (aMouseInfo->buttons() & Qt::MidButton)
     {
-        // TODO: Put all these speed constansts in the same place.
+        // TODO: HK-43 Put all these speed constansts in the same place.
         const f64 TRANSLATE_SPEED_X {0.03};
         const f64 TRANSLATE_SPEED_Y {0.03};
 
@@ -280,7 +280,7 @@ void CMainGraphicsWidget::mouseReleaseEvent(QMouseEvent*)
 
 void CMainGraphicsWidget::wheelEvent(QWheelEvent* aWheelInfo)
 {
-    // TODO: Could use radial move.
+    // TODO: HK-43 Could use radial move.
     const f64 WHEEL_ZOOM_SPEED {0.1};
     const s32 ANGLE_DELTA_TO_DEG {8};
     const s32 DEGREES_TO_WHEEL_POSITION {15};

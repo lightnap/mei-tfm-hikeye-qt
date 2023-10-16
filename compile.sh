@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # This script tries to build the project.
-#TODO: Add help and description of flags. 
+#TODO: HK-41 Add help and description of flags.
 
 # delete build directory if given the -c flag.
 if [[ $* == *-c* ]]

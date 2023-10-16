@@ -7,7 +7,6 @@
 /**
  * @brief Math functions.
  */
-// TODO: Change this namespace to math.
 namespace Math
 {
 /**
@@ -34,7 +33,7 @@ inline f64 RadToDeg(f64 aRadian)
     return (180.0 / PI) * aRadian;
 }
 
-// TODO: Turn this into a template.
+// TODO: HK-47 Turn this into a template.
 /**
  * @brief Struct defining a two dimensional vector of f64.
  */
@@ -58,7 +57,7 @@ struct Vector2D
     f64 oY {0.0}; //!< Y coordinate of the vector.
 };
 
-// TODO: Turn this into a template.
+// TODO: HK-47 Turn this into a template.
 /**
  * @brief Struct defining a three dimensional vector of f64.
  */
@@ -89,7 +88,7 @@ struct Vector3D
       , oY(aY)
       , oZ(aZ) {};
 
-    // TODO: Add comments to these.
+    // TODO: HK-47 Add comments to these.
     Vector3D        operator-() const { return {-oX, -oY, -oZ}; };
     friend Vector3D operator+(const Vector3D& aFirst, const Vector3D& aSecond) { return {aFirst.oX + aSecond.oX, aFirst.oY + aSecond.oY, aFirst.oZ + aSecond.oZ}; }
     friend Vector3D operator-(const Vector3D& aFirst, const Vector3D& aSecond) { return {aFirst.oX - aSecond.oX, aFirst.oY - aSecond.oY, aFirst.oZ - aSecond.oZ}; }
@@ -102,7 +101,7 @@ struct Vector3D
     f64 oZ {0.0}; //!< Z coordinate of the vector.
 };
 
-// TODO: Maybe make this methods of the vector?
+// TODO: HK-47 Maybe make this methods of the vector?
 /**
  * @brief Computes the dot product of twoo vectors.
  * @param aFirst: Vector A.

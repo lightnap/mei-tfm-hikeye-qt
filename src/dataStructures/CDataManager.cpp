@@ -6,7 +6,7 @@
 #include <QString>
 #include <utility>
 
-// TODO: Think about thread safety and whether data mutexes are worth it.
+// TODO: HK-44 Think about thread safety and whether data mutexes are worth it.
 
 CDataManager::CDataManager()
   : mDataFolderPath("")

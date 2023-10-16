@@ -10,7 +10,7 @@ CResourceLoader* CResourceLoaderFactory::Create(Types::eResource aResource, CDat
 
     if (FactoryIt == GetFactories().cend())
     {
-        // TODO: Make an assert here.
+        // TODO: HK-34 Make an assert here.
     }
 
     return FactoryIt->second->MakeResourceLoader(aResource, aDataManager);

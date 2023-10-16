@@ -19,7 +19,7 @@ std::string Types::LoadingModuleToString(Types::eLoadingModule aModule)
             break;
         }
     }
-    // TODO: Add an assert here.
+    // TODO: HK-34: Add an assert here.
     return "";
 }
 
@@ -62,6 +62,6 @@ std::string Types::ResourceToString(Types::eResource aResource)
             break;
         }
     }
-    // TODO: Add an assertion here.
+    // TODO: HK-34: Add an assertion here.
     return "";
 }

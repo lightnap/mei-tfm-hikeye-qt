@@ -30,7 +30,7 @@ void CResourceLoader::run()
 
 Types::eLoadResult CResourceLoader::LoadResource()
 {
-    // TODO: Assert something here. This should not be called.
+    // TODO: HK-34 Assert something here. This should not be called.
     std::cout << "WARNING: Called the LoadResource of the base module" << std::endl;
 
     return Types::eLoadResult::Size;

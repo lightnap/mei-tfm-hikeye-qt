@@ -5,13 +5,13 @@
 namespace Math
 {
 
-// TODO: Maybe make this methods of the vector?
+// TODO: HK-47 Maybe make this methods of the vector?
 f64 DotProduct(const Vector3D& aFirst, const Vector3D& aSecond)
 {
     return aFirst.oX * aSecond.oX + aFirst.oY * aSecond.oY + aFirst.oZ * aSecond.oZ;
 }
 
-// TODO: Maybe make these methods of the vector?
+// TODO: HK-47 Maybe make these methods of the vector?
 Vector3D CrossProduct(const Vector3D& aFirst, const Vector3D& aSecond)
 {
     const f64 CrossX {aFirst.oY * aSecond.oZ - aFirst.oZ * aSecond.oY};

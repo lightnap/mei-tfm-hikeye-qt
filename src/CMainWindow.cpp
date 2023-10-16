@@ -151,7 +151,7 @@ void CMainWindow::SetButtonsEnabled(eButtonsEnabledLayout aLayout)
         }
     }
 
-    // TODO: This could be turned into an enum.
+    // TODO: HK-40. This could be turned into an enum.
     mUi.OpenFolderBtn->setEnabled(ButtonsEnabled.at(0U));
     mUi.LoadTracksBtn->setEnabled(ButtonsEnabled.at(1U));
     mUi.LoadTerrainBtn->setEnabled(ButtonsEnabled.at(2U));
