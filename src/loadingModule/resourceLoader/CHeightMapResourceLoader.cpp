@@ -33,6 +33,7 @@ Types::eLoadResult CHeightMapResourceLoader::LoadResource()
         mLoadErrorMessage = "Height map file not found.";
         return Types::eLoadResult::Error;
     }
+
     QImage HeightMapTexture;
     HeightMapTexture.load(ResourceFilePath);
 

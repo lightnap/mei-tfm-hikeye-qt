@@ -4,6 +4,7 @@
 #include <QMutex>
 #include <QString>
 
+#include "SGroundTruth.hpp"
 #include "SHeightMap.hpp"
 #include "STerrain.hpp"
 
@@ -45,20 +46,34 @@ class CDataManager
     const SHeightMap& GetHeightMap() const;
 
     /**
-     * @brief Sets the arez terrain model. Takes ownership of the object.
-     * @param aTerrain: poiter to the height map.
+     * @brief Sets the area terrain model. Takes ownership of the object.
+     * @param aTerrain: pointer to the height map.
      */
     void SetTerrain(std::unique_ptr<STerrain> aTerrain);
 
     /**
      * @brief Gets the area terrain model.
+     * @return A reference to the area terrain model.
      */
     const STerrain& GetTerrain() const;
 
+    /**
+     * @brief Sets the area ground truth. Takes ownership of the object.
+     * @param aGroundTruth: pointer to the area ground truth.
+     */
+    void SetGroundTruth(std::unique_ptr<SGroundTruth> aGroundTruth);
+
+    /**
+     * @brief Gets the area ground truth.
+     * @return The area ground truth.
+     */
+    const SGroundTruth& GetGroundTruth() const;
+
   private:
-    QString                     mDataFolderPath; //!< Folder path in which we store/load all area files.
-    std::unique_ptr<QMutex>     mDataMutex;      //!< Mutex for safely accessing all data.
-    std::unique_ptr<SHeightMap> mHeightMap;      //!< Height map of the area.
-    std::unique_ptr<STerrain>   mTerrain;        //!< 3D model of area terrain.
+    QString                       mDataFolderPath; //!< Folder path in which we store/load all area files.
+    std::unique_ptr<QMutex>       mDataMutex;      //!< Mutex for safely accessing all data.
+    std::unique_ptr<SHeightMap>   mHeightMap;      //!< Height map of the area.
+    std::unique_ptr<STerrain>     mTerrain;        //!< 3D model of area terrain.
+    std::unique_ptr<SGroundTruth> mGroundTruth;    //!< Path network we assume is accurate.
 };
 #endif // C_DATA_MANAGER_H

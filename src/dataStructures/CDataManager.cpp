@@ -1,5 +1,6 @@
 #include "CDataManager.hpp"
 
+#include "SGroundTruth.hpp"
 #include "SHeightMap.hpp"
 #include "STerrain.hpp"
 
@@ -44,4 +45,14 @@ void CDataManager::SetTerrain(std::unique_ptr<STerrain> aTerrain)
 const STerrain& CDataManager::GetTerrain() const
 {
     return *mTerrain;
+}
+
+void CDataManager::SetGroundTruth(std::unique_ptr<SGroundTruth> aGroundTruth)
+{
+    mGroundTruth = std::move(aGroundTruth);
+}
+
+const SGroundTruth& CDataManager::GetGroundTruth() const
+{
+    return *mGroundTruth;
 }

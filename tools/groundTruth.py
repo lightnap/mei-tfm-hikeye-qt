@@ -26,7 +26,7 @@ for way_node in root:
                 max_lon = float(attributes["maxlon"])
 
                 min_easting, min_northing, _, _ = utm.from_latlon(min_lat, min_lon)
-                max_easting, max_northing, _, _ = utm.from_latlon(min_lat, min_lon)
+                max_easting, max_northing, _, _ = utm.from_latlon(max_lat, max_lon)
                 point_node.set("mineast", str(min_easting))
                 point_node.set("minnorth", str(min_northing))
                 point_node.set("maxeast", str(max_easting))
