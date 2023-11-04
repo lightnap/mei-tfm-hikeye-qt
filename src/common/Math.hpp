@@ -53,6 +53,8 @@ struct Vector2D
       : oX(aX)
       , oY(aY) {};
 
+    friend Vector2D operator-(const Vector2D& aFirst, const Vector2D& aSecond) { return {aFirst.oX - aSecond.oX, aFirst.oY - aSecond.oY}; }
+
     f64 oX {0.0}; //!< X coordinate of the vector.
     f64 oY {0.0}; //!< Y coordinate of the vector.
 };
@@ -101,7 +103,6 @@ struct Vector3D
     f64 oZ {0.0}; //!< Z coordinate of the vector.
 };
 
-// TODO: HK-47 Maybe make this methods of the vector?
 /**
  * @brief Computes the dot product of twoo vectors.
  * @param aFirst: Vector A.
@@ -118,6 +119,7 @@ f64 DotProduct(const Vector3D& aFirst, const Vector3D& aSecond);
  */
 Vector3D CrossProduct(const Vector3D& aFirst, const Vector3D& aSecond);
 
+// TODO: HK-47: This should be a method of the vector.
 /**
  * @brief Returns the norm of a Vector3D.
  * @param aVector: The vector A.
@@ -125,6 +127,7 @@ Vector3D CrossProduct(const Vector3D& aFirst, const Vector3D& aSecond);
  */
 f64 Norm(const Vector3D& aVector);
 
+// TODO: HK-47: This should be a method of the vector.
 /**
  * @brief Returns the direction of a Vector3D (the vector normalized)
  * @param aVector: The vector A.
@@ -158,11 +161,37 @@ struct Box3D
     Vector3D oMin {}; //!< Minimum bounds point.
     Vector3D oMax {}; //!< Maximum bounds point.
 
+    // TODO: Move this to the .h.
+
     /**
      * @brief Gets the center of the box.
      * @return The box's center.
      */
     Vector3D GetCenter() const { return 0.5 * (oMin + oMax); }
+
+    /**
+     * @brief Gets the box radius.
+     * @retrun The distance between two opposing corners.
+     */
+    f64 GetRadius() const { return 0.5 * Math::Norm(oMin - oMax); }
+
+    /**
+     * @brief Get the height of the box.
+     * @retrurn Max.X - Min.X.
+     */
+    f64 GetHeight() const { return oMax.oX - oMin.oX; }
+
+    /**
+     * @brief Get the height of the box.
+     * @retrurn Max.Y - Min.Y.
+     */
+    f64 GetWidth() const { return oMax.oY - oMin.oY; }
+
+    /**
+     * @brief Get the height of the box.
+     * @retrurn Max.Z - Min.Z.
+     */
+    f64 GetDepth() const { return oMax.oZ - oMin.oZ; }
 };
 }
 

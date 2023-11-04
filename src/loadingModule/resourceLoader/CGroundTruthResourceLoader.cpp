@@ -70,7 +70,15 @@ Types::eLoadResult CGroundTruthResourceLoader::LoadResource()
                 {
                     f32 Northing {Xml.attributes().value("northing").toFloat()};
                     f32 Easting {Xml.attributes().value("easting").toFloat()};
-                    GroundTruthNetwork.at(WayIndex).emplace_back(Northing, Easting);
+
+                    // TODO: Do not hardcode this.
+                    Math::Vector2D Min(444825.0, 4633335.0 - 4017.0 * 2.0);
+                    Math::Vector2D Max(444825.0 + 3725.0 * 2.0, 4633335.0);
+
+                    if (Min.oX < Easting && Easting < Max.oX && Min.oY < Northing && Northing < Max.oY)
+                    {
+                        GroundTruthNetwork.at(WayIndex).emplace_back(Easting, Northing);
+                    }
                     Xml.skipCurrentElement();
                 }
                 else

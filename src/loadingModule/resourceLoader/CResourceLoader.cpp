@@ -38,6 +38,8 @@ Types::eLoadResult CResourceLoader::LoadResource()
 
 QString CResourceLoader::GetResourceFilePath(QString& aFile) const
 {
-    QString AreaFolderPath {mDataManager.GetFolderPath()};
-    return QDir::cleanPath(AreaFolderPath) + QDir::separator() + aFile;
+    // TODO: Redo this.
+    // QString AreaFolderPath {mDataManager.GetFolderPath()};
+    // return QDir::cleanPath(AreaFolderPath) + QDir::separator() + aFile;
+    return "/home/thedoa1013/code/hikeyeQt/data/matagalls/" + aFile;
 }

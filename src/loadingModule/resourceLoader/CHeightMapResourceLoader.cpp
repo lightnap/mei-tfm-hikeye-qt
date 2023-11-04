@@ -38,10 +38,13 @@ Types::eLoadResult CHeightMapResourceLoader::LoadResource()
 
     QImage HeightMapTexture;
     HeightMapTexture.load(ResourceFilePath);
+    // TODO: Why are we mirroring this?
+    QImage MirroredHeightMapTexture {HeightMapTexture.mirrored(true, false)};
 
     SHeightMapConfig Config(MIN_HEIGHT, MAX_HEIGHT);
 
-    auto HeightMap {std::make_unique<SHeightMap>(HeightMapTexture, Config)};
+    // TODO: Why are we mirroring this?
+    auto HeightMap {std::make_unique<SHeightMap>(MirroredHeightMapTexture, Config)};
     mDataManager.SetHeightMap(std::move(HeightMap));
 
     if (isInterruptionRequested())

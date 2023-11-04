@@ -35,6 +35,13 @@ void CCamera::LookAt(const Math::Box3D& aBox)
     mFarPlane = 3 * Radius;
 }
 
+// TODO: This should not be necessary.
+void CCamera::SetPlanes(f64 aNear, f64 aFar)
+{
+    mNearPlane = aNear;
+    mFarPlane = aFar;
+}
+
 void CCamera::VerticalRotateArroundAt(f64 aAngle)
 {
     const Math::Vector3D ViewDirection {mAt - mEye};

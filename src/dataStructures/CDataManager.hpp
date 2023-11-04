@@ -7,6 +7,7 @@
 #include "SGroundTruth.hpp"
 #include "SHeightMap.hpp"
 #include "STerrain.hpp"
+#include "STexture.hpp"
 
 #include <memory>
 
@@ -69,11 +70,24 @@ class CDataManager
      */
     const SGroundTruth& GetGroundTruth() const;
 
+    /**
+     * @brief Sets the terrain texture. Takes ownership of the object.
+     * @param aTexture: pointer to the terrain texture.
+     */
+    void SetTexture(std::unique_ptr<STexture> aTexture);
+
+    /**
+     * @brief Gets the terrain texture.
+     * @return The terrain texture.
+     */
+    const STexture& GetTexture() const;
+
   private:
     QString                       mDataFolderPath; //!< Folder path in which we store/load all area files.
     std::unique_ptr<QMutex>       mDataMutex;      //!< Mutex for safely accessing all data.
     std::unique_ptr<SHeightMap>   mHeightMap;      //!< Height map of the area.
     std::unique_ptr<STerrain>     mTerrain;        //!< 3D model of area terrain.
     std::unique_ptr<SGroundTruth> mGroundTruth;    //!< Path network we assume is accurate.
+    std::unique_ptr<STexture>     mTexture;        //!< Texture to draw onto the terrain.
 };
 #endif // C_DATA_MANAGER_H

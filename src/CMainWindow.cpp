@@ -115,7 +115,7 @@ void CMainWindow::LoadingModuleFinished(Types::eLoadingModule aModule)
     }
     else if (aModule == TRACKS_MODULE_TYPE)
     {
-        mUi.MainGraphics->LoadTexture();
+        mUi.MainGraphics->LoadTexture(mDataManager->GetTexture());
     }
 
     SetButtonsEnabled(eButtonsEnabledLayout::Rest);

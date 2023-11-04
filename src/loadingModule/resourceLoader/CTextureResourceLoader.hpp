@@ -13,7 +13,7 @@ class CTextureResourceLoader : public CResourceLoader
 
   public:
     /**
-     * Inherited constructor.
+     * @brief Inherited constructor.
      */
     using CResourceLoader::CResourceLoader;
 
@@ -23,6 +23,14 @@ class CTextureResourceLoader : public CResourceLoader
      * @return Code depicting the loading result.
      */
     Types::eLoadResult LoadResource() override;
+
+    /**
+     * @brief Turns world coordinates into row and column of a pixel in a texture.
+     * @param aWorldPoint: World position (in utm) that we want to turn into a pixel position.
+     * @param aWorldDomain: Rectangle of world that maps to the texture.
+     * @param aTextureSize: Size of texture.
+     */
+    void WorldToTexCoords(const Math::Vector2D& aWorldPoint, const Math::Box2D& aWorldBounds, const QSize& aTextueSize, s32& texi, s32& texj) const;
 };
 
 #endif // C_TEXTURE_RESOURCE_LOADER_H

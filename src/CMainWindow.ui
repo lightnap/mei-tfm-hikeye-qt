@@ -45,7 +45,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>data/matagalls</string>
+             <string>./data/matagalls</string>
             </property>
             <property name="readOnly">
              <bool>true</bool>

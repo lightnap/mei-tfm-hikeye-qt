@@ -4,6 +4,7 @@
 data/
 *.tif*
 *.gpx
+.cache/
 
 # Emacs
 .ccls-cache/
