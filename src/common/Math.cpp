@@ -37,4 +37,11 @@ Vector3D Translate(Vector3D& aPoint, const Vector3D& aDirection, f64 aDistance)
 {
     return aPoint + aDistance * aDirection;
 }
+
+Box2D::Box2D(const Vector2D<f64>& aMin, const Vector2D<f64>& aMax)
+  : oMin(aMin)
+  , oMax(aMax)
+{
+}
+
 }

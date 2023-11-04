@@ -72,8 +72,8 @@ Types::eLoadResult CGroundTruthResourceLoader::LoadResource()
                     f32 Easting {Xml.attributes().value("easting").toFloat()};
 
                     // TODO: Do not hardcode this.
-                    Math::Vector2D Min(444825.0, 4633335.0 - 4017.0 * 2.0);
-                    Math::Vector2D Max(444825.0 + 3725.0 * 2.0, 4633335.0);
+                    Math::Vector2D<f64> Min(444825.0, 4633335.0 - 4017.0 * 2.0);
+                    Math::Vector2D<f64> Max(444825.0 + 3725.0 * 2.0, 4633335.0);
 
                     if (Min.oX < Easting && Easting < Max.oX && Min.oY < Northing && Northing < Max.oY)
                     {

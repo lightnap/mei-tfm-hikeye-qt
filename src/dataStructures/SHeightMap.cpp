@@ -9,6 +9,7 @@
 SHeightMap::SHeightMap(QImage& aTexture, const SHeightMapConfig& aConfig)
   : oMaxHeight(aConfig.oMaxHeight)
   , oMinHeight(aConfig.oMinHeight)
+  , oResolution(0U, 0U)
 {
     oHeights.clear();
 

@@ -21,22 +21,35 @@ inline f64 Lerp(f64 aInitialValue, f64 aFinalValue, f64 aLerpIndex)
     return aInitialValue + aLerpIndex * (aFinalValue - aInitialValue);
 }
 
+/**
+ * @brief Constant depicting pi.
+ */
 constexpr f64 PI = 3.14159265358979323846;
 
+/**
+ * @brief Converts degrees into radians.
+ * @param aDegree: The angle in degrees.
+ * @return The angle in radians.
+ */
 inline f64 DegToRad(f64 aDegree)
 {
     return (PI / 180.0) * aDegree;
 }
 
+/**
+ * @brief Converts radians into degrees.
+ * @param aRadian: The angle in radians.
+ * @return The angle in degrees.
+ */
 inline f64 RadToDeg(f64 aRadian)
 {
     return (180.0 / PI) * aRadian;
 }
 
-// TODO: HK-47 Turn this into a template.
 /**
  * @brief Struct defining a two dimensional vector of f64.
  */
+template<typename tFieldElement>
 struct Vector2D
 {
     /**
@@ -49,15 +62,20 @@ struct Vector2D
      * @param aX: X dimension of the vector.
      * @param aY: Y dimesnion of the vector.
      */
-    Vector2D(f64 aX, f64 aY)
-      : oX(aX)
-      , oY(aY) {};
+    Vector2D(tFieldElement aX, tFieldElement aY);
 
-    friend Vector2D operator-(const Vector2D& aFirst, const Vector2D& aSecond) { return {aFirst.oX - aSecond.oX, aFirst.oY - aSecond.oY}; }
-
-    f64 oX {0.0}; //!< X coordinate of the vector.
-    f64 oY {0.0}; //!< Y coordinate of the vector.
+    tFieldElement oX {}; //!< X coordinate of the vector.
+    tFieldElement oY {}; //!< Y coordinate of the vector.
 };
+
+/**
+ * @brief Operator to substract two Vector2D.
+ * @param aFirst: A.
+ * @param aSecond: B.
+ * @return A - B.
+ */
+template<typename tFieldElement>
+Vector2D<tFieldElement> operator-(const Vector2D<tFieldElement>& aFirst, const Vector2D<tFieldElement>& aSecond);
 
 // TODO: HK-47 Turn this into a template.
 /**
@@ -149,8 +167,15 @@ Vector3D Translate(Vector3D& aPoint, const Vector3D& aDirection, f64 aDistance);
  */
 struct Box2D
 {
-    Vector2D oMin {}; //!< Minimum bounds point.
-    Vector2D oMax {}; //!< Maximum bounds point.
+    /**
+     * @brief Constructor.
+     * @param aMin: Minimum bounds point of the box.
+     * @param aMax: Maximum bounds point of the box.
+     */
+    Box2D(const Vector2D<f64>& aMin, const Vector2D<f64>& aMax);
+
+    Vector2D<f64> oMin {}; //!< Minimum bounds point.
+    Vector2D<f64> oMax {}; //!< Maximum bounds point.
 };
 
 /**
@@ -194,5 +219,7 @@ struct Box3D
     f64 GetDepth() const { return oMax.oZ - oMin.oZ; }
 };
 }
+
+#include "Math.tpp"
 
 #endif // MATH_H

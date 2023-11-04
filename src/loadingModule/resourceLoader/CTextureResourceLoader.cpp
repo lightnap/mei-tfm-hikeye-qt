@@ -26,23 +26,30 @@ Types::eLoadResult CTextureResourceLoader::LoadResource()
     // TODO: Clean this mess.
     std::cout << "[TextureResource] Loading texture" << std::endl;
 
-    const s32 SizeX {static_cast<s32>(mDataManager.GetHeightMap().oResolution.oX)};
-    const s32 SizeY {static_cast<s32>(mDataManager.GetHeightMap().oResolution.oY)};
+    const s32 TextureSizeX {static_cast<s32>(mDataManager.GetHeightMap().oResolution.oX)};
+    const s32 TextureSizeY {static_cast<s32>(mDataManager.GetHeightMap().oResolution.oY)};
 
-    // TODO: HK-25: Paint paths on texture (right now it only paints it red).
+    QImage TextureImage {TextureSizeX, TextureSizeY, QImage::Format::Format_RGBA8888};
+    TextureImage.fill(QColor(255, 0, 0));
 
-    QImage TextureImage {SizeX, SizeY, QImage::Format::Format_RGBA8888};
+    DrawGroundTruth(TextureImage);
 
-    for (s32 PixelRow {0}; PixelRow < SizeX; PixelRow++)
-    {
-        for (s32 PixelColumn {0}; PixelColumn < SizeY; PixelColumn++)
-        {
-            TextureImage.setPixelColor(PixelRow, PixelColumn, QColor(255, 0, 0).toRgb());
-        }
-    }
+    // TODO: Why are we mirroring this??
+    QImage TextureImageMirror = std::move(TextureImage).mirrored(true, true);
 
+    TextureImageMirror.save("/home/thedoa1013/code/hikeyeQt/data/matagalls/TrackTest.png");
+
+    std::unique_ptr<STexture> Texture {std::make_unique<STexture>()};
+    Texture->oTexture = std::move(TextureImageMirror);
+    mDataManager.SetTexture(std::move(Texture));
+
+    return Types::eLoadResult::Successful;
+}
+
+void CTextureResourceLoader::DrawGroundTruth(QImage& aImage)
+{
     QPen     Pen {QColor(255, 255, 255), 10, Qt::SolidLine, Qt::SquareCap, Qt::RoundJoin};
-    QPainter Painter {&TextureImage};
+    QPainter Painter {&aImage};
 
     const SGroundTruth& GroundTruth {mDataManager.GetGroundTruth()};
 
@@ -51,55 +58,38 @@ Types::eLoadResult CTextureResourceLoader::LoadResource()
         QPainterPath PathPainter;
         for (u32 PointIndex {0U}; PointIndex < Track.size(); PointIndex++)
         {
-            // img coords
-            int ii, jj;
+            // TODO: Take min and max values from the terrain resolution.
+            // So avoid veingharcoded.
+            Math::Vector2D<f64> Min(444825.0, 4633335.0 - 2 * aImage.height());
+            Math::Vector2D<f64> Max(444825.0 + 2 * aImage.width(), 4633335.0);
+            Math::Box2D         DomainBox(Min, Max);
 
-            // TODO: Better constructors and take the 2 from the terrain resolution.
-            Math::Vector2D Min(444825.0, 4633335.0 - 2 * TextureImage.height());
-            Math::Vector2D Max(444825.0 + 2 * TextureImage.width(), 4633335.0);
-            Math::Box2D    DomainBox;
-            DomainBox.oMin = Min;
-            DomainBox.oMax = Max;
-
-            WorldToTexCoords(Track.at(PointIndex), DomainBox, TextureImage.size(), ii, jj);
+            Math::Vector2D<s32> TextureCoordinates {WorldToTexCoords(Track.at(PointIndex), DomainBox, aImage.size())};
 
             if (PointIndex == 0U)
             {
-                PathPainter.moveTo(ii, jj);
+                PathPainter.moveTo(TextureCoordinates.oX, TextureCoordinates.oY);
             }
             else
             {
-                PathPainter.lineTo(ii, jj);
+                PathPainter.lineTo(TextureCoordinates.oX, TextureCoordinates.oY);
             }
         }
         Painter.setPen(Pen);
         Painter.drawPath(PathPainter);
     }
-
-    // TODO: Why are we mirroring this??
-    QImage TextureImageMirror = std::move(TextureImage).mirrored(true, true);
-
-    TextureImageMirror.save("/home/thedoa1013/code/hikeyeQt/data/matagalls/TrackTest.png");
-
-    // TextureImage.load("/home/thedoa1013/code/hikeyeQt/data/matagalls/Untitled.jpeg"); // TOD:Delete this
-
-    std::cout << "W= " << TextureImageMirror.width() << " H= " << TextureImageMirror.height() << std::endl;
-    std::unique_ptr<STexture> Texture {std::make_unique<STexture>()};
-    Texture->oTexture = std::move(TextureImageMirror);
-    mDataManager.SetTexture(std::move(Texture));
-
-    return Types::eLoadResult::Successful;
 }
 
-void CTextureResourceLoader::WorldToTexCoords(const Math::Vector2D& aWorldPoint, const Math::Box2D& aWorldBounds, const QSize& aTextureSize, s32& texi, s32& texj) const
+Math::Vector2D<s32> CTextureResourceLoader::WorldToTexCoords(const Math::Vector2D<f64>& aWorldPoint, const Math::Box2D& aWorldBounds, const QSize& aTextureSize) const
 {
-    // TODO: Hungarian notation here.
-    Math::Vector2D WorldDisplacement {aWorldPoint - aWorldBounds.oMin};
-    Math::Vector2D WorldSize {aWorldBounds.oMax - aWorldBounds.oMin};
+    Math::Vector2D<f64> WorldDisplacement {aWorldPoint - aWorldBounds.oMin};
+    Math::Vector2D<f64> WorldSize {aWorldBounds.oMax - aWorldBounds.oMin};
 
     f64 NormalizedX {WorldDisplacement.oX / WorldSize.oX};
     f64 NormalizedY {WorldDisplacement.oY / WorldSize.oY};
 
-    texi = static_cast<s32>(NormalizedX * (aTextureSize.width() - 1));
-    texj = static_cast<s32>(NormalizedY * (aTextureSize.height() - 1));
+    s32 PixelColumn {static_cast<s32>(NormalizedX * (aTextureSize.width() - 1))};
+    s32 PixelRow {static_cast<s32>(NormalizedY * (aTextureSize.height() - 1))};
+
+    return {PixelColumn, PixelRow};
 }
