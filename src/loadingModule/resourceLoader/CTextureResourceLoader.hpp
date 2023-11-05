@@ -25,6 +25,8 @@ class CTextureResourceLoader : public CResourceLoader
      */
     Types::eLoadResult LoadResource() override;
 
+    QImage CreateBackgroundTexture();
+
     /**
      * @brief Draws ground truth over the provided image.
      * @param aImage: The image over which we want to draw the ground truth.

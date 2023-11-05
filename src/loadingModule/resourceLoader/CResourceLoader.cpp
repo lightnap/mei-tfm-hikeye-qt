@@ -5,6 +5,7 @@
 #include "Types.hpp"
 
 #include <QDir>
+#include <QFile>
 #include <QString>
 
 #include <iostream> //TODO: Remove this.
@@ -34,6 +35,30 @@ Types::eLoadResult CResourceLoader::LoadResource()
     std::cout << "WARNING: Called the LoadResource of the base module" << std::endl;
 
     return Types::eLoadResult::Size;
+}
+
+Types::eLoadResult CResourceLoader::OpenFile(QString& aFileName, QFile& aFile)
+{
+    QString ResourceFilePath {GetResourceFilePath(aFileName)};
+
+    if (!QFile::exists(ResourceFilePath))
+    {
+        mLoadErrorMessage = QString("File ") + aFileName + QString(" not found.");
+        return Types::eLoadResult::Error;
+    }
+
+    aFile.setFileName(ResourceFilePath);
+
+    const bool SuccessfullyOpenedFile {aFile.open(QIODevice::ReadOnly | QIODevice::Text)};
+    if (!SuccessfullyOpenedFile)
+    {
+        mLoadErrorMessage = QString("File ") + aFileName + QString(" could not be opened");
+        return Types::eLoadResult::Error;
+    }
+    else
+    {
+        return Types::eLoadResult::Successful;
+    }
 }
 
 QString CResourceLoader::GetResourceFilePath(QString& aFile) const

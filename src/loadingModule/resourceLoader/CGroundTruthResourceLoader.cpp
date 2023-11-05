@@ -10,7 +10,7 @@
 #include <QString>
 #include <QXmlStreamReader>
 
-#include <iostream> //TODO: HK-25 Remove this.
+#include <iostream> // TODO: HK-25 Remove this.
 #include <memory>
 #include <utility>
 #include <vector>
@@ -24,69 +24,44 @@ QString FILE_NAME {"groundTruthUtm.gpx"};
 
 Types::eLoadResult CGroundTruthResourceLoader::LoadResource()
 {
+    // TODO: Remove this.
     std::cout << "[GroundTruthResource] Loading ground truth" << std::endl;
 
-    // TODO: This could be its own function, but it should be in a try catch block so that it can return in the midle of the thing.
-    QString ResourceFilePath {GetResourceFilePath(FILE_NAME)};
-
-    if (!QFile::exists(ResourceFilePath))
+    QFile              File;
+    Types::eLoadResult OpenFileResult {OpenFile(FILE_NAME, File)};
+    if (OpenFileResult != Types::eLoadResult::Successful)
     {
-        mLoadErrorMessage = "GroundTruth file not found.";
-        return Types::eLoadResult::Error;
-    }
-
-    QFile      File {ResourceFilePath};
-    const bool SuccessfullyOpenedFile {File.open(QIODevice::ReadOnly | QIODevice::Text)};
-    if (!SuccessfullyOpenedFile)
-    {
-        mLoadErrorMessage = "Ground truth file could not be opened";
-        return Types::eLoadResult::Error;
+        return OpenFileResult;
     }
 
     QXmlStreamReader Xml;
     Xml.setDevice(&File);
     SGroundTruth::tNetwork GroundTruthNetwork;
 
-    s32 WayIndex {0};
-
-    while (Xml.readNextStartElement())
+    Types::eLoadResult ParseXmlResult {FillGroundTruth(Xml, GroundTruthNetwork)};
+    if (ParseXmlResult != Types::eLoadResult::Successful)
     {
-        if (Xml.name() == "note" || Xml.name() == "meta")
+        return OpenFileResult;
+    }
+
+    std::unique_ptr<SGroundTruth> GroundTruth {std::make_unique<SGroundTruth>(std::move(GroundTruthNetwork))};
+    mDataManager.SetGroundTruth(std::move(GroundTruth));
+
+    return Types::eLoadResult::Successful;
+}
+
+Types::eLoadResult CGroundTruthResourceLoader::FillGroundTruth(QXmlStreamReader& aXml, SGroundTruth::tNetwork& aNetwork)
+{
+    while (aXml.readNextStartElement())
+    {
+        if (aXml.name() == "note" || aXml.name() == "meta")
         {
-            Xml.skipCurrentElement();
+            aXml.skipCurrentElement();
         }
-        else if (Xml.name() == "way")
+        else if (aXml.name() == "way")
         {
-            // TODO: Move all this into parse way funcion.
-            GroundTruthNetwork.emplace_back();
-            while (Xml.readNextStartElement())
-            {
-                if (Xml.name() == "bounds")
-                {
-                    Xml.skipCurrentElement();
-                    // TODO: Handle bounds.
-                }
-                else if (Xml.name() == "nd")
-                {
-                    f32 Northing {Xml.attributes().value("northing").toFloat()};
-                    f32 Easting {Xml.attributes().value("easting").toFloat()};
+            aNetwork.emplace_back(ParseWay(aXml));
 
-                    // TODO: Do not hardcode this.
-                    Math::Vector2D<f64> Min(444825.0, 4633335.0 - 4017.0 * 2.0);
-                    Math::Vector2D<f64> Max(444825.0 + 3725.0 * 2.0, 4633335.0);
-
-                    if (Min.oX < Easting && Easting < Max.oX && Min.oY < Northing && Northing < Max.oY)
-                    {
-                        GroundTruthNetwork.at(WayIndex).emplace_back(Easting, Northing);
-                    }
-                    Xml.skipCurrentElement();
-                }
-                else
-                {
-                    Xml.skipCurrentElement();
-                }
-            }
-            WayIndex++;
             if (isInterruptionRequested())
             {
                 mLoadErrorMessage = "Interrupted by user";
@@ -95,9 +70,35 @@ Types::eLoadResult CGroundTruthResourceLoader::LoadResource()
         }
     }
 
-    std::unique_ptr<SGroundTruth> GroundTruth {std::make_unique<SGroundTruth>()};
-    GroundTruth->oNetwork = std::move(GroundTruthNetwork);
-    mDataManager.SetGroundTruth(std::move(GroundTruth));
-
     return Types::eLoadResult::Successful;
+}
+
+SGroundTruth::tTrack CGroundTruthResourceLoader::ParseWay(QXmlStreamReader& aXml)
+{
+    SGroundTruth::tTrack Track {};
+
+    while (aXml.readNextStartElement())
+    {
+        if (aXml.name() == "nd")
+        {
+            f32 Northing {aXml.attributes().value("northing").toFloat()};
+            f32 Easting {aXml.attributes().value("easting").toFloat()};
+
+            // TODO: Do not hardcode this.
+            Math::Vector2D<f64> Min(444825.0, 4633335.0 - 4017.0 * 2.0);
+            Math::Vector2D<f64> Max(444825.0 + 3725.0 * 2.0, 4633335.0);
+
+            if (Min.oX < Easting && Easting < Max.oX && Min.oY < Northing && Northing < Max.oY)
+            {
+                Track.emplace_back(Easting, Northing);
+            }
+            aXml.skipCurrentElement();
+        }
+        else
+        {
+            aXml.skipCurrentElement();
+        }
+    }
+
+    return Track;
 }

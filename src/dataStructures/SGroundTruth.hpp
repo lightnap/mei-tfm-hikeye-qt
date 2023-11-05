@@ -16,7 +16,12 @@ struct SGroundTruth
     using tTrack = std::vector<tPoint>;   //!< Type to represent a track in the network.
     using tNetwork = std::vector<tTrack>; //!< Type to represent the ground truth network.
 
-  public:
+    /**
+     * @brief Constructor.
+     * @param aNetwork: Ground truth network we want to save.
+     */
+    SGroundTruth(const tNetwork&& aNetwork);
+
     tNetwork    oNetwork; //!< Ground truth network.
     Math::Box2D oBounds;  //!< Bounding box for the ground truth.
 };

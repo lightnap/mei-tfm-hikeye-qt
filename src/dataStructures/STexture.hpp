@@ -9,6 +9,12 @@
 struct STexture
 {
   public:
+    /**
+     * @brief Constructor.
+     * @param aTexture: QImage that will be our texture.
+     */
+    STexture(QImage&& aTexture);
+
     QImage oTexture; //!< Texture we draw on the terrain.
 };
 

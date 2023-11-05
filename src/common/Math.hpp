@@ -168,6 +168,11 @@ Vector3D Translate(Vector3D& aPoint, const Vector3D& aDirection, f64 aDistance);
 struct Box2D
 {
     /**
+     * @brief Default constructor.
+     */
+    Box2D() = default;
+
+    /**
      * @brief Constructor.
      * @param aMin: Minimum bounds point of the box.
      * @param aMax: Maximum bounds point of the box.

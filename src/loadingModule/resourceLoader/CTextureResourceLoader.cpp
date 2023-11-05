@@ -13,37 +13,45 @@
 #include <QPainterPath>
 #include <QPen>
 
-#include <iostream> //TODO: Remove this.
+#include <iostream> // TODO: Remove this.
 #include <memory>
 #include <utility>
 namespace
 {
+QString SAVE_TO_FILE_NAME {"tracksTexture.png"};
+
 [[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CTextureResourceLoader>::Register(Types::eResource::Texture)};
 }
 
 Types::eLoadResult CTextureResourceLoader::LoadResource()
 {
-    // TODO: Clean this mess.
+    // TODO: Remove this.
     std::cout << "[TextureResource] Loading texture" << std::endl;
 
+    QImage TextureImage {CreateBackgroundTexture()};
+    DrawGroundTruth(TextureImage);
+
+    // TODO: Why are we mirroring this??
+    QImage TextureImageMirror = std::move(TextureImage).mirrored(true, true);
+
+    QString SaveToFilePath {GetResourceFilePath(SAVE_TO_FILE_NAME)};
+    TextureImageMirror.save(SaveToFilePath);
+
+    std::unique_ptr<STexture> Texture {std::make_unique<STexture>(std::move(TextureImageMirror))};
+    mDataManager.SetTexture(std::move(Texture));
+
+    return Types::eLoadResult::Successful;
+}
+
+QImage CTextureResourceLoader::CreateBackgroundTexture()
+{
     const s32 TextureSizeX {static_cast<s32>(mDataManager.GetHeightMap().oResolution.oX)};
     const s32 TextureSizeY {static_cast<s32>(mDataManager.GetHeightMap().oResolution.oY)};
 
     QImage TextureImage {TextureSizeX, TextureSizeY, QImage::Format::Format_RGBA8888};
     TextureImage.fill(QColor(255, 0, 0));
 
-    DrawGroundTruth(TextureImage);
-
-    // TODO: Why are we mirroring this??
-    QImage TextureImageMirror = std::move(TextureImage).mirrored(true, true);
-
-    TextureImageMirror.save("/home/thedoa1013/code/hikeyeQt/data/matagalls/TrackTest.png");
-
-    std::unique_ptr<STexture> Texture {std::make_unique<STexture>()};
-    Texture->oTexture = std::move(TextureImageMirror);
-    mDataManager.SetTexture(std::move(Texture));
-
-    return Types::eLoadResult::Successful;
+    return TextureImage;
 }
 
 void CTextureResourceLoader::DrawGroundTruth(QImage& aImage)
@@ -59,10 +67,10 @@ void CTextureResourceLoader::DrawGroundTruth(QImage& aImage)
         for (u32 PointIndex {0U}; PointIndex < Track.size(); PointIndex++)
         {
             // TODO: Take min and max values from the terrain resolution.
-            // So avoid veingharcoded.
+            // So avoid being harcoded.
             Math::Vector2D<f64> Min(444825.0, 4633335.0 - 2 * aImage.height());
             Math::Vector2D<f64> Max(444825.0 + 2 * aImage.width(), 4633335.0);
-            Math::Box2D         DomainBox(Min, Max);
+            Math::Box2D         DomainBox {Min, Max};
 
             Math::Vector2D<s32> TextureCoordinates {WorldToTexCoords(Track.at(PointIndex), DomainBox, aImage.size())};
 
