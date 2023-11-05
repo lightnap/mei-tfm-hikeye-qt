@@ -5,9 +5,9 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLWidget>
 
-#include "CCamera.hpp"
-#include "Math.hpp"
-#include "Types.hpp"
+#include "common/Math.hpp"
+#include "common/Types.hpp"
+#include "graphics/CCamera.hpp"
 
 #include <memory>
 

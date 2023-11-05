@@ -1,10 +1,9 @@
 #include "STerrain.hpp"
 
-#include "CConfigs.hpp"
-#include "Math.hpp"
-
-#include "SHeightMap.hpp"
-#include "Types.hpp"
+#include "common/Math.hpp"
+#include "common/Types.hpp"
+#include "dataStructures/CConfigs.hpp"
+#include "dataStructures/SHeightMap.hpp"
 
 #include <QOpenGLFunctions>
 

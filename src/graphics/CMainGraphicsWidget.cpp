@@ -1,8 +1,8 @@
 #include "CMainGraphicsWidget.hpp"
 
-#include "Math.hpp"
-#include "STerrain.hpp"
-#include "STexture.hpp"
+#include "common/Math.hpp"
+#include "dataStructures/STerrain.hpp"
+#include "dataStructures/STexture.hpp"
 
 //#include <GL/glew.h>
 #include <QImage>
@@ -302,7 +302,7 @@ void CMainGraphicsWidget::mouseMoveEvent(QMouseEvent* aMouseInfo)
         mCamera->RadialTranslate(MouseDisplacedX * ViewDistance * ZOOM_SPEED);
         mCamera->SetAt(PreviousAt);
     }
-    else if (aMouseInfo->buttons() & Qt::MidButton)
+    else if (aMouseInfo->buttons() & Qt::MiddleButton)
     {
         // TODO: HK-43 Put all these speed constansts in the same place.
         const f64 TRANSLATE_SPEED_X {0.03};

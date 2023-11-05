@@ -1,9 +1,9 @@
 #include "CLoadingModule.hpp"
 
-#include "CDataManager.hpp"
-#include "CResourceLoader.hpp"
-#include "CResourceLoaderFactory.hpp"
-#include "Types.hpp"
+#include "common/Types.hpp"
+#include "dataStructures/CDataManager.hpp"
+#include "loadingModule/resourceLoader/CResourceLoader.hpp"
+#include "loadingModule/resourceLoaderFactory/CResourceLoaderFactory.hpp"
 
 #include <QPointer>
 #include <QStatusBar>

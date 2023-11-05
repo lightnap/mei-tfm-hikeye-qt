@@ -1,10 +1,10 @@
 #include "CGroundTruthResourceLoader.hpp"
 
-#include "CDataManager.hpp"
-#include "CResourceLoaderFactory.hpp"
-#include "Math.hpp"
-#include "SGroundTruth.hpp"
-#include "Types.hpp"
+#include "common/Math.hpp"
+#include "common/Types.hpp"
+#include "dataStructures/CDataManager.hpp"
+#include "dataStructures/SGroundTruth.hpp"
+#include "loadingModule/resourceLoaderFactory/CResourceLoaderFactory.hpp"
 
 #include <QFile>
 #include <QString>

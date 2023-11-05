@@ -17,8 +17,9 @@ fi
 
 # Build the project. 
 cd ./build
-qmake ../
-bear --output ../compile_commands.json -- make debug -j 6
+cmake ../
+cmake --build . -j 8
+#bear --output ../compile_commands.json -- make debug -j 6
 
 # bear --output ../compile_commands.json -- make release
 # ../bin/hikeye

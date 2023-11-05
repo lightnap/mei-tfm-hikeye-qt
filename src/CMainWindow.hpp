@@ -1,9 +1,9 @@
 #ifndef C_MAIN_WINDOW_H
 #define C_MAIN_WINDOW_H
 
-#include "CDataManager.hpp"
-#include "CLoadingModule.hpp"
-#include "Types.hpp"
+#include "common/Types.hpp"
+#include "dataStructures/CDataManager.hpp"
+#include "loadingModule/CLoadingModule.hpp"
 #include "ui_CMainWindow.h"
 
 #include <map>

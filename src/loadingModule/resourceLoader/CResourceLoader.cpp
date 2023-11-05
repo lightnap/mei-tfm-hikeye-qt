@@ -1,8 +1,8 @@
 #include "CResourceLoader.hpp"
 
-#include "CDataManager.hpp"
-#include "CResourceLoaderFactory.hpp"
-#include "Types.hpp"
+#include "common/Types.hpp"
+#include "dataStructures/CDataManager.hpp"
+#include "loadingModule/resourceLoaderFactory/CResourceLoaderFactory.hpp"
 
 #include <QDir>
 #include <QFile>

@@ -1,8 +1,8 @@
 #ifndef C_MATCHES_RESOURCE_LOADER_H
 #define C_MATCHES_RESOURCE_LOADER_H
 
-#include "CResourceLoader.hpp"
-#include "Types.hpp"
+#include "common/Types.hpp"
+#include "loadingModule/resourceLoader/CResourceLoader.hpp"
 
 /**
  * @brief Class that loads the track mathces.

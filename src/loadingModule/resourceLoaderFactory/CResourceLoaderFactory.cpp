@@ -1,6 +1,6 @@
 #include "CResourceLoaderFactory.hpp"
 
-#include "Types.hpp"
+#include "common/Types.hpp"
 
 #include <utility>
 

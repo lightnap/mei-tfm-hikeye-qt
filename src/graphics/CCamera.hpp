@@ -1,8 +1,8 @@
 #ifndef C_CAMERA_H
 #define C_CAMERA_H
 
-#include "Math.hpp"
-#include "Types.hpp"
+#include "common/Math.hpp"
+#include "common/Types.hpp"
 
 #include <QMatrix4x4> //TODO: HK-47 Consider using the glm library.
 

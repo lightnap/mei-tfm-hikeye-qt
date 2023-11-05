@@ -1,9 +1,9 @@
 #ifndef C_GROUND_TRUTH_RESOURCE_LOADER_H
 #define C_GROUND_TRUTH_RESOURCE_LOADER_H
 
-#include "CResourceLoader.hpp"
-#include "SGroundTruth.hpp"
-#include "Types.hpp"
+#include "common/Types.hpp"
+#include "dataStructures/SGroundTruth.hpp"
+#include "loadingModule/resourceLoader/CResourceLoader.hpp"
 
 class QXmlStreamReader;
 

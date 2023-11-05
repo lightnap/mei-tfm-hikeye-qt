@@ -4,10 +4,10 @@
 #include <QMutex>
 #include <QString>
 
-#include "SGroundTruth.hpp"
-#include "SHeightMap.hpp"
-#include "STerrain.hpp"
-#include "STexture.hpp"
+#include "dataStructures/SGroundTruth.hpp"
+#include "dataStructures/SHeightMap.hpp"
+#include "dataStructures/STerrain.hpp"
+#include "dataStructures/STexture.hpp"
 
 #include <memory>
 
