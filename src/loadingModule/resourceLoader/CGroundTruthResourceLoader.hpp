@@ -35,6 +35,11 @@ class CGroundTruthResourceLoader : public CResourceLoader
      */
     Types::eLoadResult FillGroundTruth(QXmlStreamReader& aXml, SGroundTruth::tNetwork& aNetwork);
 
+    /**
+     * @brief Parses a "Way" Node in the xml.
+     * @param aXml: Xml whose current node is a way node.
+     * @return The parsed Way node, in track form (vector of points).
+     */
     SGroundTruth::tTrack ParseWay(QXmlStreamReader& aXml);
 };
 
