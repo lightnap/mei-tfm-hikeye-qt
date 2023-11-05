@@ -66,6 +66,14 @@ class CCamera
      */
     void SetEye(const Math::Vector3D& aEye) { mEye = aEye; }
 
+    // TODO: This should not be necessary.
+    /**
+     * @brief Sets new values for the near and far planes.
+     * @param aNear: The new value for the near plane.
+     * @param aFar: The new value for the fal plane.
+     */
+    void SetPlanes(f64 aNear, f64 aFar);
+
     /**
      * @brief Moves camera around eye, in the vertical position.
      * @param aAngle: Amount that we move.

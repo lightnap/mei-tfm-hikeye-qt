@@ -23,8 +23,8 @@ void STerrain::CreateVertices(const SHeightMap& aHeightMap, const STerrainConfig
     s32 RowCount = aHeightMap.oResolution.oX;
     s32 ColumnCount = aHeightMap.oResolution.oY;
 
-    Math::Vector2D Origin {aConfig.oBounds.oMin};
-    f64            CellSize {aConfig.oCellSize};
+    Math::Vector2D<f64> Origin {aConfig.oBounds.oMin};
+    f64                 CellSize {aConfig.oCellSize};
 
     oVertices.clear();
     oVertices.reserve(3 * RowCount * ColumnCount);

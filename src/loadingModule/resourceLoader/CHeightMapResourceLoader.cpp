@@ -16,7 +16,9 @@
 
 namespace
 {
-QString FILE_NAME {"dem.png"};
+QString   FILE_NAME {"dem.png"};
+const s32 MIN_HEIGHT {608};  // TODO HK-49: Make this into config files or something.
+const s32 MAX_HEIGHT {1692}; // TODO HK-49: Make this into config files or something.
 
 [[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CHeightMapResourceLoader>::Register(Types::eResource::HeightMap)};
 }
@@ -33,12 +35,16 @@ Types::eLoadResult CHeightMapResourceLoader::LoadResource()
         mLoadErrorMessage = "Height map file not found.";
         return Types::eLoadResult::Error;
     }
+
     QImage HeightMapTexture;
     HeightMapTexture.load(ResourceFilePath);
+    // TODO: Why are we mirroring this?
+    QImage MirroredHeightMapTexture {HeightMapTexture.mirrored(true, false)};
 
-    SHeightMapConfig Config(0, 1000);
+    SHeightMapConfig Config(MIN_HEIGHT, MAX_HEIGHT);
 
-    auto HeightMap {std::make_unique<SHeightMap>(HeightMapTexture, Config)};
+    // TODO: Why are we mirroring this?
+    auto HeightMap {std::make_unique<SHeightMap>(MirroredHeightMapTexture, Config)};
     mDataManager.SetHeightMap(std::move(HeightMap));
 
     if (isInterruptionRequested())

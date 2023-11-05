@@ -5,12 +5,14 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLWidget>
 
-#include <CCamera.hpp>
-#include <Types.hpp>
+#include "CCamera.hpp"
+#include "Math.hpp"
+#include "Types.hpp"
 
 #include <memory>
 
 struct STerrain;
+struct STexture;
 
 /**
  * Main rendering widget class.
@@ -79,8 +81,9 @@ class CMainGraphicsWidget
 
     /**
      * @brief Loads texture and binds it to model.
+     * @param aTexture: The texture we want to load.
      */
-    void LoadTexture();
+    void LoadTexture(const STexture& aTexture);
 
   protected:
     /**
@@ -125,8 +128,11 @@ class CMainGraphicsWidget
     GLuint         mTransformUniformId; //!< Identifier for shader uniform "transformMatrix".
     STerrainGlData mTerrainData;        //!< Keeps the Gl data of the currently loaded terrain.
 
-    GLint mWindowWidth;  //!< Current window width.
-    GLint mWindowHeight; //!< Current window height.
+    GLuint mTextureId; //!< Texture identifier.
+
+    GLint       mWindowWidth;  //!< Current window width.
+    GLint       mWindowHeight; //!< Current window height.
+    Math::Box3D mSceneBox;     //!< Box containing the model we are drawing,
 
     std::unique_ptr<CCamera> mCamera; //!< Camera of the scene.
 

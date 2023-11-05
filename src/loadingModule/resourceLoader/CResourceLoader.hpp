@@ -8,6 +8,8 @@
 #include <QString>
 #include <QThread>
 
+class QFile;
+
 /**
  * Base class for all the classes that will load resources.
  */
@@ -42,6 +44,14 @@ class CResourceLoader : public QThread
      * @return Code depicting the loading result.
      */
     virtual Types::eLoadResult LoadResource();
+
+    /**
+     * @brief Opens a resource file, giving appropiate message if it fails.
+     * @param aFileName: Name of the file we want to open.
+     * @param aFile: Place where we store the opened file.
+     * @return Error code depicting if loading was sucessful.
+     */
+    Types::eLoadResult OpenFile(QString& aFileName, QFile& aFile);
 
     /**
      * @brief Appends name of the file to path of the area data folder.

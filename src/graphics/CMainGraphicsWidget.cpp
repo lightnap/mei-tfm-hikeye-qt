@@ -1,8 +1,11 @@
 #include "CMainGraphicsWidget.hpp"
 
+#include "Math.hpp"
 #include "STerrain.hpp"
+#include "STexture.hpp"
 
 //#include <GL/glew.h>
+#include <QImage>
 #include <QMatrix4x4> // TODO: HK-47 Consider using the glm library.
 #include <QMouseEvent>
 #include <QOpenGLFunctions_4_3_Core>
@@ -80,6 +83,8 @@ void CMainGraphicsWidget::LoadModel(const STerrain& aTerrain)
     glBindVertexArray(EMPTY_VAO);
     // glUseProgram(EMPTY_SHADER);
 
+    mSceneBox = aTerrain.oBounds;
+
     mModelLoaded = true;
     mCamera->LookAt(aTerrain.oBounds);
     update();
@@ -105,10 +110,18 @@ void CMainGraphicsWidget::ResetTerrainBuffers()
     mTerrainData.oTriangleCount = 0;
 }
 
-void CMainGraphicsWidget::LoadTexture()
+void CMainGraphicsWidget::LoadTexture(const STexture& aTexture)
 {
     std::cout << "[MainGraphicsWidget]: Loading terrain texture" << std::endl;
-    // TODO: HK-25 Implement this.
+
+    makeCurrent();
+
+    const QImage& Image {aTexture.oTexture};
+
+    glBindTexture(GL_TEXTURE_2D, mTextureId);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Image.width(), Image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, Image.bits());
+    glGenerateMipmap(GL_TEXTURE_2D);
+    update();
 }
 
 void CMainGraphicsWidget::initializeGL()
@@ -120,6 +133,17 @@ void CMainGraphicsWidget::initializeGL()
     glClearColor(BACKGROUND_COLOR.x(), BACKGROUND_COLOR.y(), BACKGROUND_COLOR.z(), 1.0);
     LoadShaders();
     CreateGLBuffers();
+
+    // TODO: Move this to a function (and undertand it).
+    unsigned char foo {255};
+    glGenTextures(1, &mTextureId);
+    glBindTexture(GL_TEXTURE_2D, mTextureId);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, (void*)(&foo));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void CMainGraphicsWidget::paintGL()
@@ -134,9 +158,30 @@ void CMainGraphicsWidget::paintGL()
 
     glViewport(0, 0, mWindowWidth, mWindowHeight);
 
+    // TODO: This does not go here.
+    f64 CameraDistance {Math::Norm(mCamera->GetEye() - mSceneBox.GetCenter())};
+    f64 SceneRadius {mSceneBox.GetRadius()};
+
+    if (CameraDistance < SceneRadius)
+    {
+        mCamera->SetPlanes(100, 2 * SceneRadius);
+    }
+    else
+    {
+        mCamera->SetPlanes(CameraDistance - SceneRadius, 2 * SceneRadius + CameraDistance);
+    }
+
     QMatrix4x4 TransformMatrix {mCamera->GetProjectionMatrix() * mCamera->GetViewMatrix()};
 
     glUniformMatrix4fv(mTransformUniformId, 1, GL_FALSE, TransformMatrix.data());
+
+    // TODO: Clean this up.
+    glUniform2f(glGetUniformLocation(mShaderProgram->programId(), "u_worldMin"), mSceneBox.oMin.oX, mSceneBox.oMin.oY);
+    glUniform2f(glGetUniformLocation(mShaderProgram->programId(), "u_worldSize"), mSceneBox.GetWidth(), mSceneBox.GetHeight());
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, mTextureId);
+    glUniform1i(glGetUniformLocation(mShaderProgram->programId(), "u_texture"), 0);
 
     // Clear frame buffer.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -144,8 +189,8 @@ void CMainGraphicsWidget::paintGL()
     // Draw scene.
     if (!mModelLoaded)
     {
-        glBindVertexArray(mTriangleVAOId);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        // glBindVertexArray(mTriangleVAOId);
+        // glDrawArrays(GL_TRIANGLES, 0, 36);
     }
     else
     {
@@ -199,7 +244,7 @@ void CMainGraphicsWidget::LoadShaders()
     QOpenGLShader VertexShader(QOpenGLShader::Vertex, this);
 
     // TODO: HK-46 Move shader names to variables.
-    FragmentShader.compileSourceFile((SHADERS_PATH + "basicShader.frag").c_str());
+    FragmentShader.compileSourceFile((SHADERS_PATH + "terrain.frag").c_str());
     VertexShader.compileSourceFile((SHADERS_PATH + "basicShader.vert").c_str());
 
     // TODO: HK-46 Turn this into a smart pointer.

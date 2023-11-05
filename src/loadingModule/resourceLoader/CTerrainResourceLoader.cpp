@@ -21,9 +21,9 @@ Types::eLoadResult CTerrainResourceLoader::LoadResource()
     std::cout << "[TerrainResource] Loading terrain model" << std::endl;
 
     STerrainConfig Config;
-    Config.oCellSize = 2.0;
-    Config.oBounds.oMin.oX = 0.0;
-    Config.oBounds.oMin.oY = 0.0;
+    Config.oCellSize = 2.0;       // TODO: HK-49 Turn this into config file (or read from tif).
+    Config.oBounds.oMin.oX = 0.0; // 4633335.0; // TODO: HK-49 Turn this into config file (or read from tif).
+    Config.oBounds.oMin.oY = 0.0; // 444825.0; // TODO: HK-49 Turn this into config file (or read from tif).
     Config.oBounds.oMax.oX = Config.oCellSize * HeightMap.oResolution.oX;
     Config.oBounds.oMax.oY = Config.oCellSize * HeightMap.oResolution.oY;
 

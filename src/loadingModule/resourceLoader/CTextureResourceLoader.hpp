@@ -2,6 +2,7 @@
 #define C_TEXTURE_RESOURCE_LOADER_H
 
 #include "CResourceLoader.hpp"
+#include "Math.hpp"
 #include "Types.hpp"
 
 /**
@@ -13,7 +14,7 @@ class CTextureResourceLoader : public CResourceLoader
 
   public:
     /**
-     * Inherited constructor.
+     * @brief Inherited constructor.
      */
     using CResourceLoader::CResourceLoader;
 
@@ -23,6 +24,23 @@ class CTextureResourceLoader : public CResourceLoader
      * @return Code depicting the loading result.
      */
     Types::eLoadResult LoadResource() override;
+
+    QImage CreateBackgroundTexture();
+
+    /**
+     * @brief Draws ground truth over the provided image.
+     * @param aImage: The image over which we want to draw the ground truth.
+     */
+    void DrawGroundTruth(QImage& aImage);
+
+    /**
+     * @brief Turns world coordinates into row and column of a pixel in a texture.
+     * @param aWorldPoint: World position (in utm) that we want to turn into a pixel position.
+     * @param aWorldDomain: Rectangle of world that maps to the texture.
+     * @param aTextureSize: Size of texture.
+     * @return Vector containing row and column of pixel in image.
+     */
+    Math::Vector2D<s32> WorldToTexCoords(const Math::Vector2D<f64>& aWorldPoint, const Math::Box2D& aWorldBounds, const QSize& aTextueSize) const;
 };
 
 #endif // C_TEXTURE_RESOURCE_LOADER_H

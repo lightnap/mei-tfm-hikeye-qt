@@ -30,6 +30,8 @@ HEADERS += \
     src/dataStructures/CConfigs.hpp \
     src/dataStructures/SHeightMap.hpp \
     src/dataStructures/STerrain.hpp \
+    src/dataStructures/SGroundTruth.hpp \
+    src/dataStructures/STexture.hpp \
     src/loadingModule/CLoadingModule.hpp \
     src/loadingModule/resourceLoader/CResourceLoader.hpp \
     src/loadingModule/resourceLoader/CGroundTruthResourceLoader.hpp \
@@ -51,6 +53,8 @@ SOURCES += \
     src/dataStructures/CDataManager.cpp \
     src/dataStructures/STerrain.cpp \
     src/dataStructures/SHeightMap.cpp \
+    src/dataStructures/SGroundTruth.cpp \
+    src/dataStructures/STexture.cpp \
     src/loadingModule/CLoadingModule.cpp \
     src/loadingModule/resourceLoader/CResourceLoader.cpp \
     src/loadingModule/resourceLoader/CGroundTruthResourceLoader.cpp \

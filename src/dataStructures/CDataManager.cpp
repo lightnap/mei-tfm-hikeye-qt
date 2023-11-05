@@ -1,7 +1,9 @@
 #include "CDataManager.hpp"
 
+#include "SGroundTruth.hpp"
 #include "SHeightMap.hpp"
 #include "STerrain.hpp"
+#include "STexture.hpp"
 
 #include <QString>
 #include <utility>
@@ -44,4 +46,24 @@ void CDataManager::SetTerrain(std::unique_ptr<STerrain> aTerrain)
 const STerrain& CDataManager::GetTerrain() const
 {
     return *mTerrain;
+}
+
+void CDataManager::SetGroundTruth(std::unique_ptr<SGroundTruth> aGroundTruth)
+{
+    mGroundTruth = std::move(aGroundTruth);
+}
+
+const SGroundTruth& CDataManager::GetGroundTruth() const
+{
+    return *mGroundTruth;
+}
+
+void CDataManager::SetTexture(std::unique_ptr<STexture> aTexture)
+{
+    mTexture = std::move(aTexture);
+}
+
+const STexture& CDataManager::GetTexture() const
+{
+    return *mTexture;
 }

@@ -11,7 +11,7 @@ struct SHeightMap;
 struct STerrainConfig;
 
 /**
- * @brief Class that represents a model of the terrain.
+ * @brief Struct that represents a model of the terrain.
  */
 struct STerrain
 {

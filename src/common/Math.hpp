@@ -21,22 +21,35 @@ inline f64 Lerp(f64 aInitialValue, f64 aFinalValue, f64 aLerpIndex)
     return aInitialValue + aLerpIndex * (aFinalValue - aInitialValue);
 }
 
+/**
+ * @brief Constant depicting pi.
+ */
 constexpr f64 PI = 3.14159265358979323846;
 
+/**
+ * @brief Converts degrees into radians.
+ * @param aDegree: The angle in degrees.
+ * @return The angle in radians.
+ */
 inline f64 DegToRad(f64 aDegree)
 {
     return (PI / 180.0) * aDegree;
 }
 
+/**
+ * @brief Converts radians into degrees.
+ * @param aRadian: The angle in radians.
+ * @return The angle in degrees.
+ */
 inline f64 RadToDeg(f64 aRadian)
 {
     return (180.0 / PI) * aRadian;
 }
 
-// TODO: HK-47 Turn this into a template.
 /**
  * @brief Struct defining a two dimensional vector of f64.
  */
+template<typename tFieldElement>
 struct Vector2D
 {
     /**
@@ -49,13 +62,20 @@ struct Vector2D
      * @param aX: X dimension of the vector.
      * @param aY: Y dimesnion of the vector.
      */
-    Vector2D(f64 aX, f64 aY)
-      : oX(aX)
-      , oY(aY) {};
+    Vector2D(tFieldElement aX, tFieldElement aY);
 
-    f64 oX {0.0}; //!< X coordinate of the vector.
-    f64 oY {0.0}; //!< Y coordinate of the vector.
+    tFieldElement oX {}; //!< X coordinate of the vector.
+    tFieldElement oY {}; //!< Y coordinate of the vector.
 };
+
+/**
+ * @brief Operator to substract two Vector2D.
+ * @param aFirst: A.
+ * @param aSecond: B.
+ * @return A - B.
+ */
+template<typename tFieldElement>
+Vector2D<tFieldElement> operator-(const Vector2D<tFieldElement>& aFirst, const Vector2D<tFieldElement>& aSecond);
 
 // TODO: HK-47 Turn this into a template.
 /**
@@ -101,7 +121,6 @@ struct Vector3D
     f64 oZ {0.0}; //!< Z coordinate of the vector.
 };
 
-// TODO: HK-47 Maybe make this methods of the vector?
 /**
  * @brief Computes the dot product of twoo vectors.
  * @param aFirst: Vector A.
@@ -118,6 +137,7 @@ f64 DotProduct(const Vector3D& aFirst, const Vector3D& aSecond);
  */
 Vector3D CrossProduct(const Vector3D& aFirst, const Vector3D& aSecond);
 
+// TODO: HK-47: This should be a method of the vector.
 /**
  * @brief Returns the norm of a Vector3D.
  * @param aVector: The vector A.
@@ -125,6 +145,7 @@ Vector3D CrossProduct(const Vector3D& aFirst, const Vector3D& aSecond);
  */
 f64 Norm(const Vector3D& aVector);
 
+// TODO: HK-47: This should be a method of the vector.
 /**
  * @brief Returns the direction of a Vector3D (the vector normalized)
  * @param aVector: The vector A.
@@ -146,8 +167,20 @@ Vector3D Translate(Vector3D& aPoint, const Vector3D& aDirection, f64 aDistance);
  */
 struct Box2D
 {
-    Vector2D oMin {}; //!< Minimum bounds point.
-    Vector2D oMax {}; //!< Maximum bounds point.
+    /**
+     * @brief Default constructor.
+     */
+    Box2D() = default;
+
+    /**
+     * @brief Constructor.
+     * @param aMin: Minimum bounds point of the box.
+     * @param aMax: Maximum bounds point of the box.
+     */
+    Box2D(const Vector2D<f64>& aMin, const Vector2D<f64>& aMax);
+
+    Vector2D<f64> oMin {}; //!< Minimum bounds point.
+    Vector2D<f64> oMax {}; //!< Maximum bounds point.
 };
 
 /**
@@ -158,12 +191,40 @@ struct Box3D
     Vector3D oMin {}; //!< Minimum bounds point.
     Vector3D oMax {}; //!< Maximum bounds point.
 
+    // TODO: Move this to the .h.
+
     /**
      * @brief Gets the center of the box.
      * @return The box's center.
      */
     Vector3D GetCenter() const { return 0.5 * (oMin + oMax); }
+
+    /**
+     * @brief Gets the box radius.
+     * @retrun The distance between two opposing corners.
+     */
+    f64 GetRadius() const { return 0.5 * Math::Norm(oMin - oMax); }
+
+    /**
+     * @brief Get the height of the box.
+     * @retrurn Max.X - Min.X.
+     */
+    f64 GetHeight() const { return oMax.oX - oMin.oX; }
+
+    /**
+     * @brief Get the height of the box.
+     * @retrurn Max.Y - Min.Y.
+     */
+    f64 GetWidth() const { return oMax.oY - oMin.oY; }
+
+    /**
+     * @brief Get the height of the box.
+     * @retrurn Max.Z - Min.Z.
+     */
+    f64 GetDepth() const { return oMax.oZ - oMin.oZ; }
 };
 }
+
+#include "Math.tpp"
 
 #endif // MATH_H
