@@ -1,5 +1,4 @@
 ## Clang format document.
-
 ---
 # Use for global setting which will apply to all languages.
 BasedOnStyle: "Mozilla"
@@ -22,6 +21,6 @@ BreakBeforeBraces: "Allman"
 BreakConstructorInitializers: "BeforeComma"
 BreakInheritanceList: "BeforeComma"
 Cpp11BracedListStyle: true
+NamespaceIndentation: "All"
 PackConstructorInitializers: "Never"
 SpaceBeforeCpp11BracedList: true
-...

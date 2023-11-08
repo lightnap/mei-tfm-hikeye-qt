@@ -19,6 +19,8 @@ add_executable(${PROJECT_NAME})
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY
                                                  "${CMAKE_BINARY_DIR}/../bin")
 
+target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:Release>:NDEBUG>)
+
 target_include_directories(${PROJECT_NAME} PRIVATE src src/graphics)
 
 add_subdirectory(src)

@@ -1,4 +1,4 @@
-#include "CTextureResourceLoader.hpp"
+#include "CTracksTextureResourceLoader.hpp"
 
 #include "common/Math.hpp"
 #include "common/Types.hpp"
@@ -16,19 +16,20 @@
 #include <iostream> // TODO: Remove this.
 #include <memory>
 #include <utility>
+
 namespace
 {
-QString SAVE_TO_FILE_NAME {"tracksTexture.png"};
+    QString SAVE_TO_FILE_NAME {"tracksTexture.png"};
 
-[[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CTextureResourceLoader>::Register(Types::eResource::Texture)};
+    [[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CTracksTextureResourceLoader>::Register(Types::eResource::TracksTexture)};
 }
 
-Types::eLoadResult CTextureResourceLoader::LoadResource()
+Types::eLoadResult CTracksTextureResourceLoader::LoadResource()
 {
     // TODO: Remove this.
-    std::cout << "[TextureResource] Loading texture" << std::endl;
+    std::cout << "[TracksTextureResource] Loading tracks texture" << std::endl;
 
-    QImage TextureImage {CreateBackgroundTexture()};
+    QImage TextureImage {mDataManager.GetTexture().oTexture};
     DrawGroundTruth(TextureImage);
 
     // TODO: Why are we mirroring this??
@@ -43,18 +44,7 @@ Types::eLoadResult CTextureResourceLoader::LoadResource()
     return Types::eLoadResult::Successful;
 }
 
-QImage CTextureResourceLoader::CreateBackgroundTexture()
-{
-    const s32 TextureSizeX {static_cast<s32>(mDataManager.GetHeightMap().oResolution.oX)};
-    const s32 TextureSizeY {static_cast<s32>(mDataManager.GetHeightMap().oResolution.oY)};
-
-    QImage TextureImage {TextureSizeX, TextureSizeY, QImage::Format::Format_RGBA8888};
-    TextureImage.fill(QColor(255, 0, 0));
-
-    return TextureImage;
-}
-
-void CTextureResourceLoader::DrawGroundTruth(QImage& aImage)
+void CTracksTextureResourceLoader::DrawGroundTruth(QImage& aImage)
 {
     QPen     Pen {QColor(255, 255, 255), 10, Qt::SolidLine, Qt::SquareCap, Qt::RoundJoin};
     QPainter Painter {&aImage};
@@ -88,7 +78,7 @@ void CTextureResourceLoader::DrawGroundTruth(QImage& aImage)
     }
 }
 
-Math::Vector2D<s32> CTextureResourceLoader::WorldToTexCoords(const Math::Vector2D<f64>& aWorldPoint, const Math::Box2D& aWorldBounds, const QSize& aTextureSize) const
+Math::Vector2D<s32> CTracksTextureResourceLoader::WorldToTexCoords(const Math::Vector2D<f64>& aWorldPoint, const Math::Box2D& aWorldBounds, const QSize& aTextureSize) const
 {
     Math::Vector2D<f64> WorldDisplacement {aWorldPoint - aWorldBounds.oMin};
     Math::Vector2D<f64> WorldSize {aWorldBounds.oMax - aWorldBounds.oMin};

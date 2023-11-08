@@ -8,11 +8,12 @@
 #include <QFile>
 #include <QString>
 
+#include <cassert>
 #include <iostream> //TODO: Remove this.
 
 namespace
 {
-[[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CResourceLoader>::Register(Types::eResource::None)};
+    [[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CResourceLoader>::Register(Types::eResource::None)};
 }
 
 CResourceLoader::CResourceLoader(Types::eResource aResource, CDataManager& aDataManager)
@@ -31,9 +32,7 @@ void CResourceLoader::run()
 
 Types::eLoadResult CResourceLoader::LoadResource()
 {
-    // TODO: HK-34 Assert something here. This should not be called.
-    std::cout << "WARNING: Called the LoadResource of the base module" << std::endl;
-
+    assert(false && "Called the LoadResource of the Base class, which should not be called");
     return Types::eLoadResult::Size;
 }
 

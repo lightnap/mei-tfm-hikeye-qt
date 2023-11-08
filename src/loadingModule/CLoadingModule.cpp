@@ -13,16 +13,17 @@
 
 namespace
 {
-using tResourceLoadOrderType = std::vector<Types::eResource>;                      //!< Type for the order that resources have to be loaded.
-using tResourcesPerType = std::map<Types::eLoadingModule, tResourceLoadOrderType>; //!< Type that relates module types with the resource they load.
+    using tResourceLoadOrderType = std::vector<Types::eResource>;                      //!< Type for the order that resources have to be loaded.
+    using tResourcesPerType = std::map<Types::eLoadingModule, tResourceLoadOrderType>; //!< Type that relates module types with the resource they load.
 
-// clang-format off
-const tResourcesPerType MODULE_RESOURCES
-{
-    {Types::eLoadingModule::Terrain, {Types::eResource::None, Types::eResource::HeightMap, Types::eResource::Terrain}},
-    {Types::eLoadingModule::Tracks,  {Types::eResource::None, Types::eResource::GroundTruth, Types::eResource::Matches, Types::eResource::Queries, Types::eResource::Texture}}
-}; //!< Indicates the resources (and their order) for each module type.
-// clang-format on
+    const tResourcesPerType MODULE_RESOURCES {
+      {Types::eLoadingModule::Terrain, {Types::eResource::None, Types::eResource::HeightMap, Types::eResource::Terrain, Types::eResource::TerrainTexture}},
+      {Types::eLoadingModule::Tracks,
+       {Types::eResource::None,
+        Types::eResource::GroundTruth,
+        Types::eResource::Matches,
+        Types::eResource::Queries,
+        Types::eResource::TracksTexture}}}; //!< Indicates the resources (and their order) for each module type.
 }
 
 CLoadingModule::CLoadingModule(Types::eLoadingModule aModuleType, CDataManager& aDataManager, QStatusBar& aStatusBar)

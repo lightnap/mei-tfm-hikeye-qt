@@ -6,9 +6,9 @@
 #include "loadingModule/resourceLoader/CResourceLoader.hpp"
 
 /**
- * @brief Class that loads the texture to put into the terrain.
+ * @brief Class that loads the texture that has the tracks information.
  */
-class CTextureResourceLoader : public CResourceLoader
+class CTracksTextureResourceLoader : public CResourceLoader
 {
     Q_OBJECT
 
@@ -24,8 +24,6 @@ class CTextureResourceLoader : public CResourceLoader
      * @return Code depicting the loading result.
      */
     Types::eLoadResult LoadResource() override;
-
-    QImage CreateBackgroundTexture();
 
     /**
      * @brief Draws ground truth over the provided image.
