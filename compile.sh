@@ -17,7 +17,7 @@ fi
 
 # Build the project. 
 cd ./build
-cmake ../
+cmake -DCMAKE_BUILD_TYPE=Debug ../
 cmake --build . -j 8
 #bear --output ../compile_commands.json -- make debug -j 6
 
