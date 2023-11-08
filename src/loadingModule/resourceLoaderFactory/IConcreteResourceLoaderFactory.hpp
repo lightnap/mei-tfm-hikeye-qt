@@ -1,7 +1,7 @@
 #ifndef I_CONCRETE_RESOURCE_LOADER_FACTORY_H
 #define I_CONCRETE_RESOURCE_LOADER_FACTORY_H
 
-#include "Types.hpp"
+#include "common/Types.hpp"
 
 class CDataManager;
 class CResourceLoader;

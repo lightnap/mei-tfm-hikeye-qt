@@ -1,8 +1,8 @@
 #ifndef S_GROUND_TRUTH_H
 #define S_GROUND_TRUTH_H
 
-#include "Math.hpp"
-#include "Types.hpp"
+#include "common/Math.hpp"
+#include "common/Types.hpp"
 
 #include <vector>
 

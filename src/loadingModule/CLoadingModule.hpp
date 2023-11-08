@@ -1,9 +1,9 @@
 #ifndef C_LOADING_MODULE_H
 #define C_LOADING_MODULE_H
 
-#include "CDataManager.hpp"
-#include "CResourceLoader.hpp"
-#include "Types.hpp"
+#include "common/Types.hpp"
+#include "dataStructures/CDataManager.hpp"
+#include "loadingModule/resourceLoader/CResourceLoader.hpp"
 
 #include <QObject>
 #include <QPointer>

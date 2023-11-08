@@ -1,7 +1,7 @@
 #ifndef MATH_H
 #define MATH_H
 
-#include "Types.hpp"
+#include "common/Types.hpp"
 #include <cmath>
 
 /**

@@ -1,9 +1,9 @@
 #ifndef C_TEXTURE_RESOURCE_LOADER_H
 #define C_TEXTURE_RESOURCE_LOADER_H
 
-#include "CResourceLoader.hpp"
-#include "Math.hpp"
-#include "Types.hpp"
+#include "common/Math.hpp"
+#include "common/Types.hpp"
+#include "loadingModule/resourceLoader/CResourceLoader.hpp"
 
 /**
  * @brief Class that loads the texture to put into the terrain.

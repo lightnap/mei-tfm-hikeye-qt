@@ -1,9 +1,8 @@
 #ifndef C_RESOURCE_LOADER_H
 #define C_RESOURCE_LOADER_H
 
-#include "CDataManager.hpp"
-
-#include "Types.hpp"
+#include "common/Types.hpp"
+#include "dataStructures/CDataManager.hpp"
 
 #include <QString>
 #include <QThread>

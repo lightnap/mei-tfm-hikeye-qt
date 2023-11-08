@@ -1,6 +1,6 @@
 #include "CMainWindow.hpp"
-#include "CLoadingModule.hpp"
-#include "CMainGraphicsWidget.hpp"
+#include "graphics/CMainGraphicsWidget.hpp"
+#include "loadingModule/CLoadingModule.hpp"
 
 #include <QFileDialog>
 #include <QPushButton>

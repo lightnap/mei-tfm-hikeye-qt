@@ -1,8 +1,8 @@
 #include "SHeightMap.hpp"
 
-#include "CConfigs.hpp"
-#include "Math.hpp"
-#include "Types.hpp"
+#include "common/Math.hpp"
+#include "common/Types.hpp"
+#include "dataStructures/CConfigs.hpp"
 
 #include <QImage>
 

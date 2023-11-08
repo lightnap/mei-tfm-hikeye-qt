@@ -1,7 +1,7 @@
 #include "CQueriesResourceLoader.hpp"
 
-#include "CResourceLoaderFactory.hpp"
-#include "Types.hpp"
+#include "common/Types.hpp"
+#include "loadingModule/resourceLoaderFactory/CResourceLoaderFactory.hpp"
 
 #include <iostream> //TODO: HK-24 Remove this.
 

@@ -1,9 +1,9 @@
 #include "CHeightMapResourceLoader.hpp"
 
-#include "CConfigs.hpp"
-#include "CResourceLoaderFactory.hpp"
-#include "SHeightMap.hpp"
-#include "Types.hpp"
+#include "common/Types.hpp"
+#include "dataStructures/CConfigs.hpp"
+#include "dataStructures/SHeightMap.hpp"
+#include "loadingModule/resourceLoaderFactory/CResourceLoaderFactory.hpp"
 
 #include <QDir>
 #include <QFile>

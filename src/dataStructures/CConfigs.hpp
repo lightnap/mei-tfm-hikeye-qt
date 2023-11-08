@@ -1,8 +1,8 @@
 #ifndef C_CONFIGS_H
 #define C_CONFIGS_H
 
-#include "Math.hpp"
-#include "Types.hpp"
+#include "common/Math.hpp"
+#include "common/Types.hpp"
 
 /**
  * @brief Structure describing the data we must pass to a height map in order for it to be built.

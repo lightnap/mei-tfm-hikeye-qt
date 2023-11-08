@@ -1,10 +1,10 @@
 #include "CTerrainResourceLoader.hpp"
 
-#include "CConfigs.hpp"
-#include "CResourceLoaderFactory.hpp"
-#include "SHeightMap.hpp"
-#include "STerrain.hpp"
-#include "Types.hpp"
+#include "common/Types.hpp"
+#include "dataStructures/CConfigs.hpp"
+#include "dataStructures/SHeightMap.hpp"
+#include "dataStructures/STerrain.hpp"
+#include "loadingModule/resourceLoaderFactory/CResourceLoaderFactory.hpp"
 
 #include <iostream> //TODO: Remove this.
 #include <memory>

@@ -1,8 +1,8 @@
 #ifndef C_TERRAIN_H
 #define C_TERRAIN_H
 
-#include "Math.hpp"
-#include "Types.hpp"
+#include "common/Math.hpp"
+#include "common/Types.hpp"
 
 #include <QOpenGLFunctions>
 #include <vector>

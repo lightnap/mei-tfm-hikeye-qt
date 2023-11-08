@@ -1,8 +1,8 @@
 #ifndef C_QUERIES_RESOURCE_LOADER_H
 #define C_QUERIES_RESOURCE_LOADER_H
 
-#include "CResourceLoader.hpp"
-#include "Types.hpp"
+#include "common/Types.hpp"
+#include "loadingModule/resourceLoader/CResourceLoader.hpp"
 
 /**
  * @brief Class that enriches the ground truth with data through queries.

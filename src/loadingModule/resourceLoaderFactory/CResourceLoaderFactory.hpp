@@ -1,8 +1,8 @@
 #ifndef C_RESOURCE_LOADER_FACTORY_H
 #define C_RESOURCE_LOADER_FACTORY_H
 
-#include "IConcreteResourceLoaderFactory.hpp"
-#include "Types.hpp"
+#include "common/Types.hpp"
+#include "loadingModule/resourceLoaderFactory/IConcreteResourceLoaderFactory.hpp"
 
 #include <memory>
 #include <unordered_map>

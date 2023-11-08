@@ -1,13 +1,13 @@
 #include "CTextureResourceLoader.hpp"
 
-#include "CResourceLoaderFactory.hpp"
-#include "Math.hpp"
-#include "Types.hpp"
+#include "common/Math.hpp"
+#include "common/Types.hpp"
+#include "loadingModule/resourceLoaderFactory/CResourceLoaderFactory.hpp"
 
-#include "CDataManager.hpp"
-#include "SGroundTruth.hpp"
-#include "SHeightMap.hpp"
-#include "STexture.hpp"
+#include "dataStructures/CDataManager.hpp"
+#include "dataStructures/SGroundTruth.hpp"
+#include "dataStructures/SHeightMap.hpp"
+#include "dataStructures/STexture.hpp"
 
 #include <QPainter>
 #include <QPainterPath>
