@@ -1,5 +1,5 @@
-#ifndef C_TEXTURE_RESOURCE_LOADER_H
-#define C_TEXTURE_RESOURCE_LOADER_H
+#ifndef C_TRACKS_TEXTURE_RESOURCE_LOADER_H
+#define C_TRACKS_TEXTURE_RESOURCE_LOADER_H
 
 #include "common/Math.hpp"
 #include "common/Types.hpp"
@@ -41,4 +41,4 @@ class CTracksTextureResourceLoader : public CResourceLoader
     Math::Vector2D<s32> WorldToTexCoords(const Math::Vector2D<f64>& aWorldPoint, const Math::Box2D& aWorldBounds, const QSize& aTextueSize) const;
 };
 
-#endif // C_TEXTURE_RESOURCE_LOADER_H
+#endif // C_TRACKS_TEXTURE_RESOURCE_LOADER_H
