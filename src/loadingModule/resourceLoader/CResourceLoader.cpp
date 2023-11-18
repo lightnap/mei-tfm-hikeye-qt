@@ -9,7 +9,6 @@
 #include <QString>
 
 #include <cassert>
-#include <iostream> //TODO: Remove this.
 
 namespace
 {
@@ -62,7 +61,7 @@ Types::eLoadResult CResourceLoader::OpenFile(QString& aFileName, QFile& aFile)
 
 QString CResourceLoader::GetResourceFilePath(QString& aFile) const
 {
-    // TODO: Redo this.
+    // TODO: Unhardcode this when we have more areas.
     // QString AreaFolderPath {mDataManager.GetFolderPath()};
     // return QDir::cleanPath(AreaFolderPath) + QDir::separator() + aFile;
     return "/home/thedoa1013/code/hikeyeQt/data/matagalls/" + aFile;

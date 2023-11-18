@@ -45,9 +45,12 @@ Math::Vector3D CCustomColourSpectrum::GetColor(f64 aWavelength) const
 
 CCustomColourSpectrum CCustomColourSpectrum::Relief()
 {
-    const std::vector<Math::Vector3D> c = {Math::Vector3D(160, 220, 105) / 255.0,
-                                           Math::Vector3D(1.0, 0.9, 0.45),
-                                           Math::Vector3D(168 / 255.0, 155 / 255.0, 138 / 255.0),
-                                           Math::Vector3D(0.95, 0.95, 0.95)};
-    return CCustomColourSpectrum(c, {0.0, 150.0 / 400.0, 250.0 / 400.0, 400.0 / 400.0});
+    const std::vector<Math::Vector3D> Colours = {Math::Vector3D(160, 220, 105) / 255.0,
+                                                 Math::Vector3D(1.0, 0.9, 0.45),
+                                                 Math::Vector3D(168 / 255.0, 155 / 255.0, 138 / 255.0),
+                                                 Math::Vector3D(0.95, 0.95, 0.95)};
+
+    const std::vector<f64> Anchors {0.0, 150.0 / 400.0, 250.0 / 400.0, 400.0 / 400.0};
+
+    return CCustomColourSpectrum(Colours, Anchors);
 }

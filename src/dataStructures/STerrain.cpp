@@ -7,7 +7,7 @@
 
 #include <QOpenGLFunctions>
 
-#include <iostream> // TODO: Delete this.
+#include <iostream>
 #include <vector>
 
 STerrain::STerrain(const SHeightMap& aHeightMap, const STerrainConfig& aConfig)
@@ -27,8 +27,10 @@ void STerrain::CreateBounds(const SHeightMap& aHeightMap, const STerrainConfig& 
 
 void STerrain::CreateVertices(const SHeightMap& aHeightMap, const STerrainConfig& aConfig)
 {
-    s32 RowCount = aHeightMap.oResolution.oX;
-    s32 ColumnCount = aHeightMap.oResolution.oY;
+    std::cout << "[Terrain] Creating vertices..." << std::endl;
+
+    s32 RowCount = aHeightMap.oResolution.oY;
+    s32 ColumnCount = aHeightMap.oResolution.oX;
 
     Math::Vector2D<f64> Origin {aConfig.oBounds.oMin};
     f64                 CellSize {aConfig.oCellSize};
@@ -36,22 +38,23 @@ void STerrain::CreateVertices(const SHeightMap& aHeightMap, const STerrainConfig
     oVertices.clear();
     oVertices.reserve(3 * RowCount * ColumnCount);
 
-    for (s32 Row {0}; Row < RowCount; Row++)
+    for (s32 Column {0}; Column < ColumnCount; Column++)
     {
-        for (s32 Column {0}; Column < ColumnCount; Column++)
+        for (s32 Row {0}; Row < RowCount; Row++)
         {
             oVertices.push_back(GLfloat(Origin.oX + Row * CellSize));
             oVertices.push_back(GLfloat(Origin.oY + Column * CellSize));
-            oVertices.push_back(GLfloat(aHeightMap.oHeights[Row * ColumnCount + Column]));
+            oVertices.push_back(GLfloat(aHeightMap.oHeights[Column * RowCount + Row]));
         }
     }
 }
 
 void STerrain::CreateTriangles(const SHeightMap& aHeightMap)
 {
-    // TODO: This seems to be the other way around??
-    s32  RowCount = aHeightMap.oResolution.oX;
-    s32  ColumnCount = aHeightMap.oResolution.oY;
+    std::cout << "[Terrain] Creating triangles..." << std::endl;
+
+    s32  RowCount = aHeightMap.oResolution.oY;
+    s32  ColumnCount = aHeightMap.oResolution.oX;
     s32& RowSize {ColumnCount};
     s32& ColumnSize {RowCount};
 
@@ -59,14 +62,19 @@ void STerrain::CreateTriangles(const SHeightMap& aHeightMap)
     oTriangles.clear();
     oTriangles.reserve(3 * oTriangleCount);
 
-    for (s32 Row {1}; Row < RowCount; Row++)
+    for (s32 Column {1}; Column < ColumnCount; Column++)
     {
-        for (s32 Column {1}; Column < ColumnCount; Column++)
+        for (s32 Row {1}; Row < RowCount; Row++)
         {
-            GLuint v00 = (Row - 1) * RowSize + Column - 1;
-            GLuint v01 = (Row - 1) * RowSize + Column;
-            GLuint v10 = Row * RowSize + Column - 1;
-            GLuint v11 = Row * RowSize + Column;
+            // GLuint v00 = (Row - 1) * RowSize + Column - 1;
+            // GLuint v01 = (Row - 1) * RowSize + Column;
+            // GLuint v10 = Row * RowSize + Column - 1;
+            // GLuint v11 = Row * RowSize + Column;
+
+            GLuint v00 = (Column - 1) * ColumnSize + Row - 1;
+            GLuint v01 = (Column - 1) * ColumnSize + Row;
+            GLuint v10 = Column * ColumnSize + Row - 1;
+            GLuint v11 = Column * ColumnSize + Row;
 
             oTriangles.push_back(v00);
             oTriangles.push_back(v01);
@@ -81,17 +89,17 @@ void STerrain::CreateTriangles(const SHeightMap& aHeightMap)
 
 void STerrain::CreateNormals(const SHeightMap& aHeightMap, const STerrainConfig& aConfig)
 {
+    std::cout << "[Terrain] Creating normals..." << std::endl;
+
     s32 RowCount = aHeightMap.oResolution.oY;
     s32 ColumnCount = aHeightMap.oResolution.oX;
-
-    std::cout << "ColumnCount: " << ColumnCount << " RowCount: " << RowCount << std::endl;
 
     oNormals.clear();
     oNormals.reserve(3 * RowCount * ColumnCount);
 
-    for (s32 Row {0}; Row < RowCount; Row++)
+    for (s32 Column {0}; Column < ColumnCount; Column++)
     {
-        for (s32 Column {0}; Column < ColumnCount; Column++)
+        for (s32 Row {0}; Row < RowCount; Row++)
         {
             Math::Vector3D Normal {CreateNormal(Row, Column)};
 
@@ -104,15 +112,11 @@ void STerrain::CreateNormals(const SHeightMap& aHeightMap, const STerrainConfig&
 
 Math::Vector3D STerrain::CreateNormal(s32 Row, s32 Column)
 {
-    // TODO: Do not hardcode these.
+    // TODO: HK-52 Do not hardcode these.
     s32 RowCount {4017};
     s32 ColumnCount {3725};
 
     Math::Vector3D Normal {0.0, 0.0, 1.0};
-    /*if (Column == 0)
-    {
-        std::cout << "Computing normal Row: " << Row << " Column: " << Column << " Index: " << Column * 4017 + Row << std::endl; // TODO: Delete this
-    }*/
 
     if (Row == 0)
     {
@@ -189,10 +193,9 @@ Math::Vector3D STerrain::CreateNormal(s32 Row, s32 Column)
 
 Math::Vector3D STerrain::GetVertex(s32 aRow, s32 aColumn) const
 {
-    // TODO: This should not be hardcoded.
+    // TODO: Hk-52 This should not be hardcoded.
     Math::Vector3D Vertex {0.0};
-    // const s32      VertexIndex {3 * (aRow * 3725 + aColumn)};
-    const s32 VertexIndex {3 * (aColumn * 4017 + aRow)};
+    const s32      VertexIndex {3 * (aColumn * 4017 + aRow)};
 
     Vertex.oX = oVertices.at(VertexIndex);
     Vertex.oY = oVertices.at(VertexIndex + 1);
@@ -203,11 +206,9 @@ Math::Vector3D STerrain::GetVertex(s32 aRow, s32 aColumn) const
 
 Math::Vector3D STerrain::GetNormal(s32 aRow, s32 aColumn) const
 {
-    // TODO: This should not be hardcoded.
-    // TODO: GetVertex index function to share functionality with GetVertex().
+    // TODO: Hk-52 This should not be hardcoded.
     Math::Vector3D Normal {0.0};
-    const s32      VertexIndex {3 * (aRow * 3725 + aColumn)};
-    // const s32 VertexIndex {3 * (aColumn * 4017 + aRow)};
+    const s32      VertexIndex {3 * (aColumn * 4017 + aRow)};
 
     Normal.oX = oNormals.at(VertexIndex);
     Normal.oY = oNormals.at(VertexIndex + 1);

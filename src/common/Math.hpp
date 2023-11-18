@@ -162,7 +162,7 @@ namespace Math
         friend Vector3D operator*(f64 aScalar, const Vector3D& aVector) { return aVector * aScalar; }
         friend Vector3D operator/(const Vector3D& aVector, f64 aScalar) { return (1.0 / aScalar) * aVector; }
 
-        // TODO: Move this to a reasonable place.
+        // TODO: HK-47 Move this to a reasonable place.
         QColor ToQColor() const;
 
         f64 oX {0.0}; //!< X coordinate of the vector.
@@ -211,7 +211,7 @@ namespace Math
      */
     Vector3D Translate(Vector3D& aPoint, const Vector3D& aDirection, f64 aDistance);
 
-    // TODO: Could this be in a triangle struct?
+    // TODO: HK-47 Could this be in a triangle struct?
     /**
      * @brief Returns a vector perpendicular to a given triangle. Vector modulus is the area of the triangle.
      * @param p1 A vertex of the triangle.
@@ -253,8 +253,7 @@ namespace Math
         Vector3D oMin {}; //!< Minimum bounds point.
         Vector3D oMax {}; //!< Maximum bounds point.
 
-        // TODO: Move this to the .h.
-
+        // TODO: HK-47: Move these functions to the cpp.
         /**
          * @brief Gets the center of the box.
          * @return The box's center.

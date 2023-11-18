@@ -2,7 +2,9 @@
 #include "graphics/CMainGraphicsWidget.hpp"
 #include "loadingModule/CLoadingModule.hpp"
 
+#include <QApplication>
 #include <QFileDialog>
+#include <QKeyEvent>
 #include <QPushButton>
 
 #include <memory>
@@ -120,6 +122,14 @@ void CMainWindow::LoadingModuleFinished(Types::eLoadingModule aModule)
     }
 
     SetButtonsEnabled(eButtonsEnabledLayout::Rest);
+}
+
+void CMainWindow::keyPressEvent(QKeyEvent* apEvent)
+{
+    if (apEvent->key() == Qt::Key_Escape)
+    {
+        QApplication::quit();
+    }
 }
 
 void CMainWindow::SetButtonsEnabled(eButtonsEnabledLayout aLayout)

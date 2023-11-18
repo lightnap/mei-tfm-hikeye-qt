@@ -26,7 +26,7 @@ class CCustomColourSpectrum
      */
     Math::Vector3D GetColor(f64 aWavelength) const;
 
-    // TODO: This does not go here.
+    // TODO: Hk-53 This does not go here. Move to a ColorSpectrumPrototypes file where they are data and not methods, when we need more of them.
     /**
      * @brief Gets the color spectrum that we use for reliefs.
      * @return The relief color spectrum.

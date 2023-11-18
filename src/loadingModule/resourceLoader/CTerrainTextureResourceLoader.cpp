@@ -7,7 +7,7 @@
 #include "graphics/CCustomColourSpectrum.hpp"
 #include "loadingModule/resourceLoaderFactory/CResourceLoaderFactory.hpp"
 
-#include <iostream> // TODO: Remove this.
+#include <iostream>
 
 namespace
 {
@@ -16,7 +16,6 @@ namespace
 
 Types::eLoadResult CTerrainTextureResourceLoader::LoadResource()
 {
-    // TODO: Remove this.
     std::cout << "[TerrainTextureResource] Loading terrain texture" << std::endl;
 
     const auto& TerrainModel {mDataManager.GetTerrain()};
@@ -37,44 +36,25 @@ Types::eLoadResult CTerrainTextureResourceLoader::LoadResource()
     {
         for (s32 Row {0}; Row < TextureSizeY; Row++)
         {
-            // const s32 VertexIndex {2 + 3 * (Column * TextureSizeY + Row)};
-            // const f64 Height {TerrainModel.oVertices.at(VertexIndex)};
+            // Terrain lighting.
+            const f64            Height {TerrainModel.GetVertex(Row, Column).oZ};
+            const f64            NormalizedHeight {Math::LinearStep(Height, MinHeight, MaxHeight)}; // TODO: HK-53 Why are we normalizingheight both inside and outside?
+            const Math::Vector3D TerrainColour {ReliefColours.GetColor(NormalizedHeight)};
+            const Math::Vector3D HeightLight {Math::Vector3D(1.0 * TerrainColour.oX, 0.7 * TerrainColour.oY, 0.5 * TerrainColour.oZ)};
 
-            const f64 Height {TerrainModel.GetVertex(Row, Column).oZ};
-
-            // TODO: Clean this.
-            const f64      t {Math::LinearStep(Height, MinHeight, MaxHeight)};
-            Math::Vector3D cz {ReliefColours.GetColor(t)};
-
-            // cz = 0.25 * cz;
-            cz = Math::Vector3D(1 * cz.oX, 0.7 * cz.oY, 0.5 * cz.oZ);
-
-            // Lighting.
-            f64 cs {1.0};
+            // Sun lighting. // TODO: HK-55 Clean this (and understand it). Also improve parameters so shading looks neater.
             f64 Light {Math::DotProduct(TerrainModel.GetNormal(Row, Column), LightDirection)};
             Light = 0.5 * (1.0 + Light);
-            // f64 cs {0.9 * Light};
-            cs *= cs; // cosine like*/
+            f64 cs {0.9 * Light};
+            cs *= cs; // cosine like
+            const Math::Vector3D SunLight {Math::Vector3D {cs}};
 
-            // Normal shading: color is a combination of cool and cold colors according to the orientation
-            Math::Vector3D ambient = 0.25 * Math::Vector3D(1.0, 1.0, 1.0);
-            Math::Vector3D c1 = 0.25 * cs * cz;
-            Math::Vector3D c2 = 0.5 * cs * Math::Vector3D(1.0, 1.0, 1.0);
-            Math::Vector3D c = ambient + c1 + c2;
+            // Ambient light.
+            const Math::Vector3D Ambient {Math::Vector3D {0.5}};
 
-            // std::cout << VertexIndex << std::endl;
-            //  std::cout << "Height: " << Height << " Wavelength " << t << " cz.oX:" << cz.oX << std::endl;
-            if (Column == 0)
-            {
-                std::cout << "Column: " << Column << " Row: " << Row << " MaxHeight: " << MaxHeight << " MinHeight" << MinHeight << std::endl;
-                std::cout << "SizeX: " << TextureSizeX << " SizeY:  " << TextureSizeY << std::endl;
-                std::cout << "Height: " << Height << " Wavelength " << t << " cz.oX:" << cz.oX << std::endl;
-                std::cout << "C: " << c.oX << " " << c.oY << " " << c.oZ << std::endl;
-                std::cout << std::endl;
-            }
+            const Math::Vector3D PixelColor {(0.20 * Ambient + 0.40 * HeightLight + 0.40 * SunLight)};
 
-            // TODO: Why column row and not row column? Because we flipped the image?
-            TextureImage.setPixelColor(Column, Row, c.ToQColor().rgb());
+            TextureImage.setPixelColor(Column, Row, PixelColor.ToQColor().rgb());
         }
     }
 

@@ -6,13 +6,13 @@
 #include "dataStructures/STerrain.hpp"
 #include "loadingModule/resourceLoaderFactory/CResourceLoaderFactory.hpp"
 
-#include <iostream> //TODO: Remove this.
+#include <iostream>
 #include <memory>
 #include <utility>
 
 namespace
 {
-[[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CTerrainResourceLoader>::Register(Types::eResource::Terrain)};
+    [[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CTerrainResourceLoader>::Register(Types::eResource::Terrain)};
 }
 
 Types::eLoadResult CTerrainResourceLoader::LoadResource()
@@ -21,9 +21,9 @@ Types::eLoadResult CTerrainResourceLoader::LoadResource()
     std::cout << "[TerrainResource] Loading terrain model" << std::endl;
 
     STerrainConfig Config;
-    Config.oCellSize = 2.0;       // TODO: HK-49 Turn this into config file (or read from tif).
-    Config.oBounds.oMin.oX = 0.0; // 4633335.0; // TODO: HK-49 Turn this into config file (or read from tif).
-    Config.oBounds.oMin.oY = 0.0; // 444825.0; // TODO: HK-49 Turn this into config file (or read from tif).
+    Config.oCellSize = 2.0;       // TODO: HK-52 Turn this into config file (or read from tif).
+    Config.oBounds.oMin.oX = 0.0; // 4633335.0; // TODO: HK-52 Turn this into config file (or read from tif).
+    Config.oBounds.oMin.oY = 0.0; // 444825.0; // TODO: HK-52 Turn this into config file (or read from tif).
     Config.oBounds.oMax.oX = Config.oCellSize * HeightMap.oResolution.oX;
     Config.oBounds.oMax.oY = Config.oCellSize * HeightMap.oResolution.oY;
 

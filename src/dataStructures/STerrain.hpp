@@ -68,7 +68,6 @@ struct STerrain
      */
     void CreateNormals(const SHeightMap& aHeightMap, const STerrainConfig& aConfig);
 
-    // TODO: This comments.
     /**
      * @brief Creates the normals of a given vertex.
      * @return The vertex.

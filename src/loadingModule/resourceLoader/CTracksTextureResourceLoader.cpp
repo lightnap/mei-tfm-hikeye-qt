@@ -13,7 +13,7 @@
 #include <QPainterPath>
 #include <QPen>
 
-#include <iostream> // TODO: Remove this.
+#include <iostream>
 #include <memory>
 #include <utility>
 
@@ -26,13 +26,12 @@ namespace
 
 Types::eLoadResult CTracksTextureResourceLoader::LoadResource()
 {
-    // TODO: Remove this.
     std::cout << "[TracksTextureResource] Loading tracks texture" << std::endl;
 
     QImage TextureImage {mDataManager.GetTexture().oTexture};
     DrawGroundTruth(TextureImage);
 
-    // TODO: Why are we mirroring this??
+    // TODO: HK-54 Why are we mirroring this??
     QImage TextureImageMirror = std::move(TextureImage).mirrored(true, true);
 
     QString SaveToFilePath {GetResourceFilePath(SAVE_TO_FILE_NAME)};
@@ -56,7 +55,7 @@ void CTracksTextureResourceLoader::DrawGroundTruth(QImage& aImage)
         QPainterPath PathPainter;
         for (u32 PointIndex {0U}; PointIndex < Track.size(); PointIndex++)
         {
-            // TODO: Take min and max values from the terrain resolution.
+            // TODO: HK-52 Take min and max values from the terrain resolution.
             // So avoid being harcoded.
             Math::Vector2D<f64> Min(444825.0, 4633335.0 - 2 * aImage.height());
             Math::Vector2D<f64> Max(444825.0 + 2 * aImage.width(), 4633335.0);

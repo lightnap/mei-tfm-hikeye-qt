@@ -1,12 +1,12 @@
 #include "Math.hpp"
 
-#include <QColor> //TODO: Deñete this.
+#include <QColor> //TODO: HK-47 Delete this.
 
 #include <cmath>
 
 namespace Math
 {
-    // TODO: Move this to a reasonable place.
+    // TODO: HK-47 Move this to a reasonable place. Like in a color utils? Idk
     QColor Vector3D::ToQColor() const
     {
         return QColor(static_cast<s32>(255.0 * Math::Clamp(oX)), static_cast<s32>(255.0 * Math::Clamp(oY)), static_cast<s32>(255.0 * Math::Clamp(oZ)), 255);

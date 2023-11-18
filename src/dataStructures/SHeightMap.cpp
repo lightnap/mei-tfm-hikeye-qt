@@ -21,12 +21,12 @@ SHeightMap::SHeightMap(QImage& aTexture, const SHeightMapConfig& aConfig)
     oHeights.resize(SizeX * SizeY);
     u32 VertexIndex {0U};
 
-    // TODO: HK-42 Why dont we use more performing funcions, like constBits or ScanLine?
+    // TODO: HK-42 Why dont we use more performing funcions, like constBits or constScanLine?
     for (u32 Column {0U}; Column < SizeX; Column++)
     {
         for (u32 Row {0U}; Row < SizeY; Row++)
         {
-            f64 NormalizedHeight {qRed(aTexture.pixel(Column, Row)) / 255.0};
+            f64 NormalizedHeight {aTexture.pixelColor(Column, Row).blueF()};
             oHeights[VertexIndex] = Math::Lerp(MinHeight, MaxHeight, NormalizedHeight);
             VertexIndex++;
         }

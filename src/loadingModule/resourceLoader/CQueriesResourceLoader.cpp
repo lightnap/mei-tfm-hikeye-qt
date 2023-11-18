@@ -3,11 +3,11 @@
 #include "common/Types.hpp"
 #include "loadingModule/resourceLoaderFactory/CResourceLoaderFactory.hpp"
 
-#include <iostream> //TODO: HK-24 Remove this.
+#include <iostream>
 
 namespace
 {
-[[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CQueriesResourceLoader>::Register(Types::eResource::Queries)};
+    [[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CQueriesResourceLoader>::Register(Types::eResource::Queries)};
 }
 
 Types::eLoadResult CQueriesResourceLoader::LoadResource()
