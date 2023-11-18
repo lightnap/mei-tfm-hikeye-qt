@@ -2,17 +2,13 @@
 
 #include "common/Types.hpp"
 
+#include <cassert>
 #include <utility>
 
 CResourceLoader* CResourceLoaderFactory::Create(Types::eResource aResource, CDataManager& aDataManager)
 {
     auto FactoryIt {GetFactories().find(aResource)};
-
-    if (FactoryIt == GetFactories().cend())
-    {
-        // TODO: HK-34 Make an assert here.
-    }
-
+    assert(FactoryIt != GetFactories().cend() && "Error: Resource loader not registered to factory");
     return FactoryIt->second->MakeResourceLoader(aResource, aDataManager);
 }
 

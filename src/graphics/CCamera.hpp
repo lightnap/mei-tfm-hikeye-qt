@@ -66,7 +66,7 @@ class CCamera
      */
     void SetEye(const Math::Vector3D& aEye) { mEye = aEye; }
 
-    // TODO: This should not be necessary.
+    // TODO: HK-43 This should not be necessary.
     /**
      * @brief Sets new values for the near and far planes.
      * @param aNear: The new value for the near plane.

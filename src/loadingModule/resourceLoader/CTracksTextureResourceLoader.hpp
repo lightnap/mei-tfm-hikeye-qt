@@ -1,14 +1,14 @@
-#ifndef C_TEXTURE_RESOURCE_LOADER_H
-#define C_TEXTURE_RESOURCE_LOADER_H
+#ifndef C_TRACKS_TEXTURE_RESOURCE_LOADER_H
+#define C_TRACKS_TEXTURE_RESOURCE_LOADER_H
 
 #include "common/Math.hpp"
 #include "common/Types.hpp"
 #include "loadingModule/resourceLoader/CResourceLoader.hpp"
 
 /**
- * @brief Class that loads the texture to put into the terrain.
+ * @brief Class that loads the texture that has the tracks information.
  */
-class CTextureResourceLoader : public CResourceLoader
+class CTracksTextureResourceLoader : public CResourceLoader
 {
     Q_OBJECT
 
@@ -24,8 +24,6 @@ class CTextureResourceLoader : public CResourceLoader
      * @return Code depicting the loading result.
      */
     Types::eLoadResult LoadResource() override;
-
-    QImage CreateBackgroundTexture();
 
     /**
      * @brief Draws ground truth over the provided image.
@@ -43,4 +41,4 @@ class CTextureResourceLoader : public CResourceLoader
     Math::Vector2D<s32> WorldToTexCoords(const Math::Vector2D<f64>& aWorldPoint, const Math::Box2D& aWorldBounds, const QSize& aTextueSize) const;
 };
 
-#endif // C_TEXTURE_RESOURCE_LOADER_H
+#endif // C_TRACKS_TEXTURE_RESOURCE_LOADER_H

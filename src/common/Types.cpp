@@ -1,4 +1,5 @@
 #include "Types.hpp"
+#include <cassert>
 
 std::string Types::LoadingModuleToString(Types::eLoadingModule aModule)
 {
@@ -19,7 +20,8 @@ std::string Types::LoadingModuleToString(Types::eLoadingModule aModule)
             break;
         }
     }
-    // TODO: HK-34: Add an assert here.
+
+    assert(false && "Tried to convert to string an out of bounds eLoadingModue enum");
     return "";
 }
 
@@ -37,6 +39,11 @@ std::string Types::ResourceToString(Types::eResource aResource)
             return "Terrain";
             break;
         }
+        case Types::eResource::TerrainTexture:
+        {
+            return "TerrainTexture";
+            break;
+        }
         case Types::eResource::GroundTruth:
         {
             return "GroundTruth";
@@ -52,9 +59,9 @@ std::string Types::ResourceToString(Types::eResource aResource)
             return "Queries";
             break;
         }
-        case Types::eResource::Texture:
+        case Types::eResource::TracksTexture:
         {
-            return "Texture";
+            return "TracksTexture";
             break;
         }
         default:
@@ -62,6 +69,7 @@ std::string Types::ResourceToString(Types::eResource aResource)
             break;
         }
     }
-    // TODO: HK-34: Add an assertion here.
+
+    assert(false && "Tried to convert to string an out of bounds eResource enum");
     return "";
 }

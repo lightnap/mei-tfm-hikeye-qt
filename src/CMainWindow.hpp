@@ -55,6 +55,13 @@ class CMainWindow : public QWidget
      */
     void OnLoadInterrupted();
 
+  protected:
+    /**
+     * @brief Manages user keyboard input events.
+     * @param apEvent: Event containing the key press info.
+     */
+    void keyPressEvent(QKeyEvent* apEvent) override;
+
   private:
     /**
      * Enumdescribing the possible states of the buttons in the layout.

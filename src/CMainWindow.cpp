@@ -2,15 +2,17 @@
 #include "graphics/CMainGraphicsWidget.hpp"
 #include "loadingModule/CLoadingModule.hpp"
 
+#include <QApplication>
 #include <QFileDialog>
+#include <QKeyEvent>
 #include <QPushButton>
 
 #include <memory>
 
 namespace
 {
-const auto TERRAIN_MODULE_TYPE {Types::eLoadingModule::Terrain}; //!< Enum for terrain loading module.
-const auto TRACKS_MODULE_TYPE {Types::eLoadingModule::Tracks};   //!< Enum for track loading module.
+    const auto TERRAIN_MODULE_TYPE {Types::eLoadingModule::Terrain}; //!< Enum for terrain loading module.
+    const auto TRACKS_MODULE_TYPE {Types::eLoadingModule::Tracks};   //!< Enum for track loading module.
 }
 
 CMainWindow::CMainWindow(QWidget* aParent)
@@ -112,6 +114,7 @@ void CMainWindow::LoadingModuleFinished(Types::eLoadingModule aModule)
     if (aModule == TERRAIN_MODULE_TYPE)
     {
         mUi.MainGraphics->LoadModel(mDataManager->GetTerrain());
+        mUi.MainGraphics->LoadTexture(mDataManager->GetTexture());
     }
     else if (aModule == TRACKS_MODULE_TYPE)
     {
@@ -119,6 +122,14 @@ void CMainWindow::LoadingModuleFinished(Types::eLoadingModule aModule)
     }
 
     SetButtonsEnabled(eButtonsEnabledLayout::Rest);
+}
+
+void CMainWindow::keyPressEvent(QKeyEvent* apEvent)
+{
+    if (apEvent->key() == Qt::Key_Escape)
+    {
+        QApplication::quit();
+    }
 }
 
 void CMainWindow::SetButtonsEnabled(eButtonsEnabledLayout aLayout)

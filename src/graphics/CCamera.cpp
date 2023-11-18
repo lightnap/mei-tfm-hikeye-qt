@@ -35,7 +35,7 @@ void CCamera::LookAt(const Math::Box3D& aBox)
     mFarPlane = 3 * Radius;
 }
 
-// TODO: This should not be necessary.
+// TODO: HK-43 This should not be necessary.
 void CCamera::SetPlanes(f64 aNear, f64 aFar)
 {
     mNearPlane = aNear;

@@ -21,7 +21,7 @@ grid_top_left = np.array([gt[0], gt[3]])
 
 grid_bottom_right = grid_top_left + np.multiply(elev_grid.shape, cell_size)
 
-# TODO: This can all go in one line (to_latlon accepts arrays).
+# TODO: HK-48 This can all go in one line (to_latlon accepts arrays).
 lat_top_left, lon_top_left = utm.to_latlon(grid_top_left[0], grid_top_left[1], 31, "T")
 lat_bottom_right, lon_bottom_right = utm.to_latlon(
     grid_bottom_right[0], grid_bottom_right[1], 31, "T"

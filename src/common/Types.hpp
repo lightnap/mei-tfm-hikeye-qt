@@ -34,14 +34,15 @@ enum class eLoadingModule
  */
 enum class eResource
 {
-    None = 0,    //!< No resource to be loaded, or empty resource.
-    HeightMap,   //!< Image file with terrain height data.
-    Terrain,     //!< Terrain 3d model.
-    GroundTruth, //!< Graph of tracks we consider as the ground truth.
-    Matches,     //!< Recorded tracks we want to analyze.
-    Queries,     //!< Ground Truth enriched with info from tracks.
-    Texture,     //!< Image containing the queries info, to be displyed on map.
-    Size         //!< Size of this enum.
+    None = 0,       //!< No resource to be loaded, or empty resource.
+    HeightMap,      //!< Image file with terrain height data.
+    Terrain,        //!< Terrain 3d model.
+    TerrainTexture, //!< Shading texture for the terrain.
+    GroundTruth,    //!< Graph of tracks we consider as the ground truth.
+    Matches,        //!< Recorded tracks we want to analyze.
+    Queries,        //!< Ground Truth enriched with info from tracks.
+    TracksTexture,  //!< Image containing the queries info, to be displyed on map.
+    Size            //!< Size of this enum.
 };
 
 /**

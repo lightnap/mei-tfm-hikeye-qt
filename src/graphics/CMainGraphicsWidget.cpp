@@ -18,10 +18,10 @@
 
 namespace
 {
-const QVector3D   BACKGROUND_COLOR {0.5, 0.7, 1.0}; //!< Scene background color.
-const GLuint      EMPTY_VAO {0U};                   //!< Specifies that no vertex array object is being bound.
-const GLuint      EMPTY_SHADER {0U};                //!< Specifies that no shader program is being bound.
-const std::string SHADERS_PATH {"../src/shaders/"}; //!< Path to shader files.
+    const QVector3D   BACKGROUND_COLOR {0.5, 0.7, 1.0}; //!< Scene background color.
+    const GLuint      EMPTY_VAO {0U};                   //!< Specifies that no vertex array object is being bound.
+    const GLuint      EMPTY_SHADER {0U};                //!< Specifies that no shader program is being bound.
+    const std::string SHADERS_PATH {"../src/shaders/"}; //!< Path to shader files.
 }
 
 CMainGraphicsWidget::CMainGraphicsWidget(QWidget* apParent)
@@ -134,7 +134,7 @@ void CMainGraphicsWidget::initializeGL()
     LoadShaders();
     CreateGLBuffers();
 
-    // TODO: Move this to a function (and undertand it).
+    // TODO: HK-45 Move this to a function (and undertand it).
     unsigned char foo {255};
     glGenTextures(1, &mTextureId);
     glBindTexture(GL_TEXTURE_2D, mTextureId);
@@ -158,7 +158,7 @@ void CMainGraphicsWidget::paintGL()
 
     glViewport(0, 0, mWindowWidth, mWindowHeight);
 
-    // TODO: This does not go here.
+    // TODO: HK-43 This does not go here.
     f64 CameraDistance {Math::Norm(mCamera->GetEye() - mSceneBox.GetCenter())};
     f64 SceneRadius {mSceneBox.GetRadius()};
 
@@ -175,7 +175,7 @@ void CMainGraphicsWidget::paintGL()
 
     glUniformMatrix4fv(mTransformUniformId, 1, GL_FALSE, TransformMatrix.data());
 
-    // TODO: Clean this up.
+    // TODO: Hk-46 Clean this up.
     glUniform2f(glGetUniformLocation(mShaderProgram->programId(), "u_worldMin"), mSceneBox.oMin.oX, mSceneBox.oMin.oY);
     glUniform2f(glGetUniformLocation(mShaderProgram->programId(), "u_worldSize"), mSceneBox.GetWidth(), mSceneBox.GetHeight());
 
@@ -305,8 +305,8 @@ void CMainGraphicsWidget::mouseMoveEvent(QMouseEvent* aMouseInfo)
     else if (aMouseInfo->buttons() & Qt::MiddleButton)
     {
         // TODO: HK-43 Put all these speed constansts in the same place.
-        const f64 TRANSLATE_SPEED_X {0.03};
-        const f64 TRANSLATE_SPEED_Y {0.03};
+        const f64 TRANSLATE_SPEED_X {1.0};
+        const f64 TRANSLATE_SPEED_Y {1.0};
 
         mCamera->HorizontalTranslate(MouseDisplacedX * TRANSLATE_SPEED_X);
         mCamera->VerticalTranslate(MouseDisplacedY * TRANSLATE_SPEED_Y);

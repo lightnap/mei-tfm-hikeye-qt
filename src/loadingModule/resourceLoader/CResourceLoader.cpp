@@ -8,11 +8,11 @@
 #include <QFile>
 #include <QString>
 
-#include <iostream> //TODO: Remove this.
+#include <cassert>
 
 namespace
 {
-[[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CResourceLoader>::Register(Types::eResource::None)};
+    [[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CResourceLoader>::Register(Types::eResource::None)};
 }
 
 CResourceLoader::CResourceLoader(Types::eResource aResource, CDataManager& aDataManager)
@@ -31,9 +31,7 @@ void CResourceLoader::run()
 
 Types::eLoadResult CResourceLoader::LoadResource()
 {
-    // TODO: HK-34 Assert something here. This should not be called.
-    std::cout << "WARNING: Called the LoadResource of the base module" << std::endl;
-
+    assert(false && "Called the LoadResource of the Base class, which should not be called");
     return Types::eLoadResult::Size;
 }
 
@@ -63,7 +61,7 @@ Types::eLoadResult CResourceLoader::OpenFile(QString& aFileName, QFile& aFile)
 
 QString CResourceLoader::GetResourceFilePath(QString& aFile) const
 {
-    // TODO: Redo this.
+    // TODO: Unhardcode this when we have more areas.
     // QString AreaFolderPath {mDataManager.GetFolderPath()};
     // return QDir::cleanPath(AreaFolderPath) + QDir::separator() + aFile;
     return "/home/thedoa1013/code/hikeyeQt/data/matagalls/" + aFile;

@@ -2,15 +2,17 @@ target_sources(
     ${PROJECT_NAME}
     PRIVATE CGroundTruthResourceLoader.cpp
             CGroundTruthResourceLoader.hpp
-            CHeightMapResourceLoader.hpp
             CHeightMapResourceLoader.cpp
-            CMatchesResourceLoader.hpp
+            CHeightMapResourceLoader.hpp
             CMatchesResourceLoader.cpp
-            CQueriesResourceLoader.hpp
+            CMatchesResourceLoader.hpp
             CQueriesResourceLoader.cpp
-            CResourceLoader.hpp
+            CQueriesResourceLoader.hpp
             CResourceLoader.cpp
-            CTerrainResourceLoader.hpp
+            CResourceLoader.hpp
             CTerrainResourceLoader.cpp
-            CTextureResourceLoader.hpp
-            CTextureResourceLoader.cpp)
+            CTerrainResourceLoader.hpp
+            CTerrainTextureResourceLoader.cpp
+            CTerrainTextureResourceLoader.hpp
+            CTracksTextureResourceLoader.cpp
+            CTracksTextureResourceLoader.hpp)

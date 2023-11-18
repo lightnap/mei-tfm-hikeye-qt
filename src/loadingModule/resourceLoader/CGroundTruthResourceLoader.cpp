@@ -10,21 +10,20 @@
 #include <QString>
 #include <QXmlStreamReader>
 
-#include <iostream> // TODO: HK-25 Remove this.
+#include <iostream>
 #include <memory>
 #include <utility>
 #include <vector>
 
 namespace
 {
-QString FILE_NAME {"groundTruthUtm.gpx"};
+    QString FILE_NAME {"groundTruthUtm.gpx"};
 
-[[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CGroundTruthResourceLoader>::Register(Types::eResource::GroundTruth)};
+    [[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CGroundTruthResourceLoader>::Register(Types::eResource::GroundTruth)};
 }
 
 Types::eLoadResult CGroundTruthResourceLoader::LoadResource()
 {
-    // TODO: Remove this.
     std::cout << "[GroundTruthResource] Loading ground truth" << std::endl;
 
     QFile              File;
@@ -84,7 +83,7 @@ SGroundTruth::tTrack CGroundTruthResourceLoader::ParseWay(QXmlStreamReader& aXml
             f32 Northing {aXml.attributes().value("northing").toFloat()};
             f32 Easting {aXml.attributes().value("easting").toFloat()};
 
-            // TODO: Do not hardcode this.
+            // TODO: HK-52 Do not hardcode this.
             Math::Vector2D<f64> Min(444825.0, 4633335.0 - 4017.0 * 2.0);
             Math::Vector2D<f64> Max(444825.0 + 3725.0 * 2.0, 4633335.0);
 
