@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This script tries to build the project.
 #TODO: HK-41 Add help and description of flags.

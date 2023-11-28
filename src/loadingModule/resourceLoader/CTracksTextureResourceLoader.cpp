@@ -28,7 +28,9 @@ Types::eLoadResult CTracksTextureResourceLoader::LoadResource()
 {
     std::cout << "[TracksTextureResource] Loading tracks texture" << std::endl;
 
-    QImage TextureImage {mDataManager.GetTexture().oTexture};
+    // TODO: HK-54 Why are we mirroring this??
+    QImage TextureImage {mDataManager.GetTexture().oTexture.mirrored(true, true)};
+
     DrawGroundTruth(TextureImage);
 
     // TODO: HK-54 Why are we mirroring this??
