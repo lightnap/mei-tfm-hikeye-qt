@@ -1,6 +1,8 @@
 #ifndef C_TRACKS_TEXTURE_RESOURCE_LOADER_H
 #define C_TRACKS_TEXTURE_RESOURCE_LOADER_H
 
+#include <QPen>
+
 #include "common/Math.hpp"
 #include "common/Types.hpp"
 #include "loadingModule/resourceLoader/CResourceLoader.hpp"
@@ -30,6 +32,13 @@ class CTracksTextureResourceLoader : public CResourceLoader
      * @param aImage: The image over which we want to draw the ground truth.
      */
     void DrawGroundTruth(QImage& aImage);
+
+    /**
+     * @brief Gets the pen that we should use to draw a given track.
+     * @param aTrackIndex: The track index in the network.
+     * @return The pen.
+     */
+    QPen GetPen(u32 aTrackIndex);
 
     /**
      * @brief Turns world coordinates into row and column of a pixel in a texture.

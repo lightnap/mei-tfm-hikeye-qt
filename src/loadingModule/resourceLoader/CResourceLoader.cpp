@@ -64,5 +64,5 @@ QString CResourceLoader::GetResourceFilePath(QString& aFile) const
     // TODO: Unhardcode this when we have more areas.
     // QString AreaFolderPath {mDataManager.GetFolderPath()};
     // return QDir::cleanPath(AreaFolderPath) + QDir::separator() + aFile;
-    return "/home/thedoa1013/code/hikeyeQt/data/matagalls/" + aFile;
+    return "/home/lightnap/src/hikeyeQt/data/matagalls/" + aFile;
 }

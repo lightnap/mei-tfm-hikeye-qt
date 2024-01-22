@@ -58,6 +58,26 @@ const SGroundTruth& CDataManager::GetGroundTruth() const
     return *mGroundTruth;
 }
 
+void CDataManager::SetMatches(std::unique_ptr<SMatches> aMatches)
+{
+    mMatches = std::move(aMatches);
+}
+
+const SMatches& CDataManager::GetMatches() const
+{
+    return *mMatches;
+}
+
+void CDataManager::SetQueries(std::unique_ptr<SQueries> aQueries)
+{
+    mQueries = std::move(aQueries);
+}
+
+const SQueries& CDataManager::GetQueries() const
+{
+    return *mQueries;
+}
+
 void CDataManager::SetTexture(std::unique_ptr<STexture> aTexture)
 {
     mTexture = std::move(aTexture);

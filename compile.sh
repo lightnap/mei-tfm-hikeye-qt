@@ -6,7 +6,7 @@
 # delete build directory if given the -c flag.
 if [[ $* == *-c* ]]
 then
-    rm -r "./build"
+    rm -rf "./build"
 fi
 
 # Create build folder if it doesnt exists.

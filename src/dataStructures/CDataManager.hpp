@@ -6,6 +6,8 @@
 
 #include "dataStructures/SGroundTruth.hpp"
 #include "dataStructures/SHeightMap.hpp"
+#include "dataStructures/SMatches.hpp"
+#include "dataStructures/SQueries.hpp"
 #include "dataStructures/STerrain.hpp"
 #include "dataStructures/STexture.hpp"
 
@@ -71,6 +73,30 @@ class CDataManager
     const SGroundTruth& GetGroundTruth() const;
 
     /**
+     * @brief Sets the matches. Takes ownership of the object.
+     * @param aMatches: pointer to the matches.
+     */
+    void SetMatches(std::unique_ptr<SMatches> aMatches);
+
+    /**
+     * @brief Gets the matches.
+     * @return The matches.
+     */
+    const SMatches& GetMatches() const;
+
+    /**
+     * @brief Sets the queries. Takes ownership of the object.
+     * @param aQueries: pointer to the queries.
+     */
+    void SetQueries(std::unique_ptr<SQueries> aQueries);
+
+    /**
+     * @brief Gets the queries..
+     * @return The queries.
+     */
+    const SQueries& GetQueries() const;
+
+    /**
      * @brief Sets the terrain texture. Takes ownership of the object.
      * @param aTexture: pointer to the terrain texture.
      */
@@ -88,6 +114,8 @@ class CDataManager
     std::unique_ptr<SHeightMap>   mHeightMap;      //!< Height map of the area.
     std::unique_ptr<STerrain>     mTerrain;        //!< 3D model of area terrain.
     std::unique_ptr<SGroundTruth> mGroundTruth;    //!< Path network we assume is accurate.
+    std::unique_ptr<SMatches>     mMatches;        //!< Measured tracks matched onto the nework.
+    std::unique_ptr<SQueries>     mQueries;        //!< Enriched information on the network.
     std::unique_ptr<STexture>     mTexture;        //!< Texture to draw onto the terrain.
 };
 #endif // C_DATA_MANAGER_H

@@ -5,9 +5,12 @@
 #include "dataStructures/CDataManager.hpp"
 #include "dataStructures/SGroundTruth.hpp"
 #include "loadingModule/resourceLoaderFactory/CResourceLoaderFactory.hpp"
+#include "utilities/CCsvParser.hpp"
+#include "utilities/CWktParser.hpp"
 
 #include <QFile>
 #include <QString>
+#include <QTextStream>
 #include <QXmlStreamReader>
 
 #include <iostream>
@@ -17,7 +20,7 @@
 
 namespace
 {
-    QString FILE_NAME {"groundTruthUtm.gpx"};
+    QString FILE_NAME {"edges.csv"};
 
     [[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CGroundTruthResourceLoader>::Register(Types::eResource::GroundTruth)};
 }
@@ -33,71 +36,18 @@ Types::eLoadResult CGroundTruthResourceLoader::LoadResource()
         return OpenFileResult;
     }
 
-    QXmlStreamReader Xml;
-    Xml.setDevice(&File);
-    SGroundTruth::tNetwork GroundTruthNetwork;
+    QTextStream                    Stream {&File};
+    utilities::CCsvParser::tResult NetworkCSV {utilities::CCsvParser::Parse(Stream)};
 
-    Types::eLoadResult ParseXmlResult {FillGroundTruth(Xml, GroundTruthNetwork)};
-    if (ParseXmlResult != Types::eLoadResult::Successful)
+    SGroundTruth::tNetwork Network;
+
+    for (const auto& Row : NetworkCSV)
     {
-        return OpenFileResult;
+        Network.emplace_back(std::move(utilities::CWktParser::Parse(Row.at(0))));
     }
 
-    std::unique_ptr<SGroundTruth> GroundTruth {std::make_unique<SGroundTruth>(std::move(GroundTruthNetwork))};
+    std::unique_ptr<SGroundTruth> GroundTruth {std::make_unique<SGroundTruth>(std::move(Network))};
     mDataManager.SetGroundTruth(std::move(GroundTruth));
 
     return Types::eLoadResult::Successful;
-}
-
-Types::eLoadResult CGroundTruthResourceLoader::FillGroundTruth(QXmlStreamReader& aXml, SGroundTruth::tNetwork& aNetwork)
-{
-    while (aXml.readNextStartElement())
-    {
-        if (aXml.name() == "note" || aXml.name() == "meta")
-        {
-            aXml.skipCurrentElement();
-        }
-        else if (aXml.name() == "way")
-        {
-            aNetwork.emplace_back(ParseWay(aXml));
-
-            if (isInterruptionRequested())
-            {
-                mLoadErrorMessage = "Interrupted by user";
-                return Types::eLoadResult::Interrupted;
-            }
-        }
-    }
-
-    return Types::eLoadResult::Successful;
-}
-
-SGroundTruth::tTrack CGroundTruthResourceLoader::ParseWay(QXmlStreamReader& aXml)
-{
-    SGroundTruth::tTrack Track {};
-
-    while (aXml.readNextStartElement())
-    {
-        if (aXml.name() == "nd")
-        {
-            f32 Northing {aXml.attributes().value("northing").toFloat()};
-            f32 Easting {aXml.attributes().value("easting").toFloat()};
-
-            // TODO: HK-52 Do not hardcode this.
-            Math::Vector2D<f64> Min(444825.0, 4633335.0 - 4017.0 * 2.0);
-            Math::Vector2D<f64> Max(444825.0 + 3725.0 * 2.0, 4633335.0);
-
-            if (Min.oX < Easting && Easting < Max.oX && Min.oY < Northing && Northing < Max.oY)
-            {
-                Track.emplace_back(Easting, Northing);
-            }
-            aXml.skipCurrentElement();
-        }
-        else
-        {
-            aXml.skipCurrentElement();
-        }
-    }
-
-    return Track;
 }

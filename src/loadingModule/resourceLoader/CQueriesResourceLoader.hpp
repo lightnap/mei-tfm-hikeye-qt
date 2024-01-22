@@ -13,7 +13,7 @@ class CQueriesResourceLoader : public CResourceLoader
 
   public:
     /**
-     * Inherited constructor.
+     * @brief Inherited constructor.
      */
     using CResourceLoader::CResourceLoader;
 
