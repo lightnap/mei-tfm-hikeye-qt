@@ -21,12 +21,12 @@ Math::Vector3D CCustomColourSpectrum::GetColor(f64 aWavelength) const
         return mColors.at(0U);
     }
 
-    if (aWavelength < mAnchors.front())
+    if (aWavelength <= mAnchors.front())
     {
         return mColors.front();
     }
 
-    if (aWavelength > mAnchors.back())
+    if (aWavelength >= mAnchors.back())
     {
         return mColors.back();
     }
@@ -51,6 +51,19 @@ CCustomColourSpectrum CCustomColourSpectrum::Relief()
                                                  Math::Vector3D(0.95, 0.95, 0.95)};
 
     const std::vector<f64> Anchors {0.0, 150.0 / 400.0, 250.0 / 400.0, 400.0 / 400.0};
+
+    return CCustomColourSpectrum(Colours, Anchors);
+}
+
+CCustomColourSpectrum CCustomColourSpectrum::CoolWarm()
+{
+    const std::vector<Math::Vector3D> Colours = {
+      Math::Vector3D(59, 76, 192) / 255.0,
+      Math::Vector3D(242, 242, 242) / 255.0,
+      Math::Vector3D(180, 4, 38) / 255.0,
+    };
+
+    const std::vector<f64> Anchors {0.0, 0.5, 1.0};
 
     return CCustomColourSpectrum(Colours, Anchors);
 }

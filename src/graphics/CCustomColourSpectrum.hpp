@@ -33,6 +33,12 @@ class CCustomColourSpectrum
      */
     static CCustomColourSpectrum Relief();
 
+    /**
+     * @brief Gets the color spectrum that we use for heatmaps. Based on https://www.kennethmoreland.com/color-advice/.
+     * @return The heatmap color spectrum.
+     */
+    static CCustomColourSpectrum CoolWarm();
+
   protected:
     std::vector<Math::Vector3D> mColors;  //!< List of colors in this spectrum.
     std::vector<f64>            mAnchors; //!< Points in the spectrum where each color will be purest.

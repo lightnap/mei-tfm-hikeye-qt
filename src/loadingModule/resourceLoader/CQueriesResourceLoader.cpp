@@ -32,12 +32,13 @@ Types::eLoadResult CQueriesResourceLoader::LoadResource()
         }
     }
 
-    std::cout << "Printing crossing count:" << std::endl;
-    for (const auto Count : CrossingCount)
-    {
-        std::cout << Count << ", ";
-    }
-    std::cout << std::endl;
+    // TODO: Remove this.
+    // std::cout << "Printing crossing count:" << std::endl;
+    // for (const auto Count : CrossingCount)
+    //{
+    //    std::cout << Count << ", ";
+    //}
+    // std::cout << std::endl;
 
     std::unique_ptr<SQueries> Queries = std::make_unique<SQueries>(std::move(CrossingCount));
     mDataManager.SetQueries(std::move(Queries));

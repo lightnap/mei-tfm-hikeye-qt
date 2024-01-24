@@ -8,6 +8,7 @@
 #include "dataStructures/SGroundTruth.hpp"
 #include "dataStructures/SHeightMap.hpp"
 #include "dataStructures/STexture.hpp"
+#include "graphics/CCustomColourSpectrum.hpp"
 
 #include <QPainter>
 #include <QPainterPath>
@@ -84,17 +85,20 @@ void CTracksTextureResourceLoader::DrawGroundTruth(QImage& aImage)
 
 QPen CTracksTextureResourceLoader::GetPen(u32 aTrackIndex)
 {
-    s32         Color {0};
+
     const auto& Queries {mDataManager.GetQueries()};
     const s32   CrossingCount {static_cast<s32>(Queries.oCrossingCount.at(aTrackIndex))};
 
-    Color = 40 * CrossingCount;
-    if (Color > 255)
-    {
-        Color = 255;
-    }
+    static constexpr s32 MAX_CROSSINGS {15};
+    const f32            CrossingsPercentage {std::min(1.0f, static_cast<f32>(CrossingCount) / static_cast<f32>(MAX_CROSSINGS))};
 
-    QPen Pen {QColor(Color, Color, Color), 5, Qt::SolidLine, Qt::SquareCap, Qt::RoundJoin};
+    auto Color {CCustomColourSpectrum::CoolWarm().GetColor(CrossingsPercentage)};
+
+    static constexpr f32 MAX_BRUSH_WIDTH {30.0f};
+    static constexpr f32 MIN_BRUSH_WIDTH {3.0f};
+    const f64            BrushWidth {Math::Lerp(MIN_BRUSH_WIDTH, MAX_BRUSH_WIDTH, CrossingsPercentage)};
+
+    QPen Pen {Color.ToQColor(), BrushWidth, Qt::SolidLine, Qt::SquareCap, Qt::RoundJoin};
     return Pen;
 }
 
