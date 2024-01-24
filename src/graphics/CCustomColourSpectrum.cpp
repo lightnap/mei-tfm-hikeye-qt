@@ -59,7 +59,7 @@ CCustomColourSpectrum CCustomColourSpectrum::CoolWarm()
 {
     const std::vector<Math::Vector3D> Colours = {
       Math::Vector3D(59, 76, 192) / 255.0,
-      Math::Vector3D(242, 242, 242) / 255.0,
+      Math::Vector3D(221, 221, 221) / 255.0,
       Math::Vector3D(180, 4, 38) / 255.0,
     };
 
