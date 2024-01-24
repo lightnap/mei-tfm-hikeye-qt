@@ -59,15 +59,16 @@ void CTracksTextureResourceLoader::DrawGroundTruth(QImage& aImage)
         const auto&  Track {GroundTruth.oNetwork.at(TrackIndex)};
         QPen         Pen {GetPen(TrackIndex)};
         QPainterPath PathPainter;
-        for (u32 PointIndex {0U}; PointIndex < Track.size(); PointIndex++)
+        for (u32 PointIndex {0U}; PointIndex < Track.oPoints.size(); PointIndex++)
         {
             // TODO: HK-52 Take min and max values from the terrain resolution.
             // So avoid being harcoded.
             Math::Vector2D<f64> Min(444825.0, 4633335.0 - 2 * aImage.height());
             Math::Vector2D<f64> Max(444825.0 + 2 * aImage.width(), 4633335.0);
             Math::Box2D         DomainBox {Min, Max};
+            const auto&         Point {Track.oPoints.at(PointIndex)};
 
-            Math::Vector2D<s32> TextureCoordinates {WorldToTexCoords(Track.at(PointIndex), DomainBox, aImage.size())};
+            Math::Vector2D<s32> TextureCoordinates {WorldToTexCoords(Math::Vector2D {Point.oEasting, Point.oNorthing}, DomainBox, aImage.size())};
 
             if (PointIndex == 0U)
             {

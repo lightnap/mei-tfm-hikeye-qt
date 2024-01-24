@@ -117,6 +117,7 @@ void CLoadingModule::LoadFinished()
 {
     mLoadingStatus = eLoadingStatus::Loaded;
     const std::string ModuleType {Types::LoadingModuleToString(mModuleType)};
+    std::cout << "[" << ModuleType << "] DONE!" << std::endl;
     mStatusBar.showMessage(("Finished loading " + ModuleType).c_str(), 2000);
     emit FinishedSignal(mModuleType);
 }

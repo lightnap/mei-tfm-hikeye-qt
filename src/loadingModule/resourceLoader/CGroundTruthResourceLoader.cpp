@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include <memory>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -43,7 +44,18 @@ Types::eLoadResult CGroundTruthResourceLoader::LoadResource()
 
     for (const auto& Row : NetworkCSV)
     {
-        Network.emplace_back(std::move(utilities::CWktParser::Parse(Row.at(0))));
+        const auto& Points {utilities::CWktParser::Parse(Row.at(0))};
+
+        SGroundTruth::STrack Track;
+
+        for (u32 Index {0U}; Index < Points.size(); Index++)
+        {
+            const auto& Point {Points.at(Index)};
+            s64 OsmId {std::stoll(Row.at(Index + 1U))}; // TODO: This does not work if we have more than 2 points in the track, as the csv only has info on the first and the last.
+            Track.oPoints.emplace_back(SGroundTruth::SPoint {.oNorthing = Point.oY, .oEasting = Point.oX, .oOsmId = OsmId});
+        }
+
+        Network.emplace_back(std::move(Track));
     }
 
     std::unique_ptr<SGroundTruth> GroundTruth {std::make_unique<SGroundTruth>(std::move(Network))};

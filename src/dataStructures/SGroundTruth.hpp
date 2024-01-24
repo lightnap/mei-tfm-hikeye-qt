@@ -12,9 +12,25 @@
 struct SGroundTruth
 {
   public:
-    using tPoint = Math::Vector2D<f64>;   //!< Type to represent a point in the track (UTM coordinates).
-    using tTrack = std::vector<tPoint>;   //!< Type to represent a track in the network.
-    using tNetwork = std::vector<tTrack>; //!< Type to represent the ground truth network.
+    /**
+     * @brief Struct that represents a point in UTM coordinates.
+     */
+    struct SPoint
+    {
+        f64 oNorthing {0.0f}; //!< Northing coordinate of point.
+        f64 oEasting {0.0f};  //!< Easting coordiate of point.
+        s64 oOsmId {-1};      //!< Osm Identifier of point.
+    };
+
+    /**
+     * @brief Struct that represents a track: a collection of points.
+     */
+    struct STrack
+    {
+        std::vector<SPoint> oPoints; //!< Vector of points.
+    };
+
+    using tNetwork = std::vector<STrack>; //!< Type to represent the ground truth network.
 
     /**
      * @brief Constructor.
