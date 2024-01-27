@@ -56,47 +56,53 @@ void CTracksTextureResourceLoader::DrawGroundTruth(QImage& aImage)
 
     for (u32 TrackIndex {0U}; TrackIndex < GroundTruth.oNetwork.size(); TrackIndex++)
     {
-        const auto&  Track {GroundTruth.oNetwork.at(TrackIndex)};
-        QPen         Pen {GetPen(TrackIndex)};
-        QPainterPath PathPainter;
-        for (u32 PointIndex {0U}; PointIndex < Track.oPoints.size(); PointIndex++)
+        // Only paint tracks in the unidirectional network so that we don't repeat them.
+        const auto UnidirecctionalTrackIndex {GroundTruth.BidirectionalToUnidirectional(TrackIndex)};
+        if (TrackIndex == UnidirecctionalTrackIndex)
         {
-            // TODO: HK-52 Take min and max values from the terrain resolution.
-            // So avoid being harcoded.
-            Math::Vector2D<f64> Min(444825.0, 4633335.0 - 2 * aImage.height());
-            Math::Vector2D<f64> Max(444825.0 + 2 * aImage.width(), 4633335.0);
-            Math::Box2D         DomainBox {Min, Max};
-            const auto&         Point {Track.oPoints.at(PointIndex)};
-
-            Math::Vector2D<s32> TextureCoordinates {WorldToTexCoords(Math::Vector2D {Point.oEasting, Point.oNorthing}, DomainBox, aImage.size())};
-
-            if (PointIndex == 0U)
+            const auto&  Track {GroundTruth.oNetwork.at(TrackIndex)};
+            QPen         Pen {GetPen(TrackIndex)};
+            QPainterPath PathPainter;
+            for (u32 PointIndex {0U}; PointIndex < Track.oPoints.size(); PointIndex++)
             {
-                PathPainter.moveTo(TextureCoordinates.oX, TextureCoordinates.oY);
+                // TODO: HK-52 Take min and max values from the terrain resolution.
+                // So avoid being harcoded.
+                Math::Vector2D<f64> Min(444825.0, 4633335.0 - 2 * aImage.height());
+                Math::Vector2D<f64> Max(444825.0 + 2 * aImage.width(), 4633335.0);
+                Math::Box2D         DomainBox {Min, Max};
+
+                const auto&         Point {Track.oPoints.at(PointIndex)};
+                Math::Vector2D<s32> TextureCoordinates {WorldToTexCoords(Math::Vector2D {Point.oEasting, Point.oNorthing}, DomainBox, aImage.size())};
+
+                if (PointIndex == 0U)
+                {
+                    PathPainter.moveTo(TextureCoordinates.oX, TextureCoordinates.oY);
+                }
+                else
+                {
+                    PathPainter.lineTo(TextureCoordinates.oX, TextureCoordinates.oY);
+                }
             }
-            else
-            {
-                PathPainter.lineTo(TextureCoordinates.oX, TextureCoordinates.oY);
-            }
+            Painter.setPen(Pen);
+            Painter.drawPath(PathPainter);
         }
-        Painter.setPen(Pen);
-        Painter.drawPath(PathPainter);
     }
 }
 
 QPen CTracksTextureResourceLoader::GetPen(u32 aTrackIndex)
 {
-
     const auto& Queries {mDataManager.GetQueries()};
-    const s32   CrossingCount {static_cast<s32>(Queries.oCrossingCount.at(aTrackIndex))};
+    const auto& CrossingCountIt {Queries.oCrossingCount.find(aTrackIndex)};
+    const bool  CrossingEmpty {CrossingCountIt == Queries.oCrossingCount.end()};
+    s32         CrossingCount {CrossingEmpty ? 0 : static_cast<s32>(Queries.oCrossingCount.at(aTrackIndex))};
 
     static constexpr s32 MAX_CROSSINGS {15};
     const f32            CrossingsPercentage {std::min(1.0f, static_cast<f32>(CrossingCount) / static_cast<f32>(MAX_CROSSINGS))};
 
     auto Color {CCustomColourSpectrum::CoolWarm().GetColor(CrossingsPercentage)};
 
-    static constexpr f32 MAX_BRUSH_WIDTH {30.0f};
-    static constexpr f32 MIN_BRUSH_WIDTH {3.0f};
+    static constexpr f32 MAX_BRUSH_WIDTH {25.0f};
+    static constexpr f32 MIN_BRUSH_WIDTH {5.0f};
     const f64            BrushWidth {Math::Lerp(MIN_BRUSH_WIDTH, MAX_BRUSH_WIDTH, CrossingsPercentage)};
 
     QPen Pen {Color.ToQColor(), BrushWidth, Qt::SolidLine, Qt::SquareCap, Qt::RoundJoin};

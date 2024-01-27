@@ -4,6 +4,7 @@
 #include "common/Math.hpp"
 #include "common/Types.hpp"
 
+#include <map>
 #include <vector>
 
 /**
@@ -38,8 +39,19 @@ struct SGroundTruth
      */
     SGroundTruth(const tNetwork&& aNetwork);
 
+    /**
+     * @brief Gets the index of the track in the unidirectional network corresponing to the track index in the bidirectional network.
+     * @param aTrackIndex: The track's index.
+     * @return The track.
+     */
+    s64 BidirectionalToUnidirectional(s64 aTrackIndex) const;
+
     tNetwork    oNetwork; //!< Ground truth network.
     Math::Box2D oBounds;  //!< Bounding box for the ground truth.
+
+  private:
+    std::map<s64, s64> mRepeatedTracks; //!< Map to indicate repeated tracks in opposite direcions. When tracks A and B are detected to be inverses, we write both indexes if A and
+                                        //!< B in this map. A maps to A and B maps to A.
 };
 
 #endif // S_GROUND_TRUTH_H

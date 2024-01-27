@@ -18,9 +18,8 @@ Types::eLoadResult CQueriesResourceLoader::LoadResource()
     std::cout << "[QueriesResource] Loading queries" << std::endl;
     // TODO: HK-24 Fill this function.
     const auto& GroundTruth {mDataManager.GetGroundTruth()};
-    const auto  NumberOfEdges {GroundTruth.oNetwork.size()};
 
-    SQueries::tCrossingCount CrossingCount(NumberOfEdges, 0);
+    SQueries::tCrossingCount CrossingCount;
 
     const auto& Matches {mDataManager.GetMatches()};
 
@@ -28,7 +27,17 @@ Types::eLoadResult CQueriesResourceLoader::LoadResource()
     {
         for (const auto Edge : Route)
         {
-            CrossingCount.at(Edge)++;
+            const auto UnidirectionalEdgeIndex {GroundTruth.BidirectionalToUnidirectional(Edge)};
+
+            const auto& EdgeCrossingCountIt {CrossingCount.find(UnidirectionalEdgeIndex)};
+            if (EdgeCrossingCountIt != CrossingCount.end())
+            {
+                EdgeCrossingCountIt->second++;
+            }
+            else
+            {
+                CrossingCount[UnidirectionalEdgeIndex] = 1;
+            }
         }
     }
 
@@ -36,7 +45,7 @@ Types::eLoadResult CQueriesResourceLoader::LoadResource()
     // std::cout << "Printing crossing count:" << std::endl;
     // for (const auto Count : CrossingCount)
     //{
-    //    std::cout << Count << ", ";
+    // std::cout << "[" << Count.first << "," << Count.second << "], ";
     //}
     // std::cout << std::endl;
 
