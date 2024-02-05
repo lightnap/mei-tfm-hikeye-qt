@@ -49,6 +49,30 @@ Types::eLoadResult CQueriesResourceLoader::LoadResource()
     //}
     // std::cout << std::endl;
 
+    // TODO: Remove this.
+    // Print crossings count historigram.
+    std::map<s32, s32> CrossingsCountHistogram;
+    for (const auto& [_, Count] : CrossingCount)
+    {
+        const auto HistogramIt {CrossingsCountHistogram.find(Count)};
+        if (HistogramIt == CrossingsCountHistogram.end())
+        {
+            CrossingsCountHistogram[Count] = 1;
+        }
+        else
+        {
+            HistogramIt->second++;
+        }
+    }
+
+    std::cout << "Printing CrossingsCount Hisogram:" << std::endl;
+
+    for (const auto& [Crossings, TimesItHappened] : CrossingsCountHistogram)
+    {
+        std::cout << "A track crossed: " << Crossings << " was found: " << TimesItHappened << " times" << std::endl;
+        // std::cout << Crossings << std::endl;
+    }
+
     std::unique_ptr<SQueries> Queries = std::make_unique<SQueries>(std::move(CrossingCount));
     mDataManager.SetQueries(std::move(Queries));
 

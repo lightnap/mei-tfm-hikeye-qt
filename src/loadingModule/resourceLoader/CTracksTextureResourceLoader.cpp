@@ -96,16 +96,16 @@ QPen CTracksTextureResourceLoader::GetPen(u32 aTrackIndex)
     const bool  CrossingEmpty {CrossingCountIt == Queries.oCrossingCount.end()};
     s32         CrossingCount {CrossingEmpty ? 0 : static_cast<s32>(Queries.oCrossingCount.at(aTrackIndex))};
 
-    static constexpr s32 MAX_CROSSINGS {15};
+    static constexpr s32 MAX_CROSSINGS {30};
     const f32            CrossingsPercentage {std::min(1.0f, static_cast<f32>(CrossingCount) / static_cast<f32>(MAX_CROSSINGS))};
 
     auto Color {CCustomColourSpectrum::CoolWarm().GetColor(CrossingsPercentage)};
 
-    static constexpr f32 MAX_BRUSH_WIDTH {25.0f};
+    static constexpr f32 MAX_BRUSH_WIDTH {20.0f};
     static constexpr f32 MIN_BRUSH_WIDTH {5.0f};
     const f64            BrushWidth {Math::Lerp(MIN_BRUSH_WIDTH, MAX_BRUSH_WIDTH, CrossingsPercentage)};
 
-    QPen Pen {Color.ToQColor(), BrushWidth, Qt::SolidLine, Qt::SquareCap, Qt::RoundJoin};
+    QPen Pen {Color.ToQColor(), BrushWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin};
     return Pen;
 }
 
