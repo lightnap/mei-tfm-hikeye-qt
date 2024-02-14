@@ -37,7 +37,7 @@ Types::eLoadResult CTracksTextureResourceLoader::LoadResource()
     QString SaveToFilePath {GetResourceFilePath(SAVE_TO_FILE_NAME)};
 
     // TODO: HK-54 Why are we mirroring this??
-    TextureImage.mirrored(false, true).save(SaveToFilePath);
+    // TextureImage.mirrored(false, true).save(SaveToFilePath);
 
     // TODO: HK-54 Why are we mirroring this??
     QImage TextureImageMirror = std::move(TextureImage).mirrored(true, true);

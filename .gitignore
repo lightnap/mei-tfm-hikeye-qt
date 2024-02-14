@@ -27,6 +27,9 @@ bin/
 *.dll
 *.dylib
 
+# Profiling
+perf.data
+
 # Qt-es
 object_script.*.Release
 object_script.*.Debug
