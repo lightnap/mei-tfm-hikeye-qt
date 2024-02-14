@@ -20,7 +20,6 @@
 
 namespace
 {
-    QString SAVE_TO_FILE_NAME {"tracksTexture.png"};
 
     [[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CTracksTextureResourceLoader>::Register(Types::eResource::TracksTexture)};
 }
@@ -33,8 +32,6 @@ Types::eLoadResult CTracksTextureResourceLoader::LoadResource()
     QImage TextureImage {mDataManager.GetTexture().oTexture.mirrored(true, true)};
 
     DrawGroundTruth(TextureImage);
-
-    QString SaveToFilePath {GetResourceFilePath(SAVE_TO_FILE_NAME)};
 
     // TODO: HK-54 Why are we mirroring this??
     // TextureImage.mirrored(false, true).save(SaveToFilePath);

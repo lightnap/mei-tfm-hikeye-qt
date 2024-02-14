@@ -10,9 +10,12 @@ target_sources(
             CQueriesResourceLoader.hpp
             CResourceLoader.cpp
             CResourceLoader.hpp
+            CSaveImageResourceLoader.cpp
+            CSaveImageResourceLoader.hpp
             CTerrainResourceLoader.cpp
             CTerrainResourceLoader.hpp
             CTerrainTextureResourceLoader.cpp
             CTerrainTextureResourceLoader.hpp
             CTracksTextureResourceLoader.cpp
-            CTracksTextureResourceLoader.hpp)
+            CTracksTextureResourceLoader.hpp
+        )

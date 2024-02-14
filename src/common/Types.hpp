@@ -19,56 +19,58 @@ using f64 = double; //!< Type for floating point number of 8 bytes.
 
 namespace Types
 {
-/**
- * @brief Enum describing possible Loading Module types.
- */
-enum class eLoadingModule
-{
-    Terrain = 0, //!< Loading module that loads terrain info.
-    Tracks,      //!< Loading module that loads tack info.
-    Size         //!< Size of this enum.
-};
+    /**
+     * @brief Enum describing possible Loading Module types.
+     */
+    enum class eLoadingModule
+    {
+        Terrain = 0, //!< Loading module that loads terrain info.
+        Tracks,      //!< Loading module that loads tack info.
+        SaveImage,   //!< Loading module that saves an image into file.
+        Size         //!< Size of this enum.
+    };
 
-/**
- * @brief Enum describing the several resources to be loaded.
- */
-enum class eResource
-{
-    None = 0,       //!< No resource to be loaded, or empty resource.
-    HeightMap,      //!< Image file with terrain height data.
-    Terrain,        //!< Terrain 3d model.
-    TerrainTexture, //!< Shading texture for the terrain.
-    GroundTruth,    //!< Graph of tracks we consider as the ground truth.
-    Matches,        //!< Recorded tracks we want to analyze.
-    Queries,        //!< Ground Truth enriched with info from tracks.
-    TracksTexture,  //!< Image containing the queries info, to be displyed on map.
-    Size            //!< Size of this enum.
-};
+    /**
+     * @brief Enum describing the several resources to be loaded.
+     */
+    enum class eResource
+    {
+        None = 0,       //!< No resource to be loaded, or empty resource.
+        HeightMap,      //!< Image file with terrain height data.
+        Terrain,        //!< Terrain 3d model.
+        TerrainTexture, //!< Shading texture for the terrain.
+        GroundTruth,    //!< Graph of tracks we consider as the ground truth.
+        Matches,        //!< Recorded tracks we want to analyze.
+        Queries,        //!< Ground Truth enriched with info from tracks.
+        TracksTexture,  //!< Image containing the queries info, to be displyed on map.
+        SaveImage,      //!< Image to be saved on filesystem.
+        Size,           //!< Size of this enum.
+    };
 
-/**
- * @brief Enum describing possible errors while loading resource.
- */
-enum class eLoadResult
-{
-    Successful = 0, //!< No error while loading.
-    Interrupted,    //!< Load interrupted by user.
-    Error,          //!< Load stopped due to error.
-    Size            //!< Size of this enum.
-};
+    /**
+     * @brief Enum describing possible errors while loading resource.
+     */
+    enum class eLoadResult
+    {
+        Successful = 0, //!< No error while loading.
+        Interrupted,    //!< Load interrupted by user.
+        Error,          //!< Load stopped due to error.
+        Size            //!< Size of this enum.
+    };
 
-/**
- * @brief Reflection for the eResource Enum.
- * @param aModuleType Moduletype enum we want to turn into string.
- * @retrun String version of the Moduletype enum.
- */
-std::string ResourceToString(Types::eResource aResource);
+    /**
+     * @brief Reflection for the eResource Enum.
+     * @param aModuleType Moduletype enum we want to turn into string.
+     * @retrun String version of the Moduletype enum.
+     */
+    std::string ResourceToString(Types::eResource aResource);
 
-/**
- * @brief Reflection for the eModuleType Enum.
- * @param aModuleType eModuletype enum we want to turn into string.
- * @retrun String version of the Moduletype enum.
- */
-std::string LoadingModuleToString(Types::eLoadingModule aModule);
+    /**
+     * @brief Reflection for the eModuleType Enum.
+     * @param aModuleType eModuletype enum we want to turn into string.
+     * @retrun String version of the Moduletype enum.
+     */
+    std::string LoadingModuleToString(Types::eLoadingModule aModule);
 }
 
 #endif // TYPES_H

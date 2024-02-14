@@ -15,6 +15,11 @@ std::string Types::LoadingModuleToString(Types::eLoadingModule aModule)
             return "Tracks";
             break;
         }
+        case Types::eLoadingModule::SaveImage:
+        {
+            return "SaveImage";
+            break;
+        }
         default:
         {
             break;
@@ -62,6 +67,11 @@ std::string Types::ResourceToString(Types::eResource aResource)
         case Types::eResource::TracksTexture:
         {
             return "TracksTexture";
+            break;
+        }
+        case Types::eResource::SaveImage:
+        {
+            return "SaveImage";
             break;
         }
         default:

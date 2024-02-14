@@ -125,6 +125,16 @@
          </widget>
         </item>
         <item>
+         <widget class="QPushButton" name="SaveImageBtn">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Save Image</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="CancelBtn">
           <property name="enabled">
            <bool>false</bool>

@@ -45,6 +45,11 @@ class CMainWindow : public QWidget
     void CancelLoadButtonPressed();
 
     /**
+     * @brief Slot for reacting to save image button press.
+     */
+    void SaveImageButtonPressed();
+
+    /**
      * @brief Gets called when a loading module has finished.
      * @param aModule Type of the module that has finished loading.
      */
@@ -71,7 +76,8 @@ class CMainWindow : public QWidget
         Rest = 0,  //!< App is at rest.
         Loading,   //!< App is performing a load process.
         Canceling, //!< App is performing a canceling process.
-        Size       //!< Size of this enum.
+        Loaded,    //!< App has finished loaded process.
+        Size,      //!< Size of this enum.
     };
 
     /**

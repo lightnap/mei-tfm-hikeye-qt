@@ -17,13 +17,27 @@ namespace
     using tResourcesPerType = std::map<Types::eLoadingModule, tResourceLoadOrderType>; //!< Type that relates module types with the resource they load.
 
     const tResourcesPerType MODULE_RESOURCES {
-      {Types::eLoadingModule::Terrain, {Types::eResource::None, Types::eResource::HeightMap, Types::eResource::Terrain, Types::eResource::TerrainTexture}},
+      {Types::eLoadingModule::Terrain,
+       {
+         Types::eResource::None,
+         Types::eResource::HeightMap,
+         Types::eResource::Terrain,
+         Types::eResource::TerrainTexture,
+         Types::eResource::GroundTruth,
+         Types::eResource::Matches,
+       }},
       {Types::eLoadingModule::Tracks,
-       {Types::eResource::None,
-        Types::eResource::GroundTruth,
-        Types::eResource::Matches,
-        Types::eResource::Queries,
-        Types::eResource::TracksTexture}}}; //!< Indicates the resources (and their order) for each module type.
+       {
+         Types::eResource::None,
+         Types::eResource::Queries,
+         Types::eResource::TracksTexture,
+       }},
+      {Types::eLoadingModule::SaveImage,
+       {
+         Types::eResource::None,
+         Types::eResource::SaveImage,
+       }},
+    }; //!< Indicates the resources (and their order) for each module type.
 }
 
 CLoadingModule::CLoadingModule(Types::eLoadingModule aModuleType, CDataManager& aDataManager, QStatusBar& aStatusBar)

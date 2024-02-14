@@ -7,12 +7,14 @@
 #include <QKeyEvent>
 #include <QPushButton>
 
+#include <iostream>
 #include <memory>
 
 namespace
 {
-    const auto TERRAIN_MODULE_TYPE {Types::eLoadingModule::Terrain}; //!< Enum for terrain loading module.
-    const auto TRACKS_MODULE_TYPE {Types::eLoadingModule::Tracks};   //!< Enum for track loading module.
+    const auto TERRAIN_MODULE_TYPE {Types::eLoadingModule::Terrain};      //!< Enum for terrain loading module.
+    const auto TRACKS_MODULE_TYPE {Types::eLoadingModule::Tracks};        //!< Enum for track loading module.
+    const auto SAVE_IMAGE_MODULE_TYPE {Types::eLoadingModule::SaveImage}; //!< Enum for save image loading module.
 }
 
 CMainWindow::CMainWindow(QWidget* aParent)
@@ -32,6 +34,7 @@ void CMainWindow::CreateLoadingModules()
 {
     mLoadingModulesMap[TERRAIN_MODULE_TYPE] = std::make_unique<CLoadingModule>(TERRAIN_MODULE_TYPE, *mDataManager, *mUi.StatusBar);
     mLoadingModulesMap[TRACKS_MODULE_TYPE] = std::make_unique<CLoadingModule>(TRACKS_MODULE_TYPE, *mDataManager, *mUi.StatusBar);
+    mLoadingModulesMap[SAVE_IMAGE_MODULE_TYPE] = std::make_unique<CLoadingModule>(SAVE_IMAGE_MODULE_TYPE, *mDataManager, *mUi.StatusBar);
 }
 
 void CMainWindow::BindActions()
@@ -40,12 +43,15 @@ void CMainWindow::BindActions()
     connect(mUi.LoadTracksBtn, &QPushButton::clicked, this, &CMainWindow::LoadTracksButtonPressed);
     connect(mUi.CancelBtn, &QPushButton::clicked, this, &CMainWindow::CancelLoadButtonPressed);
     connect(mUi.OpenFolderBtn, &QPushButton::clicked, this, &CMainWindow::FolderButtonPressed);
+    connect(mUi.SaveImageBtn, &QPushButton::clicked, this, &CMainWindow::SaveImageButtonPressed);
 
     connect(mLoadingModulesMap[TERRAIN_MODULE_TYPE].get(), &CLoadingModule::FinishedSignal, this, &CMainWindow::LoadingModuleFinished);
     connect(mLoadingModulesMap[TRACKS_MODULE_TYPE].get(), &CLoadingModule::FinishedSignal, this, &CMainWindow::LoadingModuleFinished);
+    connect(mLoadingModulesMap[SAVE_IMAGE_MODULE_TYPE].get(), &CLoadingModule::FinishedSignal, this, &CMainWindow::LoadingModuleFinished);
 
     connect(mLoadingModulesMap[TERRAIN_MODULE_TYPE].get(), &CLoadingModule::LoadInterrupted, this, &CMainWindow::OnLoadInterrupted);
     connect(mLoadingModulesMap[TRACKS_MODULE_TYPE].get(), &CLoadingModule::LoadInterrupted, this, &CMainWindow::OnLoadInterrupted);
+    connect(mLoadingModulesMap[SAVE_IMAGE_MODULE_TYPE].get(), &CLoadingModule::LoadInterrupted, this, &CMainWindow::OnLoadInterrupted);
 }
 
 void CMainWindow::FolderButtonPressed()
@@ -104,6 +110,12 @@ void CMainWindow::CancelLoadButtonPressed()
     }
 }
 
+void CMainWindow::SaveImageButtonPressed()
+{
+    SetButtonsEnabled(eButtonsEnabledLayout::Loading);
+    mLoadingModulesMap.at(SAVE_IMAGE_MODULE_TYPE)->LaunchLoadingModule();
+}
+
 void CMainWindow::OnLoadInterrupted()
 {
     SetButtonsEnabled(eButtonsEnabledLayout::Rest);
@@ -111,17 +123,34 @@ void CMainWindow::OnLoadInterrupted()
 
 void CMainWindow::LoadingModuleFinished(Types::eLoadingModule aModule)
 {
-    if (aModule == TERRAIN_MODULE_TYPE)
+    switch (aModule)
     {
-        mUi.MainGraphics->LoadModel(mDataManager->GetTerrain());
-        mUi.MainGraphics->LoadTexture(mDataManager->GetTexture());
-    }
-    else if (aModule == TRACKS_MODULE_TYPE)
-    {
-        mUi.MainGraphics->LoadTexture(mDataManager->GetTexture());
-    }
+        case TERRAIN_MODULE_TYPE:
+        {
+            mUi.MainGraphics->LoadModel(mDataManager->GetTerrain());
+            mUi.MainGraphics->LoadTexture(mDataManager->GetTexture());
+            SetButtonsEnabled(eButtonsEnabledLayout::Rest);
+            break;
+        }
+        case TRACKS_MODULE_TYPE:
+        {
+            mUi.MainGraphics->LoadTexture(mDataManager->GetTexture());
+            SetButtonsEnabled(eButtonsEnabledLayout::Loaded);
+            break;
+        }
+        case SAVE_IMAGE_MODULE_TYPE:
+        {
+            SetButtonsEnabled(eButtonsEnabledLayout::Loaded);
+            const std::string Message {"Image successfully saved"};
+            mUi.StatusBar->showMessage(Message.c_str(), 5000);
 
-    SetButtonsEnabled(eButtonsEnabledLayout::Rest);
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
 }
 
 void CMainWindow::keyPressEvent(QKeyEvent* apEvent)
@@ -134,26 +163,32 @@ void CMainWindow::keyPressEvent(QKeyEvent* apEvent)
 
 void CMainWindow::SetButtonsEnabled(eButtonsEnabledLayout aLayout)
 {
-    std::vector<bool> ButtonsEnabled(4, false);
+    std::vector<bool> ButtonsEnabled(5, false);
 
     switch (aLayout)
     {
         case eButtonsEnabledLayout::Rest:
         {
             ButtonsEnabled.clear();
-            ButtonsEnabled = {true, true, true, false};
+            ButtonsEnabled = {true, true, true, false, false};
             break;
         }
         case eButtonsEnabledLayout::Loading:
         {
             ButtonsEnabled.clear();
-            ButtonsEnabled = {false, false, false, true};
+            ButtonsEnabled = {false, false, false, true, false};
             break;
         }
         case eButtonsEnabledLayout::Canceling:
         {
             ButtonsEnabled.clear();
-            ButtonsEnabled = {false, false, false, false};
+            ButtonsEnabled = {false, false, false, false, false};
+            break;
+        }
+        case eButtonsEnabledLayout::Loaded:
+        {
+            ButtonsEnabled.clear();
+            ButtonsEnabled = {true, true, true, false, true};
             break;
         }
         default:
@@ -162,9 +197,11 @@ void CMainWindow::SetButtonsEnabled(eButtonsEnabledLayout aLayout)
         }
     }
 
-    // TODO: HK-40. This could be turned into an enum.
+    // TODO: HK-40. This could be turned into an enum. Like instead of a vector,
+    // a map from an enum (each entry representing one of the buttons) to a bool.
     mUi.OpenFolderBtn->setEnabled(ButtonsEnabled.at(0U));
     mUi.LoadTracksBtn->setEnabled(ButtonsEnabled.at(1U));
     mUi.LoadTerrainBtn->setEnabled(ButtonsEnabled.at(2U));
     mUi.CancelBtn->setEnabled(ButtonsEnabled.at(3U));
+    mUi.SaveImageBtn->setEnabled(ButtonsEnabled.at(4U));
 }
