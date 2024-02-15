@@ -22,31 +22,32 @@ namespace
     }
 }
 
-SGroundTruth::SGroundTruth(const tNetwork&& aNetwork)
-  : oNetwork(std::move(aNetwork))
+SGroundTruth::SGroundTruth(const tNetwork&& aBidirectionalNetwork)
 {
 
     // NOTE: We are assuming that having same beginning and endpoint means having the same track.
     // This works since right now our tracks are just segments, with two points.
     // But this could (will) fail if we ever have longer tracks.
+    oNetwork.clear();
 
     std::unordered_map<size_t, STrackEndpoints> VisitedTrackEnpoints;
-    for (size_t TrackIndex {0U}; TrackIndex < aNetwork.size(); TrackIndex++)
+    for (size_t TrackIndex {0U}; TrackIndex < aBidirectionalNetwork.size(); TrackIndex++)
     {
-        const auto&     Track {aNetwork.at(TrackIndex).oPoints};
+        const auto&     Track {aBidirectionalNetwork.at(TrackIndex).oPoints};
         STrackEndpoints EndPoints {.FirstEndPoint = Track.front().oOsmId, .SecondEndPoint = Track.back().oOsmId};
-        const auto&     EndPointIt {
+        const auto&     VisitedTrackIt {
           std::find_if(VisitedTrackEnpoints.begin(), VisitedTrackEnpoints.end(), [&EndPoints](const auto& VisitedTrackIt) { return VisitedTrackIt.second == EndPoints; })};
 
-        if (EndPointIt != VisitedTrackEnpoints.end())
+        if (VisitedTrackIt != VisitedTrackEnpoints.end())
         {
             // Already seen this track, maybe in reverse order. Mark it as repeated.
-            mRepeatedTracks[TrackIndex] = EndPointIt->first;
+            mBiToUniIndices[TrackIndex] = mBiToUniIndices[VisitedTrackIt->first];
         }
         else
         {
             // New track, repeated index will map to itself.
-            mRepeatedTracks[TrackIndex] = TrackIndex;
+            mBiToUniIndices[TrackIndex] = oNetwork.size();
+            oNetwork.push_back(aBidirectionalNetwork[TrackIndex]);
             VisitedTrackEnpoints[TrackIndex] = EndPoints;
         }
     }
@@ -54,8 +55,8 @@ SGroundTruth::SGroundTruth(const tNetwork&& aNetwork)
 
 s64 SGroundTruth::BidirectionalToUnidirectional(s64 aTrackIndex) const
 {
-    const auto& TrackIt {mRepeatedTracks.find(aTrackIndex)};
-    if (TrackIt != mRepeatedTracks.end())
+    const auto& TrackIt {mBiToUniIndices.find(aTrackIndex)};
+    if (TrackIt != mBiToUniIndices.end())
     {
         return TrackIt->second;
     }

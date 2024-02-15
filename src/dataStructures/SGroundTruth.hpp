@@ -4,7 +4,7 @@
 #include "common/Math.hpp"
 #include "common/Types.hpp"
 
-#include <map>
+#include <unordered_map>
 #include <vector>
 
 /**
@@ -50,8 +50,8 @@ struct SGroundTruth
     Math::Box2D oBounds;  //!< Bounding box for the ground truth.
 
   private:
-    std::map<s64, s64> mRepeatedTracks; //!< Map to indicate repeated tracks in opposite direcions. When tracks A and B are detected to be inverses, we write both indexes if A and
-                                        //!< B in this map. A maps to A and B maps to A.
+    std::unordered_map<s64, s64> mBiToUniIndices; //!< Map to indicate repeated tracks in opposite direcions. When tracks A and B are detected to be inverses, we write both indexes
+                                                  //!< if A and B in this map. A maps to A and B maps to A.
 };
 
 #endif // S_GROUND_TRUTH_H

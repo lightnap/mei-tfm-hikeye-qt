@@ -59,6 +59,17 @@ namespace Types
     };
 
     /**
+     * @brief Enum describing the possible strategies we can use to paint info from matchings.
+     */
+    enum class ePaintStrategy
+    {
+        None,                   //!< No strategy, all painting is done the same.
+        CountCrossings,         //!< Heatmap depending on how many times a track was crossed.
+        CountCrossingsPerMatch, //!< Heatmap depending on how many times a track was crossed. Multiple corssings on one matching count as one.
+        Speed,                  //!< Headmap based on speed.
+    };
+
+    /**
      * @brief Reflection for the eResource Enum.
      * @param aModuleType Moduletype enum we want to turn into string.
      * @retrun String version of the Moduletype enum.

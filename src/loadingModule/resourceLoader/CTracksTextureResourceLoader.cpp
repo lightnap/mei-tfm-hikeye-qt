@@ -14,8 +14,10 @@
 #include <QPainterPath>
 #include <QPen>
 
+#include <algorithm>
 #include <iostream>
 #include <memory>
+#include <set>
 #include <utility>
 
 namespace
@@ -53,54 +55,88 @@ void CTracksTextureResourceLoader::DrawGroundTruth(QImage& aImage)
 
     for (u32 TrackIndex {0U}; TrackIndex < GroundTruth.oNetwork.size(); TrackIndex++)
     {
-        // Only paint tracks in the unidirectional network so that we don't repeat them.
-        const auto UnidirecctionalTrackIndex {GroundTruth.BidirectionalToUnidirectional(TrackIndex)};
-        if (TrackIndex == UnidirecctionalTrackIndex)
+        const auto&  Track {GroundTruth.oNetwork.at(TrackIndex)};
+        const auto   PaintingPercentage {GetPaintingPercentage(TrackIndex, Types::ePaintStrategy::CountCrossings)};
+        QPen         Pen {GetPen(PaintingPercentage)};
+        QPainterPath PathPainter;
+
+        for (u32 PointIndex {0U}; PointIndex < Track.oPoints.size(); PointIndex++)
         {
-            const auto&  Track {GroundTruth.oNetwork.at(TrackIndex)};
-            QPen         Pen {GetPen(TrackIndex)};
-            QPainterPath PathPainter;
-            for (u32 PointIndex {0U}; PointIndex < Track.oPoints.size(); PointIndex++)
+            // TODO: HK-52 Take min and max values from the terrain resolution.
+            // So avoid being harcoded.
+            Math::Vector2D<f64> Min(444825.0, 4633335.0 - 2 * aImage.height());
+            Math::Vector2D<f64> Max(444825.0 + 2 * aImage.width(), 4633335.0);
+            Math::Box2D         DomainBox {Min, Max};
+
+            const auto&         Point {Track.oPoints.at(PointIndex)};
+            Math::Vector2D<s32> TextureCoordinates {WorldToTexCoords(Math::Vector2D {Point.oEasting, Point.oNorthing}, DomainBox, aImage.size())};
+
+            if (PointIndex == 0U)
             {
-                // TODO: HK-52 Take min and max values from the terrain resolution.
-                // So avoid being harcoded.
-                Math::Vector2D<f64> Min(444825.0, 4633335.0 - 2 * aImage.height());
-                Math::Vector2D<f64> Max(444825.0 + 2 * aImage.width(), 4633335.0);
-                Math::Box2D         DomainBox {Min, Max};
-
-                const auto&         Point {Track.oPoints.at(PointIndex)};
-                Math::Vector2D<s32> TextureCoordinates {WorldToTexCoords(Math::Vector2D {Point.oEasting, Point.oNorthing}, DomainBox, aImage.size())};
-
-                if (PointIndex == 0U)
-                {
-                    PathPainter.moveTo(TextureCoordinates.oX, TextureCoordinates.oY);
-                }
-                else
-                {
-                    PathPainter.lineTo(TextureCoordinates.oX, TextureCoordinates.oY);
-                }
+                PathPainter.moveTo(TextureCoordinates.oX, TextureCoordinates.oY);
             }
-            Painter.setPen(Pen);
-            Painter.drawPath(PathPainter);
+            else
+            {
+                PathPainter.lineTo(TextureCoordinates.oX, TextureCoordinates.oY);
+            }
         }
+        Painter.setPen(Pen);
+        Painter.drawPath(PathPainter);
     }
 }
 
-QPen CTracksTextureResourceLoader::GetPen(u32 aTrackIndex)
+f32 CTracksTextureResourceLoader::GetPaintingPercentage(u32 aTrackIndex, Types::ePaintStrategy aStrategy)
 {
-    const auto& Queries {mDataManager.GetQueries()};
-    const auto& CrossingCountIt {Queries.oCrossingCount.find(aTrackIndex)};
-    const bool  CrossingEmpty {CrossingCountIt == Queries.oCrossingCount.end()};
-    s32         CrossingCount {CrossingEmpty ? 0 : static_cast<s32>(Queries.oCrossingCount.at(aTrackIndex))};
+    switch (aStrategy)
+    {
+        case Types::ePaintStrategy::None:
+        {
+            return 0.0f;
+            break;
+        }
+        case Types::ePaintStrategy::CountCrossings:
+        {
+            static constexpr s32 MAX_CROSSINGS {30};
 
-    static constexpr s32 MAX_CROSSINGS {30};
-    const f32            CrossingsPercentage {std::min(1.0f, static_cast<f32>(CrossingCount) / static_cast<f32>(MAX_CROSSINGS))};
+            const auto& Queries {mDataManager.GetQueries()};
+            const auto  CrossingCount {Queries.oCrossingsInfo.count(aTrackIndex)};
+            const f32   CrossingsPercentage {std::min(1.0f, static_cast<f32>(CrossingCount) / static_cast<f32>(MAX_CROSSINGS))};
 
-    auto Color {CCustomColourSpectrum::CoolWarm().GetColor(CrossingsPercentage)};
+            return CrossingsPercentage;
+            break;
+        }
+        case Types::ePaintStrategy::CountCrossingsPerMatch:
+        {
+            const auto& Queries {mDataManager.GetQueries()};
+            const auto& [LowerElementIt, HigherElementIt] {Queries.oCrossingsInfo.equal_range(aTrackIndex)};
+
+            std::set<u32> MatchesIdsOnTrack {};
+
+            std::for_each(LowerElementIt, HigherElementIt, [&MatchesIdsOnTrack](const auto& CrossingInfoIt) { MatchesIdsOnTrack.insert(CrossingInfoIt.second.MatchIndex); });
+
+            static constexpr s32 MAX_NON_REPEATING_CROSSINGS {30};
+            const f32            CrossingsPercentage {std::min(1.0f, static_cast<f32>(MatchesIdsOnTrack.size()) / static_cast<f32>(MAX_NON_REPEATING_CROSSINGS))};
+
+            return CrossingsPercentage;
+            break;
+        }
+        default:
+        {
+            return 0.0f;
+            break;
+        }
+    }
+
+    return 0.0f;
+}
+
+QPen CTracksTextureResourceLoader::GetPen(float aPercentage)
+{
+    auto Color {CCustomColourSpectrum::CoolWarm().GetColor(aPercentage)};
 
     static constexpr f32 MAX_BRUSH_WIDTH {20.0f};
     static constexpr f32 MIN_BRUSH_WIDTH {5.0f};
-    const f64            BrushWidth {Math::Lerp(MIN_BRUSH_WIDTH, MAX_BRUSH_WIDTH, CrossingsPercentage)};
+    const f64            BrushWidth {Math::Lerp(MIN_BRUSH_WIDTH, MAX_BRUSH_WIDTH, aPercentage)};
 
     QPen Pen {Color.ToQColor(), BrushWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin};
     return Pen;

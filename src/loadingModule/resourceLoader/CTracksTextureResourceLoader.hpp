@@ -34,11 +34,19 @@ class CTracksTextureResourceLoader : public CResourceLoader
     void DrawGroundTruth(QImage& aImage);
 
     /**
+     * @brief Decides how much a track should be painted.
+     * @param aTrackIndex: The track index of the param we want to paint.
+     * @param aStrategy: Which strategy we are using to decide how to paing the track.
+     * @return A numbe between 0 and 1. 0 means track is minimum painted, 1 means max.
+     */
+    f32 GetPaintingPercentage(u32 aTrackIndex, Types::ePaintStrategy aStrategy);
+
+    /**
      * @brief Gets the pen that we should use to draw a given track.
-     * @param aTrackIndex: The track index in the network.
+     * @param aPercentage: Percentage (from 0 to 1) on how much should this track be painted.
      * @return The pen.
      */
-    QPen GetPen(u32 aTrackIndex);
+    QPen GetPen(float aPercentage);
 
     /**
      * @brief Turns world coordinates into row and column of a pixel in a texture.

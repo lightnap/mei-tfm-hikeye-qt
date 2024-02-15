@@ -2,7 +2,7 @@
 
 #include <utility>
 
-SQueries::SQueries(const tCrossingCount&& aCrossingCount)
-  : oCrossingCount(std::move(aCrossingCount))
+SQueries::SQueries(const tCrossingsInfo&& aCrossingsInfo)
+  : oCrossingsInfo(std::move(aCrossingsInfo))
 {
 }
