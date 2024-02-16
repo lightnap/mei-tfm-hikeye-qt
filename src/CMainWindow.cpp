@@ -74,6 +74,19 @@ void CMainWindow::LoadTerrainButtonPressed()
 
 void CMainWindow::LoadTracksButtonPressed()
 {
+    if (mUi.NoStrategyButton->isChecked())
+    {
+        mDataManager->SetPaintStrategy(Types::ePaintStrategy::None);
+    }
+    else if (mUi.CrossingsStrategyButton->isChecked())
+    {
+        mDataManager->SetPaintStrategy(Types::ePaintStrategy::CountCrossings);
+    }
+    else if (mUi.CrossingsPerMatchButton->isChecked())
+    {
+        mDataManager->SetPaintStrategy(Types::ePaintStrategy::CountCrossingsPerMatch);
+    }
+
     const auto& TerrainLoadingModule {mLoadingModulesMap.at(TERRAIN_MODULE_TYPE)};
     const auto& TracksLoadingModule {mLoadingModulesMap.at(TRACKS_MODULE_TYPE)};
 

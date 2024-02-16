@@ -51,12 +51,13 @@ void CTracksTextureResourceLoader::DrawGroundTruth(QImage& aImage)
 {
     QPainter Painter {&aImage};
 
-    const SGroundTruth& GroundTruth {mDataManager.GetGroundTruth()};
+    Types::ePaintStrategy PaintStrategy {mDataManager.GetPaintStrategy()};
+    const SGroundTruth&   GroundTruth {mDataManager.GetGroundTruth()};
 
     for (u32 TrackIndex {0U}; TrackIndex < GroundTruth.oNetwork.size(); TrackIndex++)
     {
         const auto&  Track {GroundTruth.oNetwork.at(TrackIndex)};
-        const auto   PaintingPercentage {GetPaintingPercentage(TrackIndex, Types::ePaintStrategy::CountCrossings)};
+        const auto   PaintingPercentage {GetPaintingPercentage(TrackIndex, PaintStrategy)};
         QPen         Pen {GetPen(PaintingPercentage)};
         QPainterPath PathPainter;
 

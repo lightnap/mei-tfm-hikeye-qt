@@ -16,6 +16,16 @@ CDataManager::CDataManager()
     mDataMutex = std::make_unique<QMutex>();
 }
 
+void CDataManager::SetPaintStrategy(Types::ePaintStrategy aStrategy)
+{
+    mPaintStrategy = aStrategy;
+}
+
+Types::ePaintStrategy CDataManager::GetPaintStrategy() const
+{
+    return mPaintStrategy;
+}
+
 void CDataManager::SetFolderPath(QString aFolderPath)
 {
     mDataMutex->lock();

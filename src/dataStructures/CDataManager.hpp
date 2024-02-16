@@ -4,6 +4,7 @@
 #include <QMutex>
 #include <QString>
 
+#include "common/Types.hpp"
 #include "dataStructures/SGroundTruth.hpp"
 #include "dataStructures/SHeightMap.hpp"
 #include "dataStructures/SMatches.hpp"
@@ -23,6 +24,18 @@ class CDataManager
      * Constructor.
      */
     CDataManager();
+
+    /**
+     * @brief Sets the strategy to turn track matches data into colours.
+     * @param aStrategy: The strategy to use.
+     */
+    void SetPaintStrategy(Types::ePaintStrategy aStrategy);
+
+    /**
+     * @brief Gets the strategy to turn track matches data into colours.
+     * @return The strategy to use.
+     */
+    Types::ePaintStrategy GetPaintStrategy() const;
 
     /**
      * @brief Sets the folder path from where we will store/load all area files.
@@ -117,5 +130,7 @@ class CDataManager
     std::unique_ptr<SMatches>     mMatches;        //!< Measured tracks matched onto the nework.
     std::unique_ptr<SQueries>     mQueries;        //!< Enriched information on the network.
     std::unique_ptr<STexture>     mTexture;        //!< Texture to draw onto the terrain.
+
+    Types::ePaintStrategy mPaintStrategy {Types::ePaintStrategy::None}; //!< Paint strategy to paint tracks.
 };
 #endif // C_DATA_MANAGER_H
