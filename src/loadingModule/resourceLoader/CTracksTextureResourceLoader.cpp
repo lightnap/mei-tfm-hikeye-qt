@@ -31,7 +31,7 @@ Types::eLoadResult CTracksTextureResourceLoader::LoadResource()
     std::cout << "[TracksTextureResource] Loading tracks texture" << std::endl;
 
     // TODO: HK-54 Why are we mirroring this??
-    QImage TextureImage {mDataManager.GetTexture().oTexture.mirrored(true, true)};
+    QImage TextureImage {mDataManager.GetTerrainTexture().oTexture.mirrored(true, true)};
 
     DrawGroundTruth(TextureImage);
 
@@ -42,7 +42,7 @@ Types::eLoadResult CTracksTextureResourceLoader::LoadResource()
     QImage TextureImageMirror = std::move(TextureImage).mirrored(true, true);
 
     std::unique_ptr<STexture> Texture {std::make_unique<STexture>(std::move(TextureImageMirror))};
-    mDataManager.SetTexture(std::move(Texture));
+    mDataManager.SetTracksTexture(std::move(Texture));
 
     return Types::eLoadResult::Successful;
 }

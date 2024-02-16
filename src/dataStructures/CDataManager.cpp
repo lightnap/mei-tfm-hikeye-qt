@@ -88,12 +88,22 @@ const SQueries& CDataManager::GetQueries() const
     return *mQueries;
 }
 
-void CDataManager::SetTexture(std::unique_ptr<STexture> aTexture)
+void CDataManager::SetTerrainTexture(std::unique_ptr<STexture> aTexture)
 {
-    mTexture = std::move(aTexture);
+    mTerrainTexture = std::move(aTexture);
 }
 
-const STexture& CDataManager::GetTexture() const
+const STexture& CDataManager::GetTerrainTexture() const
 {
-    return *mTexture;
+    return *mTerrainTexture;
+}
+
+void CDataManager::SetTracksTexture(std::unique_ptr<STexture> aTexture)
+{
+    mTracksTexture = std::move(aTexture);
+}
+
+const STexture& CDataManager::GetTracksTexture() const
+{
+    return *mTracksTexture;
 }

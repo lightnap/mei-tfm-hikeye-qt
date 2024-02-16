@@ -141,13 +141,13 @@ void CMainWindow::LoadingModuleFinished(Types::eLoadingModule aModule)
         case TERRAIN_MODULE_TYPE:
         {
             mUi.MainGraphics->LoadModel(mDataManager->GetTerrain());
-            mUi.MainGraphics->LoadTexture(mDataManager->GetTexture());
+            mUi.MainGraphics->LoadTexture(mDataManager->GetTerrainTexture());
             SetButtonsEnabled(eButtonsEnabledLayout::Rest);
             break;
         }
         case TRACKS_MODULE_TYPE:
         {
-            mUi.MainGraphics->LoadTexture(mDataManager->GetTexture());
+            mUi.MainGraphics->LoadTexture(mDataManager->GetTracksTexture());
             SetButtonsEnabled(eButtonsEnabledLayout::Loaded);
             break;
         }

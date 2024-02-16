@@ -113,13 +113,25 @@ class CDataManager
      * @brief Sets the terrain texture. Takes ownership of the object.
      * @param aTexture: pointer to the terrain texture.
      */
-    void SetTexture(std::unique_ptr<STexture> aTexture);
+    void SetTerrainTexture(std::unique_ptr<STexture> aTexture);
 
     /**
      * @brief Gets the terrain texture.
      * @return The terrain texture.
      */
-    const STexture& GetTexture() const;
+    const STexture& GetTerrainTexture() const;
+
+    /**
+     * @brief Sets the tracks texture. Takes ownership of the object.
+     * @param aTexture: pointer to the tracks texture.
+     */
+    void SetTracksTexture(std::unique_ptr<STexture> aTexture);
+
+    /**
+     * @brief Gets the trakcs texture.
+     * @return The tracks texture.
+     */
+    const STexture& GetTracksTexture() const;
 
   private:
     QString                       mDataFolderPath; //!< Folder path in which we store/load all area files.
@@ -129,7 +141,8 @@ class CDataManager
     std::unique_ptr<SGroundTruth> mGroundTruth;    //!< Path network we assume is accurate.
     std::unique_ptr<SMatches>     mMatches;        //!< Measured tracks matched onto the nework.
     std::unique_ptr<SQueries>     mQueries;        //!< Enriched information on the network.
-    std::unique_ptr<STexture>     mTexture;        //!< Texture to draw onto the terrain.
+    std::unique_ptr<STexture>     mTerrainTexture; //!< Texture to draw onto the terrain.
+    std::unique_ptr<STexture>     mTracksTexture;  //!< Texture to draw onto the terrain.
 
     Types::ePaintStrategy mPaintStrategy {Types::ePaintStrategy::None}; //!< Paint strategy to paint tracks.
 };

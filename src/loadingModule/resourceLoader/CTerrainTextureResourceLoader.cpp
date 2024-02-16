@@ -59,7 +59,7 @@ Types::eLoadResult CTerrainTextureResourceLoader::LoadResource()
     }
 
     std::unique_ptr<STexture> Texture {std::make_unique<STexture>(std::move(TextureImage))};
-    mDataManager.SetTexture(std::move(Texture));
+    mDataManager.SetTerrainTexture(std::move(Texture));
 
     return Types::eLoadResult::Successful;
 }

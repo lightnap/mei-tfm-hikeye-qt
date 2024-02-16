@@ -24,7 +24,7 @@ Types::eLoadResult CSaveImageResourceLoader::LoadResource()
 
     QString SaveToFilePath {GetResourceFilePath(SAVE_TO_FILE_NAME)};
 
-    const QImage& TextureImage {mDataManager.GetTexture().oTexture};
+    const QImage& TextureImage {mDataManager.GetTracksTexture().oTexture};
 
     // TODO: HK-54 Why are we mirroring this??
     TextureImage.mirrored(true, false).save(SaveToFilePath);
