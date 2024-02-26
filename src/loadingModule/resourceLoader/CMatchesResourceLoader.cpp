@@ -19,7 +19,6 @@ namespace
 Types::eLoadResult CMatchesResourceLoader::LoadResource()
 {
     std::cout << "[MatchesResource] Loading matches" << std::endl;
-    // TODO: HK-24 Fill this function.
     QDir Directory {"/home/lightnap/src/hikeyeQt/data/matagalls/matches"};
 
     Directory.setFilter(QDir::Files);
