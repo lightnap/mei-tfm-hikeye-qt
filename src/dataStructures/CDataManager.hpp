@@ -38,6 +38,18 @@ class CDataManager
     Types::ePaintStrategy GetPaintStrategy() const;
 
     /**
+     * @brief Sets the date filter.
+     * @param aFilter: The date filter to use.
+     */
+    void SetDateFilter(Types::sDateFilter aFilter);
+
+    /**
+     * @brief Gets date filter we use to filter matches.
+     * @return The date filter to use.
+     */
+    Types::sDateFilter GetDateFilter() const;
+
+    /**
      * @brief Sets the folder path from where we will store/load all area files.
      * @param aFolderPath: Path for the folder we want to set.
      */
@@ -145,5 +157,6 @@ class CDataManager
     std::unique_ptr<STexture>     mTracksTexture;  //!< Texture to draw onto the terrain.
 
     Types::ePaintStrategy mPaintStrategy {Types::ePaintStrategy::None}; //!< Paint strategy to paint tracks.
+    Types::sDateFilter    mDateFilter {};                               //!< Date filter.
 };
 #endif // C_DATA_MANAGER_H

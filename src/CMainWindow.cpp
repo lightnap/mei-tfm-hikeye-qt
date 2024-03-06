@@ -87,6 +87,90 @@ void CMainWindow::LoadTracksButtonPressed()
         mDataManager->SetPaintStrategy(Types::ePaintStrategy::CountCrossingsPerMatch);
     }
 
+    Types::sDateFilter DateFilter;
+
+    if (!mUi.checkBoxMonday->isChecked())
+    {
+        DateFilter.FilteredDays[Qt::Monday] = true;
+    }
+    if (!mUi.checkBoxTuesday->isChecked())
+    {
+        DateFilter.FilteredDays[Qt::Tuesday] = true;
+    }
+    if (!mUi.checkBoxWednesday->isChecked())
+    {
+        DateFilter.FilteredDays[Qt::Wednesday] = true;
+    }
+    if (!mUi.checkBoxThursday->isChecked())
+    {
+        DateFilter.FilteredDays[Qt::Thursday] = true;
+    }
+    if (!mUi.checkBoxFriday->isChecked())
+    {
+        DateFilter.FilteredDays[Qt::Friday] = true;
+    }
+    if (!mUi.checkBoxSaturday->isChecked())
+    {
+        DateFilter.FilteredDays[Qt::Saturday] = true;
+    }
+    if (!mUi.checkBoxSunday->isChecked())
+    {
+        DateFilter.FilteredDays[Qt::Sunday] = true;
+    }
+
+    if (!mUi.checkBoxJanuary->isChecked())
+    {
+        DateFilter.FilteredMonths[1] = true;
+    }
+    if (!mUi.checkBoxFebruary->isChecked())
+    {
+        DateFilter.FilteredMonths[2] = true;
+    }
+    if (!mUi.checkBoxMarch->isChecked())
+    {
+        DateFilter.FilteredMonths[3] = true;
+    }
+    if (!mUi.checkBoxApril->isChecked())
+    {
+        DateFilter.FilteredMonths[4] = true;
+    }
+    if (!mUi.checkBoxMay->isChecked())
+    {
+        DateFilter.FilteredMonths[5] = true;
+    }
+    if (!mUi.checkBoxJune->isChecked())
+    {
+        DateFilter.FilteredMonths[6] = true;
+    }
+    if (!mUi.checkBoxJuly->isChecked())
+    {
+        DateFilter.FilteredMonths[7] = true;
+    }
+    if (!mUi.checkBoxAugust->isChecked())
+    {
+        DateFilter.FilteredMonths[8] = true;
+    }
+    if (!mUi.checkBoxSeptember->isChecked())
+    {
+        DateFilter.FilteredMonths[9] = true;
+    }
+    if (!mUi.checkBoxOctober->isChecked())
+    {
+        DateFilter.FilteredMonths[10] = true;
+    }
+    if (!mUi.checkBoxNovember->isChecked())
+    {
+        DateFilter.FilteredMonths[11] = true;
+    }
+    if (!mUi.checkBoxDecember->isChecked())
+    {
+        DateFilter.FilteredMonths[12] = true;
+    }
+
+    // TODO: Configure month filter using the checkboxes
+
+    mDataManager->SetDateFilter(DateFilter);
+
     const auto& TerrainLoadingModule {mLoadingModulesMap.at(TERRAIN_MODULE_TYPE)};
     const auto& TracksLoadingModule {mLoadingModulesMap.at(TRACKS_MODULE_TYPE)};
 

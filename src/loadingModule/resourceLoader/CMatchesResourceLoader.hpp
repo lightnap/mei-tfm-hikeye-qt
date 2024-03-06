@@ -32,7 +32,7 @@ class CMatchesResourceLoader : public CResourceLoader
      * @param aCurrentLine: The line in the matches file.
      * @return A vector of the indexes of the edges crossed during the path.
      */
-    std::vector<u32> ParseLine(const std::string& aCurrentLine);
+    std::vector<u32> ParseTrackString(const std::string& aCurrentLine);
 };
 
 #endif // C_MATCHES_RESOURCE_LOADER_H

@@ -26,6 +26,16 @@ Types::ePaintStrategy CDataManager::GetPaintStrategy() const
     return mPaintStrategy;
 }
 
+void CDataManager::SetDateFilter(Types::sDateFilter aFilter)
+{
+    mDateFilter = aFilter;
+}
+
+Types::sDateFilter CDataManager::GetDateFilter() const
+{
+    return mDateFilter;
+}
+
 void CDataManager::SetFolderPath(QString aFolderPath)
 {
     mDataMutex->lock();

@@ -1,6 +1,7 @@
 #ifndef TYPES_H
 #define TYPES_H
 
+#include <array>
 #include <cstdint>
 #include <string>
 
@@ -67,6 +68,15 @@ namespace Types
         CountCrossings,         //!< Heatmap depending on how many times a track was crossed.
         CountCrossingsPerMatch, //!< Heatmap depending on how many times a track was crossed. Multiple corssings on one matching count as one.
         Speed,                  //!< Headmap based on speed.
+    };
+
+    /**
+     * @brief Struct for describing a filter of dates.
+     */
+    struct sDateFilter
+    {
+        std::array<bool, 8>  FilteredDays {false}; //!< In the days of week qt enum monday starts with 1.
+        std::array<bool, 13> FilteredMonths {false};
     };
 
     /**

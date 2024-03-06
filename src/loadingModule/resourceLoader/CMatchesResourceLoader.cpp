@@ -3,6 +3,7 @@
 #include "common/Types.hpp"
 #include "dataStructures/SMatches.hpp"
 #include "loadingModule/resourceLoaderFactory/CResourceLoaderFactory.hpp"
+#include "utilities/CCsvParser.hpp"
 
 #include <QDir>
 #include <QString>
@@ -36,12 +37,15 @@ Types::eLoadResult CMatchesResourceLoader::LoadResource()
             return OpenFileResult;
         }
 
-        QTextStream Stream {&File};
-        QString     CurrentLine;
+        QTextStream                    Stream {&File};
+        utilities::CCsvParser::tResult MatchesCsv {utilities::CCsvParser::Parse(Stream)};
 
-        while (Stream.readLineInto(&CurrentLine))
+        for (const auto& Row : MatchesCsv)
         {
-            Matches.emplace_back(ParseLine(CurrentLine.toStdString()));
+            const s64              Date {std::stol(Row.at(1))};
+            const std::vector<u32> EdgeIndices {ParseTrackString(Row.at(2))};
+
+            Matches.emplace_back(SMatches::SMatch {EdgeIndices, Date});
         }
     }
 
@@ -51,14 +55,14 @@ Types::eLoadResult CMatchesResourceLoader::LoadResource()
     return Types::eLoadResult::Successful;
 }
 
-std::vector<u32> CMatchesResourceLoader::ParseLine(const std::string& aCurrentLine)
+std::vector<u32> CMatchesResourceLoader::ParseTrackString(const std::string& aCurrentLine)
 {
     std::string      CurrentNumber {};
     std::vector<u32> ParsedNumbers {};
 
     for (const char CurrentChar : aCurrentLine)
     {
-        if (CurrentChar == ',')
+        if (CurrentChar == ';')
         {
             ParsedNumbers.push_back(std::stoi(CurrentNumber));
             CurrentNumber = "";

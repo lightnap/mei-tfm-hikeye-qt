@@ -1,11 +1,15 @@
 #include "CQueriesResourceLoader.hpp"
 
+#include "QDate"
+
 #include "common/Types.hpp"
 #include "dataStructures/SQueries.hpp"
 #include "loadingModule/resourceLoaderFactory/CResourceLoaderFactory.hpp"
 
+#include <chrono>
 #include <iostream>
 #include <memory>
+#include <time.h>
 #include <utility>
 
 namespace
@@ -24,8 +28,14 @@ Types::eLoadResult CQueriesResourceLoader::LoadResource()
 
     for (uint32_t MatchIndex {0U}; MatchIndex < Matches.oMatches.size(); MatchIndex++)
     {
-        const auto& Route {Matches.oMatches[MatchIndex]};
-        for (const auto& Edge : Route)
+        const auto& Match {Matches.oMatches[MatchIndex]};
+
+        if (MustFilter(Match))
+        {
+            continue;
+        }
+
+        for (const auto& Edge : Match.EdgeIndices)
         {
             const auto              UnidirectionalEdgeIndex {GroundTruth.BidirectionalToUnidirectional(Edge)};
             SQueries::SCrossingInfo CrossingInfo {.MatchIndex = static_cast<int32_t>(MatchIndex)};
@@ -71,4 +81,18 @@ Types::eLoadResult CQueriesResourceLoader::LoadResource()
     mDataManager.SetQueries(std::move(Queries));
 
     return Types::eLoadResult::Successful;
+}
+
+bool CQueriesResourceLoader::MustFilter(const SMatches::SMatch& aMatch) const
+{
+    Types::sDateFilter Filter {mDataManager.GetDateFilter()};
+
+    time_t DateInEpoch {aMatch.Date};
+    tm     DateInLocal = *localtime(&DateInEpoch);
+    QDate  Date(DateInLocal.tm_year, DateInLocal.tm_mon, DateInLocal.tm_mday);
+
+    const bool ValidDay {!Filter.FilteredDays[Date.dayOfWeek()]};
+    const bool ValidMonth {!Filter.FilteredMonths[Date.month()]};
+
+    return !ValidDay || !ValidMonth;
 }
