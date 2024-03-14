@@ -59,10 +59,10 @@ class CTracksTextureResourceLoader : public CResourceLoader
     Math::Vector2D<s32> WorldToTexCoords(const Math::Vector2D<f64>& aWorldPoint, const Math::Box2D& aWorldBounds, const QSize& aTextueSize) const;
 
     bool HasArrow(s64 aTrackIndex, f32 PaintingPercentage, Types::ePaintStrategy ePaintingStrategy);
-    void DrawArrow(s64 aTrackIndex, QPainter& aPainter, Math::Vector2D<s32> aStartPoint, Math::Vector2D<s32> aEndPoint, const Math::Box2D& aWorldBounds, const QSize& aTextureSize);
+    void AddArrow(s64 aTrackIndex, Math::Vector2D<s32> aStartPoint, Math::Vector2D<s32> aEndPoint, const Math::Box2D& aWorldBounds, const QSize& aTextureSize);
 
-    std::unordered_map<s64, Types::eDirection>      mPreferredDirections;     //!< For each track, in which direction do most people cross it.
-    std::unordered_map<s64, Math::Vector2D<s32>[2]> mTracKTextureCoordinates; //!< For each track, we save its texture coordinates.
+    std::unordered_map<s64, Types::eDirection> mPreferredDirections; //!< For each track, in which direction do most people cross it.
+    std::vector<QPolygonF>                     mArrows;              //!< We save the arrows to paint them all at once.
 };
 
 #endif // C_TRACKS_TEXTURE_RESOURCE_LOADER_H

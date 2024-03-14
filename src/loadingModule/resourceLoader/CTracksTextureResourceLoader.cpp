@@ -50,6 +50,7 @@ Types::eLoadResult CTracksTextureResourceLoader::LoadResource()
 
 void CTracksTextureResourceLoader::DrawGroundTruth(QImage& aImage)
 {
+    mArrows.clear();
     QPainter Painter {&aImage};
 
     Types::ePaintStrategy PaintStrategy {mDataManager.GetPaintStrategy()};
@@ -84,9 +85,24 @@ void CTracksTextureResourceLoader::DrawGroundTruth(QImage& aImage)
 
         if (HasArrow(TrackIndex, PaintingPercentage, PaintStrategy))
         {
-            DrawArrow(TrackIndex, Painter, StartPointTextureCoordinates, EndPointTextureCoordinates, DomainBox, aImage.size());
+            AddArrow(TrackIndex, StartPointTextureCoordinates, EndPointTextureCoordinates, DomainBox, aImage.size());
         }
     }
+
+    QPen   Pen {Painter.pen()};
+    QBrush Brush {Pen.brush()};
+    Brush.setStyle(Qt::BrushStyle::SolidPattern);
+    Pen.setBrush(Brush);
+    Pen.setCapStyle(Qt::PenCapStyle::SquareCap);
+    Pen.setJoinStyle(Qt::PenJoinStyle::MiterJoin);
+    Pen.setColor(Qt::black);
+    Painter.setPen(Pen);
+
+    for (const auto& Arrow : mArrows)
+    {
+        Painter.drawPolygon(Arrow);
+    }
+    mArrows.clear();
 }
 
 f32 CTracksTextureResourceLoader::GetPaintingPercentage(u32 aTrackIndex, Types::ePaintStrategy aStrategy)
@@ -224,7 +240,7 @@ bool CTracksTextureResourceLoader::HasArrow(s64 aTrackIndex, f32 PaintingPercent
     {
         return false;
     }
-    else if (aTrackIndex % 200 != 0)
+    else if (aTrackIndex % 50 != 0)
     {
         return false;
     }
@@ -232,12 +248,11 @@ bool CTracksTextureResourceLoader::HasArrow(s64 aTrackIndex, f32 PaintingPercent
     return true;
 }
 
-void CTracksTextureResourceLoader::DrawArrow(s64                 aTrackIndex,
-                                             QPainter&           aPainter,
-                                             Math::Vector2D<s32> aStartPoint,
-                                             Math::Vector2D<s32> aEndPoint,
-                                             const Math::Box2D&  aWorldBounds,
-                                             const QSize&        aTextureSize)
+void CTracksTextureResourceLoader::AddArrow(s64                 aTrackIndex,
+                                            Math::Vector2D<s32> aStartPoint,
+                                            Math::Vector2D<s32> aEndPoint,
+                                            const Math::Box2D&  aWorldBounds,
+                                            const QSize&        aTextureSize)
 {
     Math::Vector2D<double> TrackMiddle {0.5 * (aStartPoint.oX + aEndPoint.oX), 0.5 * (aStartPoint.oY + aEndPoint.oY)};
 
@@ -265,13 +280,5 @@ void CTracksTextureResourceLoader::DrawArrow(s64                 aTrackIndex,
 
     QPolygonF Arrow;
     Arrow << ArrowTipQPoint << ArrowLeftQPoint << ArrowRightQPoint;
-    QPen   Pen {aPainter.pen()};
-    QBrush Brush {Pen.brush()};
-    Brush.setStyle(Qt::BrushStyle::SolidPattern);
-    Pen.setBrush(Brush);
-    Pen.setCapStyle(Qt::PenCapStyle::SquareCap);
-    Pen.setJoinStyle(Qt::PenJoinStyle::MiterJoin);
-    Pen.setColor(Qt::black);
-    aPainter.setPen(Pen);
-    aPainter.drawPolygon(Arrow);
+    mArrows.emplace_back(std::move(Arrow));
 }
