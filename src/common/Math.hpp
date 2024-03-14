@@ -110,6 +110,12 @@ namespace Math
          */
         Vector2D(tFieldElement aX, tFieldElement aY);
 
+        /**
+         * @brief Returns this vector but normalized.
+         * @retrun The normalization of this vector.
+         */
+        Vector2D<double> Normalize();
+
         tFieldElement oX {}; //!< X coordinate of the vector.
         tFieldElement oY {}; //!< Y coordinate of the vector.
     };
@@ -122,6 +128,12 @@ namespace Math
      */
     template<typename tFieldElement>
     Vector2D<tFieldElement> operator-(const Vector2D<tFieldElement>& aFirst, const Vector2D<tFieldElement>& aSecond);
+
+    template<typename tFieldElement>
+    Vector2D<tFieldElement> operator+(const Vector2D<tFieldElement>& aFirst, const Vector2D<tFieldElement>& aSecond);
+
+    template<typename tFieldElement>
+    Vector2D<tFieldElement> operator*(f64 aScalar, const Vector2D<tFieldElement>& aVector);
 
     // TODO: HK-47 Turn this into a template.
     /**

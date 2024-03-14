@@ -74,6 +74,7 @@ void CMainWindow::LoadTerrainButtonPressed()
 
 void CMainWindow::LoadTracksButtonPressed()
 {
+    // Painting strategy.
     if (mUi.NoStrategyButton->isChecked())
     {
         mDataManager->SetPaintStrategy(Types::ePaintStrategy::None);
@@ -86,9 +87,18 @@ void CMainWindow::LoadTracksButtonPressed()
     {
         mDataManager->SetPaintStrategy(Types::ePaintStrategy::CountCrossingsPerMatch);
     }
+    else if (mUi.DirectionStrategyButton->isChecked())
+    {
+        mDataManager->SetPaintStrategy(Types::ePaintStrategy::Directions);
+    }
+    else if (mUi.DirectionStrategyButton->isChecked())
+    {
+        mDataManager->SetPaintStrategy(Types::ePaintStrategy::Speed);
+    }
 
     Types::sDateFilter DateFilter;
 
+    // Days of the week.
     if (!mUi.checkBoxMonday->isChecked())
     {
         DateFilter.FilteredDays[Qt::Monday] = true;
@@ -118,6 +128,7 @@ void CMainWindow::LoadTracksButtonPressed()
         DateFilter.FilteredDays[Qt::Sunday] = true;
     }
 
+    // Months.
     if (!mUi.checkBoxJanuary->isChecked())
     {
         DateFilter.FilteredMonths[1] = true;

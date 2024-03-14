@@ -67,3 +67,16 @@ CCustomColourSpectrum CCustomColourSpectrum::CoolWarm()
 
     return CCustomColourSpectrum(Colours, Anchors);
 }
+
+CCustomColourSpectrum CCustomColourSpectrum::Symmetric()
+{
+    const std::vector<Math::Vector3D> Colours = {
+      Math::Vector3D(224, 236, 244) / 255.0,
+      Math::Vector3D(158, 188, 218) / 255.0,
+      Math::Vector3D(136, 86, 167) / 255.0,
+    };
+
+    const std::vector<f64> Anchors {0.0, 0.5, 1.0};
+
+    return CCustomColourSpectrum(Colours, Anchors);
+}

@@ -46,12 +46,19 @@ struct SGroundTruth
      */
     s64 BidirectionalToUnidirectional(s64 aTrackIndex) const;
 
+    /**
+     * @brieg For a given (bidirectional) track index, get the direction of the track.
+     * @param aTrackIndex The bidirectional track index.
+     * @return The direcion of said track. Positive if Osm of endpoint is bigger than osm id of start point.
+     */
+    Types::eDirection GetDirection(s64 aTrackIndex) const;
+
     tNetwork    oNetwork; //!< Ground truth network.
     Math::Box2D oBounds;  //!< Bounding box for the ground truth.
 
   private:
-    std::unordered_map<s64, s64> mBiToUniIndices; //!< Map to indicate repeated tracks in opposite direcions. When tracks A and B are detected to be inverses, we write both indexes
-                                                  //!< if A and B in this map. A maps to A and B maps to A.
+    std::unordered_map<s64, s64>               mBiToUniIndices; //!< Maps track indexes to position in oNetwork vector.
+    std::unordered_map<s64, Types::eDirection> mDirections;     //!< Keeps track of firection of each track.
 };
 
 #endif // S_GROUND_TRUTH_H

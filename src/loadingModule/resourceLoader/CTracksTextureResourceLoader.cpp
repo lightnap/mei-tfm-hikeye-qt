@@ -15,6 +15,7 @@
 #include <QPen>
 
 #include <algorithm>
+#include <cmath>
 #include <iostream>
 #include <memory>
 #include <set>
@@ -54,35 +55,37 @@ void CTracksTextureResourceLoader::DrawGroundTruth(QImage& aImage)
     Types::ePaintStrategy PaintStrategy {mDataManager.GetPaintStrategy()};
     const SGroundTruth&   GroundTruth {mDataManager.GetGroundTruth()};
 
+    std::cout << "Image size is " << aImage.size().height() << " , " << aImage.size().width() << std::endl;
+
     for (u32 TrackIndex {0U}; TrackIndex < GroundTruth.oNetwork.size(); TrackIndex++)
     {
         const auto&  Track {GroundTruth.oNetwork.at(TrackIndex)};
         const auto   PaintingPercentage {GetPaintingPercentage(TrackIndex, PaintStrategy)};
-        QPen         Pen {GetPen(PaintingPercentage)};
+        QPen         Pen {GetPen(PaintingPercentage, PaintStrategy)};
         QPainterPath PathPainter;
 
-        for (u32 PointIndex {0U}; PointIndex < Track.oPoints.size(); PointIndex++)
-        {
-            // TODO: HK-52 Take min and max values from the terrain resolution.
-            // So avoid being harcoded.
-            Math::Vector2D<f64> Min(444825.0, 4633335.0 - 2 * aImage.height());
-            Math::Vector2D<f64> Max(444825.0 + 2 * aImage.width(), 4633335.0);
-            Math::Box2D         DomainBox {Min, Max};
+        // TODO: HK-52 Take min and max values from the terrain resolution.
+        // So avoid being harcoded.
+        const Math::Vector2D<f64> Min(444825.0, 4633335.0 - 2 * aImage.height());
+        const Math::Vector2D<f64> Max(444825.0 + 2 * aImage.width(), 4633335.0);
+        const Math::Box2D         DomainBox {Min, Max};
 
-            const auto&         Point {Track.oPoints.at(PointIndex)};
-            Math::Vector2D<s32> TextureCoordinates {WorldToTexCoords(Math::Vector2D {Point.oEasting, Point.oNorthing}, DomainBox, aImage.size())};
+        const auto& StartPoint {Track.oPoints.front()};
+        const auto& EndPoint {Track.oPoints.back()};
 
-            if (PointIndex == 0U)
-            {
-                PathPainter.moveTo(TextureCoordinates.oX, TextureCoordinates.oY);
-            }
-            else
-            {
-                PathPainter.lineTo(TextureCoordinates.oX, TextureCoordinates.oY);
-            }
-        }
+        Math::Vector2D<s32> StartPointTextureCoordinates {WorldToTexCoords(Math::Vector2D {StartPoint.oEasting, StartPoint.oNorthing}, DomainBox, aImage.size())};
+        Math::Vector2D<s32> EndPointTextureCoordinates {WorldToTexCoords(Math::Vector2D {EndPoint.oEasting, EndPoint.oNorthing}, DomainBox, aImage.size())};
+
+        PathPainter.moveTo(StartPointTextureCoordinates.oX, StartPointTextureCoordinates.oY);
+        PathPainter.lineTo(EndPointTextureCoordinates.oX, EndPointTextureCoordinates.oY);
+
         Painter.setPen(Pen);
         Painter.drawPath(PathPainter);
+
+        if (HasArrow(TrackIndex, PaintingPercentage, PaintStrategy))
+        {
+            DrawArrow(TrackIndex, Painter, StartPointTextureCoordinates, EndPointTextureCoordinates, DomainBox, aImage.size());
+        }
     }
 }
 
@@ -121,6 +124,37 @@ f32 CTracksTextureResourceLoader::GetPaintingPercentage(u32 aTrackIndex, Types::
             return CrossingsPercentage;
             break;
         }
+        case Types::ePaintStrategy::Directions:
+        {
+            const auto& Queries {mDataManager.GetQueries()};
+            const auto& [LowerElementIt, HigherElementIt] {Queries.oCrossingsInfo.equal_range(aTrackIndex)};
+
+            s32 DirectionalHits {0};
+
+            std::for_each(LowerElementIt,
+                          HigherElementIt,
+                          [&DirectionalHits](const auto& CrossingInfoIt)
+                          { CrossingInfoIt.second.Direction == Types::eDirection::Positive ? DirectionalHits++ : DirectionalHits--; });
+
+            if (DirectionalHits > 0)
+            {
+                mPreferredDirections[aTrackIndex] = Types::eDirection::Positive;
+            }
+            else if (DirectionalHits < 0)
+            {
+                mPreferredDirections[aTrackIndex] = Types::eDirection::Negative;
+            }
+            else
+            {
+                mPreferredDirections[aTrackIndex] = Types::eDirection::None;
+            }
+
+            static constexpr s32 MAX_DIRECTIONAL_HITS {10};
+            const f32            DirectionPercentage {std::min(1.0f, static_cast<f32>(std::abs(DirectionalHits)) / static_cast<f32>(MAX_DIRECTIONAL_HITS))};
+
+            return DirectionPercentage;
+            break;
+        }
         default:
         {
             return 0.0f;
@@ -131,9 +165,32 @@ f32 CTracksTextureResourceLoader::GetPaintingPercentage(u32 aTrackIndex, Types::
     return 0.0f;
 }
 
-QPen CTracksTextureResourceLoader::GetPen(float aPercentage)
+QPen CTracksTextureResourceLoader::GetPen(float aPercentage, Types::ePaintStrategy aPaintingStrategy)
 {
-    auto Color {CCustomColourSpectrum::CoolWarm().GetColor(aPercentage)};
+    Math::Vector3D Color;
+
+    switch (aPaintingStrategy)
+    {
+        case Types::ePaintStrategy::CountCrossings:
+        case Types::ePaintStrategy::CountCrossingsPerMatch:
+        case Types::ePaintStrategy::Speed:
+        case Types::ePaintStrategy::None:
+        {
+            Color = CCustomColourSpectrum::CoolWarm().GetColor(aPercentage);
+            break;
+        }
+        case Types::ePaintStrategy::Directions:
+        {
+
+            Color = CCustomColourSpectrum::Symmetric().GetColor(aPercentage);
+            break;
+        }
+        defaullt:
+        {
+            Color = Math::Vector3D(0, 0, 0);
+            break;
+        }
+    }
 
     static constexpr f32 MAX_BRUSH_WIDTH {20.0f};
     static constexpr f32 MIN_BRUSH_WIDTH {5.0f};
@@ -155,4 +212,66 @@ Math::Vector2D<s32> CTracksTextureResourceLoader::WorldToTexCoords(const Math::V
     s32 PixelRow {static_cast<s32>(NormalizedY * (aTextureSize.height() - 1))};
 
     return {PixelColumn, PixelRow};
+}
+
+bool CTracksTextureResourceLoader::HasArrow(s64 aTrackIndex, f32 PaintingPercentage, Types::ePaintStrategy ePaintingStrategy)
+{
+    if (ePaintingStrategy != Types::ePaintStrategy::Directions)
+    {
+        return false;
+    }
+    else if (PaintingPercentage < 0.1f)
+    {
+        return false;
+    }
+    else if (aTrackIndex % 200 != 0)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+void CTracksTextureResourceLoader::DrawArrow(s64                 aTrackIndex,
+                                             QPainter&           aPainter,
+                                             Math::Vector2D<s32> aStartPoint,
+                                             Math::Vector2D<s32> aEndPoint,
+                                             const Math::Box2D&  aWorldBounds,
+                                             const QSize&        aTextureSize)
+{
+    Math::Vector2D<double> TrackMiddle {0.5 * (aStartPoint.oX + aEndPoint.oX), 0.5 * (aStartPoint.oY + aEndPoint.oY)};
+
+    Math::Vector2D<double> ArrowDirection {(aEndPoint - aStartPoint).Normalize()};
+
+    static constexpr f64 ARROW_MAX_HEIGHT {30.};
+    static constexpr f64 ARROW_MAX_WIDTH {15.};
+
+    f64 ArrowTipOffset {mPreferredDirections[aTrackIndex] == Types::eDirection::Positive ? ARROW_MAX_HEIGHT / 2.0 : -ARROW_MAX_HEIGHT / 2.0};
+
+    const Math::Vector2D<double> ArrowTip {TrackMiddle + ArrowTipOffset * ArrowDirection};
+
+    const Math::Vector2D<double> ArrowBottomCenter {TrackMiddle - ArrowTipOffset * ArrowDirection};
+
+    const Math::Vector2D<double> ArrowPerpendicular {-ArrowDirection.oY, ArrowDirection.oX};
+    const Math::Vector2D<double> ArrowRightPoint {ArrowBottomCenter + ARROW_MAX_WIDTH / 2.0 * ArrowPerpendicular};
+    const Math::Vector2D<double> ArrowLeftPoint {ArrowBottomCenter - ARROW_MAX_WIDTH / 2.0 * ArrowPerpendicular};
+
+    const QPointF ArrowTipQPoint {ArrowTip.oX, ArrowTip.oY};
+    const QPointF ArrowLeftQPoint {ArrowLeftPoint.oX, ArrowLeftPoint.oY};
+    const QPointF ArrowRightQPoint {ArrowRightPoint.oX, ArrowRightPoint.oY};
+
+    std::cout << "Printing an arrow with tip " << ArrowTip.oX << "," << ArrowTip.oY << " left= " << ArrowLeftPoint.oX << "," << ArrowLeftPoint.oY << " right " << ArrowRightPoint.oX
+              << "," << ArrowRightPoint.oY << std::endl;
+
+    QPolygonF Arrow;
+    Arrow << ArrowTipQPoint << ArrowLeftQPoint << ArrowRightQPoint;
+    QPen   Pen {aPainter.pen()};
+    QBrush Brush {Pen.brush()};
+    Brush.setStyle(Qt::BrushStyle::SolidPattern);
+    Pen.setBrush(Brush);
+    Pen.setCapStyle(Qt::PenCapStyle::SquareCap);
+    Pen.setJoinStyle(Qt::PenJoinStyle::MiterJoin);
+    Pen.setColor(Qt::black);
+    aPainter.setPen(Pen);
+    aPainter.drawPolygon(Arrow);
 }

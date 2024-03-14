@@ -39,6 +39,12 @@ class CCustomColourSpectrum
      */
     static CCustomColourSpectrum CoolWarm();
 
+    /**
+     * @brief Gets the color spectrum that we use for symmetric colorings. Based on https://colorbrewer2.org/.
+     * @return The symmetric color spectrum.
+     */
+    static CCustomColourSpectrum Symmetric();
+
   protected:
     std::vector<Math::Vector3D> mColors;  //!< List of colors in this spectrum.
     std::vector<f64>            mAnchors; //!< Points in the spectrum where each color will be purest.

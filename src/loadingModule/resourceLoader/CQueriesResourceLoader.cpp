@@ -38,7 +38,8 @@ Types::eLoadResult CQueriesResourceLoader::LoadResource()
         for (const auto& Edge : Match.EdgeIndices)
         {
             const auto              UnidirectionalEdgeIndex {GroundTruth.BidirectionalToUnidirectional(Edge)};
-            SQueries::SCrossingInfo CrossingInfo {.MatchIndex = static_cast<int32_t>(MatchIndex)};
+            const Types::eDirection Direction {GroundTruth.GetDirection(Edge)};
+            SQueries::SCrossingInfo CrossingInfo {.MatchIndex = static_cast<int32_t>(MatchIndex), .Direction = Direction};
             CrossingsInfo.emplace(UnidirectionalEdgeIndex, std::move(CrossingInfo));
         }
     }
@@ -53,29 +54,29 @@ Types::eLoadResult CQueriesResourceLoader::LoadResource()
 
     // TODO: Remove this.
     // Print crossings count historigram.
-    std::map<size_t, s32> CrossingsCountHistogram;
-    for (uint32_t TrackIndex {0U}; TrackIndex < GroundTruth.oNetwork.size(); TrackIndex++)
-    {
-        const size_t Count {CrossingsInfo.count(TrackIndex)};
+    /*  std::map<size_t, s32> CrossingsCountHistogram;
+      for (uint32_t TrackIndex {0U}; TrackIndex < GroundTruth.oNetwork.size(); TrackIndex++)
+      {
+          const size_t Count {CrossingsInfo.count(TrackIndex)};
 
-        const auto HistogramIt {CrossingsCountHistogram.find(Count)};
-        if (HistogramIt == CrossingsCountHistogram.end())
-        {
-            CrossingsCountHistogram[Count] = 1;
-        }
-        else
-        {
-            HistogramIt->second++;
-        }
-    }
+          const auto HistogramIt {CrossingsCountHistogram.find(Count)};
+          if (HistogramIt == CrossingsCountHistogram.end())
+          {
+              CrossingsCountHistogram[Count] = 1;
+          }
+          else
+          {
+              HistogramIt->second++;
+          }
+      }
 
-    std::cout << "Printing CrossingsCount Hisogram:" << std::endl;
+     std::cout << "Printing CrossingsCount Hisogram:" << std::endl;
 
-    for (const auto& [Crossings, TimesItHappened] : CrossingsCountHistogram)
-    {
-        std::cout << "A track crossed: " << Crossings << " was found: " << TimesItHappened << " times" << std::endl;
-        // std::cout << Crossings << std::endl;
-    }
+      for (const auto& [Crossings, TimesItHappened] : CrossingsCountHistogram)
+      {
+          std::cout << "A track crossed: " << Crossings << " was found: " << TimesItHappened << " times" << std::endl;
+          // std::cout << Crossings << std::endl;
+      }/**/
 
     std::unique_ptr<SQueries> Queries = std::make_unique<SQueries>(std::move(CrossingsInfo));
     mDataManager.SetQueries(std::move(Queries));

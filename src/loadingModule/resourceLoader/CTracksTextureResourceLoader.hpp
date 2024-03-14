@@ -44,9 +44,10 @@ class CTracksTextureResourceLoader : public CResourceLoader
     /**
      * @brief Gets the pen that we should use to draw a given track.
      * @param aPercentage: Percentage (from 0 to 1) on how much should this track be painted.
+     * @param aPaintingStrategy: Painting strategy indicates the palette.
      * @return The pen.
      */
-    QPen GetPen(float aPercentage);
+    QPen GetPen(float aPercentage, Types::ePaintStrategy aPaintingStrategy);
 
     /**
      * @brief Turns world coordinates into row and column of a pixel in a texture.
@@ -56,6 +57,12 @@ class CTracksTextureResourceLoader : public CResourceLoader
      * @return Vector containing row and column of pixel in image.
      */
     Math::Vector2D<s32> WorldToTexCoords(const Math::Vector2D<f64>& aWorldPoint, const Math::Box2D& aWorldBounds, const QSize& aTextueSize) const;
+
+    bool HasArrow(s64 aTrackIndex, f32 PaintingPercentage, Types::ePaintStrategy ePaintingStrategy);
+    void DrawArrow(s64 aTrackIndex, QPainter& aPainter, Math::Vector2D<s32> aStartPoint, Math::Vector2D<s32> aEndPoint, const Math::Box2D& aWorldBounds, const QSize& aTextureSize);
+
+    std::unordered_map<s64, Types::eDirection>      mPreferredDirections;     //!< For each track, in which direction do most people cross it.
+    std::unordered_map<s64, Math::Vector2D<s32>[2]> mTracKTextureCoordinates; //!< For each track, we save its texture coordinates.
 };
 
 #endif // C_TRACKS_TEXTURE_RESOURCE_LOADER_H

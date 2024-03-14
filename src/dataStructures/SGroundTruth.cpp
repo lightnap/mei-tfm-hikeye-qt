@@ -35,7 +35,10 @@ SGroundTruth::SGroundTruth(const tNetwork&& aBidirectionalNetwork)
     {
         const auto&     Track {aBidirectionalNetwork.at(TrackIndex).oPoints};
         STrackEndpoints EndPoints {.FirstEndPoint = Track.front().oOsmId, .SecondEndPoint = Track.back().oOsmId};
-        const auto&     VisitedTrackIt {
+
+        mDirections[TrackIndex] = Track.front().oOsmId < Track.back().oOsmId ? Types::eDirection::Positive : Types::eDirection::Negative;
+
+        const auto& VisitedTrackIt {
           std::find_if(VisitedTrackEnpoints.begin(), VisitedTrackEnpoints.end(), [&EndPoints](const auto& VisitedTrackIt) { return VisitedTrackIt.second == EndPoints; })};
 
         if (VisitedTrackIt != VisitedTrackEnpoints.end())
@@ -45,7 +48,6 @@ SGroundTruth::SGroundTruth(const tNetwork&& aBidirectionalNetwork)
         }
         else
         {
-            // New track, repeated index will map to itself.
             mBiToUniIndices[TrackIndex] = oNetwork.size();
             oNetwork.push_back(aBidirectionalNetwork[TrackIndex]);
             VisitedTrackEnpoints[TrackIndex] = EndPoints;
@@ -62,4 +64,10 @@ s64 SGroundTruth::BidirectionalToUnidirectional(s64 aTrackIndex) const
     }
 
     return aTrackIndex;
+}
+
+Types::eDirection SGroundTruth::GetDirection(s64 aTrackIndex) const
+{
+    const auto& DirectionIt {mDirections.find(aTrackIndex)};
+    return DirectionIt != mDirections.end() ? DirectionIt->second : Types::eDirection::None;
 }

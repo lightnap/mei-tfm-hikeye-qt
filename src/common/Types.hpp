@@ -60,6 +60,16 @@ namespace Types
     };
 
     /**
+     * @brief Enum describing the direction of the crossing.
+     */
+    enum class eDirection
+    {
+        None = 0, //!< Unknown direction.
+        Positive, //!< Destination node had higher osmId than source node.
+        Negative, //!< Destination node had lower osmId than source node.
+    };
+
+    /**
      * @brief Enum describing the possible strategies we can use to paint info from matchings.
      */
     enum class ePaintStrategy
@@ -68,6 +78,7 @@ namespace Types
         CountCrossings,         //!< Heatmap depending on how many times a track was crossed.
         CountCrossingsPerMatch, //!< Heatmap depending on how many times a track was crossed. Multiple corssings on one matching count as one.
         Speed,                  //!< Headmap based on speed.
+        Directions,             //!< Heatmap based on whether tracks crossing in each direction is balanced.
     };
 
     /**
