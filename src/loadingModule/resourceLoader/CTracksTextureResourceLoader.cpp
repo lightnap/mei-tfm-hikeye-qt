@@ -85,7 +85,7 @@ void CTracksTextureResourceLoader::DrawGroundTruth(QImage& aImage)
 
         if (HasArrow(TrackIndex, PaintingPercentage, PaintStrategy))
         {
-            AddArrow(TrackIndex, StartPointTextureCoordinates, EndPointTextureCoordinates, DomainBox, aImage.size());
+            AddArrow(TrackIndex, StartPointTextureCoordinates, EndPointTextureCoordinates, PaintingPercentage);
         }
     }
 
@@ -236,7 +236,7 @@ bool CTracksTextureResourceLoader::HasArrow(s64 aTrackIndex, f32 PaintingPercent
     {
         return false;
     }
-    else if (PaintingPercentage < 0.1f)
+    else if (PaintingPercentage <= 0.2f)
     {
         return false;
     }
@@ -248,20 +248,17 @@ bool CTracksTextureResourceLoader::HasArrow(s64 aTrackIndex, f32 PaintingPercent
     return true;
 }
 
-void CTracksTextureResourceLoader::AddArrow(s64                 aTrackIndex,
-                                            Math::Vector2D<s32> aStartPoint,
-                                            Math::Vector2D<s32> aEndPoint,
-                                            const Math::Box2D&  aWorldBounds,
-                                            const QSize&        aTextureSize)
+void CTracksTextureResourceLoader::AddArrow(s64 aTrackIndex, Math::Vector2D<s32> aStartPoint, Math::Vector2D<s32> aEndPoint, f32 aPaintingPercentage)
 {
     Math::Vector2D<double> TrackMiddle {0.5 * (aStartPoint.oX + aEndPoint.oX), 0.5 * (aStartPoint.oY + aEndPoint.oY)};
 
     Math::Vector2D<double> ArrowDirection {(aEndPoint - aStartPoint).Normalize()};
 
-    static constexpr f64 ARROW_MAX_HEIGHT {30.};
-    static constexpr f64 ARROW_MAX_WIDTH {15.};
+    static constexpr f64 ARROW_MAX_HEIGHT {70.};
+    static constexpr f64 ARROW_MAX_WIDTH {20.};
 
-    f64 ArrowTipOffset {mPreferredDirections[aTrackIndex] == Types::eDirection::Positive ? ARROW_MAX_HEIGHT / 2.0 : -ARROW_MAX_HEIGHT / 2.0};
+    f64 ArrowTipOffset {mPreferredDirections[aTrackIndex] == Types::eDirection::Positive ? ARROW_MAX_HEIGHT * aPaintingPercentage / 2.0
+                                                                                         : -ARROW_MAX_HEIGHT * aPaintingPercentage / 2.0};
 
     const Math::Vector2D<double> ArrowTip {TrackMiddle + ArrowTipOffset * ArrowDirection};
 
