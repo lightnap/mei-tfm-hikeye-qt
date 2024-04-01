@@ -59,10 +59,16 @@ class CTracksTextureResourceLoader : public CResourceLoader
     Math::Vector2D<s32> WorldToTexCoords(const Math::Vector2D<f64>& aWorldPoint, const Math::Box2D& aWorldBounds, const QSize& aTextueSize) const;
 
     bool HasArrow(s64 aTrackIndex, f32 PaintingPercentage, Types::ePaintStrategy ePaintingStrategy);
-    void AddArrow(s64 aTrackIndex, Math::Vector2D<s32> aStartPoint, Math::Vector2D<s32> aEndPoint, f32 aPaintingPercentage);
+    void AddVectorialArrow(s64 aTrackIndex, Math::Vector2D<s32> aStartPoint, Math::Vector2D<s32> aEndPoint, f32 aPaintingPercentage);
+    void DrawVectorialArrows(QPainter& aPainter);
 
-    std::unordered_map<s64, Types::eDirection> mPreferredDirections; //!< For each track, in which direction do most people cross it.
-    std::vector<QPolygonF>                     mArrows;              //!< We save the arrows to paint them all at once.
+    void AddImageArrow(s64 aTrackIndex, Math::Vector2D<s32> aStartPoint, Math::Vector2D<s32> aEndPoint, f32 aPaintingPercentage);
+    void DrawImageArrows(QPainter& aPainter);
+
+    std::unordered_map<s64, Types::eDirection> mPreferredDirections;   //!< For each track, in which direction do most people cross it.
+    std::vector<QPolygonF>                     mVectorialArrows;       //!< We save the vectorial arrows to paint them all at once.
+    std::vector<QTransform>                    mImageArrowsTransforms; //!< We save the image arrow transoform to paint them all at once.
+    std::vector<QPointF>                       mImageArrowMiddle;      //
 };
 
 #endif // C_TRACKS_TEXTURE_RESOURCE_LOADER_H

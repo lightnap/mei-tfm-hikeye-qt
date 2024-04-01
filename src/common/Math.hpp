@@ -104,6 +104,14 @@ namespace Math
         Vector2D() = default;
 
         /**
+         * @brief Constructor from a single value.
+         * @param aCommonValue: Value that all vector coordinates will have.
+         */
+        explicit Vector2D(f64 aCommonValue)
+          : oX(aCommonValue)
+          , oY(aCommonValue) {};
+
+        /**
          * @brief Constructor.
          * @param aX: X dimension of the vector.
          * @param aY: Y dimesnion of the vector.

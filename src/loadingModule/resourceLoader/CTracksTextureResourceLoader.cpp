@@ -13,6 +13,7 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QPen>
+#include <QtMath>
 
 #include <algorithm>
 #include <cmath>
@@ -23,7 +24,6 @@
 
 namespace
 {
-
     [[maybe_unused]] const bool FactoryRegistered {CConcreteResourceLoaderFactory<CTracksTextureResourceLoader>::Register(Types::eResource::TracksTexture)};
 }
 
@@ -50,7 +50,9 @@ Types::eLoadResult CTracksTextureResourceLoader::LoadResource()
 
 void CTracksTextureResourceLoader::DrawGroundTruth(QImage& aImage)
 {
-    mArrows.clear();
+    mVectorialArrows.clear();
+    mImageArrowsTransforms.clear();
+
     QPainter Painter {&aImage};
 
     Types::ePaintStrategy PaintStrategy {mDataManager.GetPaintStrategy()};
@@ -85,24 +87,15 @@ void CTracksTextureResourceLoader::DrawGroundTruth(QImage& aImage)
 
         if (HasArrow(TrackIndex, PaintingPercentage, PaintStrategy))
         {
-            AddArrow(TrackIndex, StartPointTextureCoordinates, EndPointTextureCoordinates, PaintingPercentage);
+            // AddVectorialArrow(TrackIndex, StartPointTextureCoordinates, EndPointTextureCoordinates, PaintingPercentage);
+            AddImageArrow(TrackIndex, StartPointTextureCoordinates, EndPointTextureCoordinates, PaintingPercentage);
         }
     }
 
-    QPen   Pen {Painter.pen()};
-    QBrush Brush {Pen.brush()};
-    Brush.setStyle(Qt::BrushStyle::SolidPattern);
-    Pen.setBrush(Brush);
-    Pen.setCapStyle(Qt::PenCapStyle::SquareCap);
-    Pen.setJoinStyle(Qt::PenJoinStyle::MiterJoin);
-    Pen.setColor(Qt::black);
-    Painter.setPen(Pen);
-
-    for (const auto& Arrow : mArrows)
-    {
-        Painter.drawPolygon(Arrow);
-    }
-    mArrows.clear();
+    // DrawVectorialArrows(Painter);
+    DrawImageArrows(Painter);
+    mVectorialArrows.clear();
+    mImageArrowsTransforms.clear();
 }
 
 f32 CTracksTextureResourceLoader::GetPaintingPercentage(u32 aTrackIndex, Types::ePaintStrategy aStrategy)
@@ -201,7 +194,7 @@ QPen CTracksTextureResourceLoader::GetPen(float aPercentage, Types::ePaintStrate
             Color = CCustomColourSpectrum::Symmetric().GetColor(aPercentage);
             break;
         }
-        defaullt:
+        default:
         {
             Color = Math::Vector3D(0, 0, 0);
             break;
@@ -248,7 +241,7 @@ bool CTracksTextureResourceLoader::HasArrow(s64 aTrackIndex, f32 PaintingPercent
     return true;
 }
 
-void CTracksTextureResourceLoader::AddArrow(s64 aTrackIndex, Math::Vector2D<s32> aStartPoint, Math::Vector2D<s32> aEndPoint, f32 aPaintingPercentage)
+void CTracksTextureResourceLoader::AddVectorialArrow(s64 aTrackIndex, Math::Vector2D<s32> aStartPoint, Math::Vector2D<s32> aEndPoint, f32 aPaintingPercentage)
 {
     Math::Vector2D<double> TrackMiddle {0.5 * (aStartPoint.oX + aEndPoint.oX), 0.5 * (aStartPoint.oY + aEndPoint.oY)};
 
@@ -272,10 +265,72 @@ void CTracksTextureResourceLoader::AddArrow(s64 aTrackIndex, Math::Vector2D<s32>
     const QPointF ArrowLeftQPoint {ArrowLeftPoint.oX, ArrowLeftPoint.oY};
     const QPointF ArrowRightQPoint {ArrowRightPoint.oX, ArrowRightPoint.oY};
 
-    std::cout << "Printing an arrow with tip " << ArrowTip.oX << "," << ArrowTip.oY << " left= " << ArrowLeftPoint.oX << "," << ArrowLeftPoint.oY << " right " << ArrowRightPoint.oX
-              << "," << ArrowRightPoint.oY << std::endl;
+    // std::cout << "Adding a vector arrow: "
+    //           << "StartPoint: " << aStartPoint.oX << "," << aStartPoint.oY << " endPoint: " << aEndPoint.oX << "," << aEndPoint.oY << " middle point " << TrackMiddle.oX << ","
+    //           << TrackMiddle.oY << " tip " << ArrowTip.oX << "," << ArrowTip.oY << " left= " << ArrowLeftPoint.oX << "," << ArrowLeftPoint.oY << " right " << ArrowRightPoint.oX
+    //           << "," << ArrowRightPoint.oY << std::endl;
 
     QPolygonF Arrow;
     Arrow << ArrowTipQPoint << ArrowLeftQPoint << ArrowRightQPoint;
-    mArrows.emplace_back(std::move(Arrow));
+    mVectorialArrows.emplace_back(std::move(Arrow));
+}
+
+void CTracksTextureResourceLoader::DrawVectorialArrows(QPainter& aPainter)
+{
+    QPen   Pen {aPainter.pen()};
+    QBrush Brush {Pen.brush()};
+    Brush.setStyle(Qt::BrushStyle::SolidPattern);
+    Pen.setBrush(Brush);
+    Pen.setCapStyle(Qt::PenCapStyle::SquareCap);
+    Pen.setJoinStyle(Qt::PenJoinStyle::MiterJoin);
+    Pen.setColor(Qt::black);
+    aPainter.setPen(Pen);
+
+    for (const auto& Arrow : mVectorialArrows)
+    {
+        aPainter.drawPolygon(Arrow);
+    }
+}
+
+void CTracksTextureResourceLoader::AddImageArrow(s64 aTrackIndex, Math::Vector2D<s32> aStartPoint, Math::Vector2D<s32> aEndPoint, f32 aPaintingPercentage)
+{
+    static constexpr double      IMAGE_SCALING {0.1};
+    const Math::Vector2D<double> ArrowMiddle {0.5 * (aStartPoint.oX + aEndPoint.oX), 0.5 * (aStartPoint.oY + aEndPoint.oY)};
+    const Math::Vector2D<double> ArrowVector {static_cast<double>(aEndPoint.oX - aStartPoint.oX), static_cast<double>(aEndPoint.oY - aStartPoint.oY)};
+    double                       ArrowRotation {Math::RadToDeg(qAtan2(ArrowVector.oY, ArrowVector.oX))};
+
+    if (mPreferredDirections[aTrackIndex] == Types::eDirection::Negative)
+    {
+        ArrowRotation += 180.0;
+    }
+
+    const double ArrowVerticalScaling {static_cast<double>(aPaintingPercentage) + 1.0};
+
+    QTransform Transform;
+    Transform.rotate(ArrowRotation);
+    Transform.scale(IMAGE_SCALING, IMAGE_SCALING);
+    Transform.scale(ArrowVerticalScaling, 1.0);
+
+    mImageArrowMiddle.emplace_back(ArrowMiddle.oX, ArrowMiddle.oY);
+    mImageArrowsTransforms.emplace_back(std::move(Transform));
+}
+
+void CTracksTextureResourceLoader::DrawImageArrows(QPainter& aPainter)
+{
+    QPen   Pen {aPainter.pen()};
+    QBrush Brush {Pen.brush()};
+    Brush.setStyle(Qt::BrushStyle::SolidPattern);
+    Pen.setBrush(Brush);
+    Pen.setCapStyle(Qt::PenCapStyle::SquareCap);
+    Pen.setJoinStyle(Qt::PenJoinStyle::MiterJoin);
+    Pen.setColor(Qt::black);
+    aPainter.setPen(Pen);
+    QImage Arrow {"../data/icons/arrow.png"};
+
+    for (s32 Index {0}; Index < mImageArrowsTransforms.size(); Index++)
+    {
+        const auto    TransformedArrow {Arrow.transformed(mImageArrowsTransforms[Index])};
+        const QPointF ArrowPosition {mImageArrowMiddle[Index].x() - TransformedArrow.width() / 2.0, mImageArrowMiddle[Index].y() - TransformedArrow.height() / 2.0};
+        aPainter.drawImage(ArrowPosition, TransformedArrow);
+    }
 }
