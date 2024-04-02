@@ -24,6 +24,10 @@ class CMainWindow : public QWidget
     CMainWindow(QWidget* aParent = 0);
 
   public slots:
+
+    void RangeSliderLowerValueChanged(int aNewLow);
+    void RangeSliderUpperValueChanged(int aNewHigh);
+
     /**
      * @brief Slots for reacting to open folder button press.
      */

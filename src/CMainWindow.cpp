@@ -2,6 +2,8 @@
 #include "graphics/CMainGraphicsWidget.hpp"
 #include "loadingModule/CLoadingModule.hpp"
 
+#include "QtRangeSlider/RangeSlider.h"
+
 #include <QApplication>
 #include <QFileDialog>
 #include <QKeyEvent>
@@ -44,6 +46,9 @@ void CMainWindow::BindActions()
     connect(mUi.CancelBtn, &QPushButton::clicked, this, &CMainWindow::CancelLoadButtonPressed);
     connect(mUi.OpenFolderBtn, &QPushButton::clicked, this, &CMainWindow::FolderButtonPressed);
     connect(mUi.SaveImageBtn, &QPushButton::clicked, this, &CMainWindow::SaveImageButtonPressed);
+
+    connect(mUi.DoubleSlider, &RangeSlider::lowerValueChanged, this, &CMainWindow::RangeSliderLowerValueChanged);
+    connect(mUi.DoubleSlider, &RangeSlider::upperValueChanged, this, &CMainWindow::RangeSliderUpperValueChanged);
 
     connect(mLoadingModulesMap[TERRAIN_MODULE_TYPE].get(), &CLoadingModule::FinishedSignal, this, &CMainWindow::LoadingModuleFinished);
     connect(mLoadingModulesMap[TRACKS_MODULE_TYPE].get(), &CLoadingModule::FinishedSignal, this, &CMainWindow::LoadingModuleFinished);
@@ -312,4 +317,14 @@ void CMainWindow::SetButtonsEnabled(eButtonsEnabledLayout aLayout)
     mUi.LoadTerrainBtn->setEnabled(ButtonsEnabled.at(2U));
     mUi.CancelBtn->setEnabled(ButtonsEnabled.at(3U));
     mUi.SaveImageBtn->setEnabled(ButtonsEnabled.at(4U));
+}
+
+void CMainWindow::RangeSliderUpperValueChanged(int aNewHigh)
+{
+    mDataManager->SetPaintRangeMax(aNewHigh);
+}
+
+void CMainWindow::RangeSliderLowerValueChanged(int aNewLow)
+{
+    mDataManager->SetPaintRangeMax(aNewLow);
 }

@@ -109,26 +109,32 @@ f32 CTracksTextureResourceLoader::GetPaintingPercentage(u32 aTrackIndex, Types::
         }
         case Types::ePaintStrategy::CountCrossings:
         {
-            static constexpr s32 MAX_CROSSINGS {30};
+            const s32 MaxCrossings {mDataManager.GetPaintRangeMax()};
+            const s32 MinCrossings {mDataManager.GetPaintRangeMin()};
 
             const auto& Queries {mDataManager.GetQueries()};
-            const auto  CrossingCount {Queries.oCrossingsInfo.count(aTrackIndex)};
-            const f32   CrossingsPercentage {std::min(1.0f, static_cast<f32>(CrossingCount) / static_cast<f32>(MAX_CROSSINGS))};
+            const s32   CrossingCount {static_cast<s32>(Queries.oCrossingsInfo.count(aTrackIndex))};
+
+            f32 CrossingsPercentage {static_cast<f32>(CrossingCount - MinCrossings) / static_cast<f32>(MaxCrossings - MinCrossings)};
+            CrossingsPercentage = std::clamp(CrossingsPercentage, 0.0f, 1.0f);
 
             return CrossingsPercentage;
             break;
         }
         case Types::ePaintStrategy::CountCrossingsPerMatch:
         {
+            const s32 MaxCrossings {mDataManager.GetPaintRangeMax()};
+            const s32 MinCrossings {mDataManager.GetPaintRangeMin()};
+
             const auto& Queries {mDataManager.GetQueries()};
             const auto& [LowerElementIt, HigherElementIt] {Queries.oCrossingsInfo.equal_range(aTrackIndex)};
 
             std::set<u32> MatchesIdsOnTrack {};
-
             std::for_each(LowerElementIt, HigherElementIt, [&MatchesIdsOnTrack](const auto& CrossingInfoIt) { MatchesIdsOnTrack.insert(CrossingInfoIt.second.MatchIndex); });
+            const s32 NonRepeatingCrossingCount {static_cast<s32>(MatchesIdsOnTrack.size())};
 
-            static constexpr s32 MAX_NON_REPEATING_CROSSINGS {30};
-            const f32            CrossingsPercentage {std::min(1.0f, static_cast<f32>(MatchesIdsOnTrack.size()) / static_cast<f32>(MAX_NON_REPEATING_CROSSINGS))};
+            f32 CrossingsPercentage {static_cast<f32>(NonRepeatingCrossingCount - MinCrossings) / static_cast<f32>(MaxCrossings - MinCrossings)};
+            CrossingsPercentage = std::clamp(CrossingsPercentage, 0.0f, 1.0f);
 
             return CrossingsPercentage;
             break;
@@ -158,8 +164,11 @@ f32 CTracksTextureResourceLoader::GetPaintingPercentage(u32 aTrackIndex, Types::
                 mPreferredDirections[aTrackIndex] = Types::eDirection::None;
             }
 
-            static constexpr s32 MAX_DIRECTIONAL_HITS {10};
-            const f32            DirectionPercentage {std::min(1.0f, static_cast<f32>(std::abs(DirectionalHits)) / static_cast<f32>(MAX_DIRECTIONAL_HITS))};
+            const s32 MaxDirectorialHits {mDataManager.GetPaintRangeMax()};
+            const s32 MinDirectorialHits {mDataManager.GetPaintRangeMin()};
+
+            f32 DirectionPercentage {static_cast<f32>(std::abs(DirectionalHits) - MinDirectorialHits) / static_cast<f32>(MaxDirectorialHits - MinDirectorialHits)};
+            DirectionPercentage = std::clamp(DirectionPercentage, 0.0f, 1.0f);
 
             return DirectionPercentage;
             break;

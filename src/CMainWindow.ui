@@ -139,6 +139,18 @@
          </widget>
         </item>
         <item>
+         <widget class="QGroupBox" name="SliderBox">
+          <property name="title">
+           <string>Min/Max Values</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_7">
+           <item>
+            <widget class="RangeSlider" name="DoubleSlider" native="true"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
          <spacer name="ConfigSpacer">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -491,6 +503,12 @@
    <class>CMainGraphicsWidget</class>
    <extends>QWidget</extends>
    <header>CMainGraphicsWidget.hpp</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>RangeSlider</class>
+   <extends>QWidget</extends>
+   <header>QtRangeSlider/RangeSlider.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

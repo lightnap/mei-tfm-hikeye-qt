@@ -21,8 +21,9 @@ set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<CONFIG:Release>:NDEBUG>)
 
-target_include_directories(${PROJECT_NAME} PRIVATE src src/graphics)
+target_include_directories(${PROJECT_NAME} PRIVATE src src/graphics external)
 
 add_subdirectory(src)
+add_subdirectory(external)
 
 target_link_libraries(${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::OpenGL)
