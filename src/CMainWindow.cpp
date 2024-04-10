@@ -261,9 +261,6 @@ void CMainWindow::LoadingModuleFinished(Types::eLoadingModule aModule)
         }
         case TRACKS_MODULE_TYPE:
         {
-            // std::cout << "Finished track loading module" << std::endl;
-            // std::cout << "Current slider upper" << mUi.DoubleSlider->GetUpperValue() << std::endl;
-            // std::cout << "Current slider max" << mUi.DoubleSlider->GetMaximun() << std::endl;
             if (mUi.DoubleSlider->GetMinimun() != mDataManager->GetPaintRangeMin())
             {
                 mUi.DoubleSlider->SetMinimum(mDataManager->GetPaintRangeMin());
@@ -272,12 +269,6 @@ void CMainWindow::LoadingModuleFinished(Types::eLoadingModule aModule)
             {
                 mUi.DoubleSlider->SetMaximum(mDataManager->GetPaintRangeMax());
             }
-            // mUi.DoubleSlider->SetUpperValue(mDataManager->GetPaintRangeCurrentUpper());
-            // mUi.DoubleSlider->SetLowerValue(mDataManager->GetPaintRangeCurrentLower());
-            // std::cout << "Set things to things" << std::endl;
-            // std::cout << "Current slider upper" << mUi.DoubleSlider->GetUpperValue() << std::endl;
-            // std::cout << "Current slider max" << mUi.DoubleSlider->GetMaximun() << std::endl;
-            // std::cout << "DataManager values: Max" << mDataManager->GetPaintRangeMax() << " Upper: " << mDataManager->GetPaintRangeCurrentUpper() << std::endl;
 
             mUi.MainGraphics->LoadTexture(mDataManager->GetTracksTexture());
             SetButtonsEnabled(eButtonsEnabledLayout::Loaded);
