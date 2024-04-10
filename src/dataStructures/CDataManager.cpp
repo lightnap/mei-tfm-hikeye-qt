@@ -16,14 +16,44 @@ CDataManager::CDataManager()
     mDataMutex = std::make_unique<QMutex>();
 }
 
+void CDataManager::SetPaintRangeCurrentUpper(int32_t aPaintRangeMax)
+{
+    mPaintRangeCurrentUpper = aPaintRangeMax;
+}
+
+void CDataManager::SetPaintRangeCurrentLower(int32_t aPaintRangeMin)
+{
+    mPaintRangeCurrentLower = aPaintRangeMin;
+}
+
+int32_t CDataManager::GetPaintRangeCurrentUpper() const
+{
+    return mPaintRangeCurrentUpper;
+}
+
+int32_t CDataManager::GetPaintRangeCurrentLower() const
+{
+    return mPaintRangeCurrentLower;
+}
+
 void CDataManager::SetPaintRangeMax(int32_t aPaintRangeMax)
 {
     mPaintRangeMax = aPaintRangeMax;
+
+    if (mPaintRangeCurrentLower < mPaintRangeMin)
+    {
+        mPaintRangeCurrentUpper = mPaintRangeMax;
+    }
 }
 
 void CDataManager::SetPaintRangeMin(int32_t aPaintRangeMin)
 {
     mPaintRangeMin = aPaintRangeMin;
+
+    if (mPaintRangeCurrentLower < mPaintRangeMin)
+    {
+        mPaintRangeCurrentLower = mPaintRangeMin;
+    }
 }
 
 int32_t CDataManager::GetPaintRangeMax() const

@@ -33,12 +33,16 @@ class CTracksTextureResourceLoader : public CResourceLoader
      */
     void DrawGroundTruth(QImage& aImage);
 
+    void ComputePaintingValues();
     /**
      * @brief Decides how much a track should be painted.
      * @param aTrackIndex: The track index of the param we want to paint.
      * @param aStrategy: Which strategy we are using to decide how to paing the track.
-     * @return A numbe between 0 and 1. 0 means track is minimum painted, 1 means max.
+     * @return A number indicationg how mach this track must be panted,
      */
+    s32 GetPaintingValue(u32 aTrackIndex, Types::ePaintStrategy aStrategy);
+
+    // Same as previous function but returns a value between 0 and 1 taking into account the range slider.
     f32 GetPaintingPercentage(u32 aTrackIndex, Types::ePaintStrategy aStrategy);
 
     /**
@@ -64,6 +68,10 @@ class CTracksTextureResourceLoader : public CResourceLoader
 
     void AddImageArrow(s64 aTrackIndex, Math::Vector2D<s32> aStartPoint, Math::Vector2D<s32> aEndPoint, f32 aPaintingPercentage);
     void DrawImageArrows(QPainter& aPainter);
+
+    std::vector<s32> mPaintValues;            //!< Vector relating track index to how much that track ought to be painted.
+    int32_t          mMinPaintableValue {0U}; //!< Max possible value that we might ever paint, given by the configuaton and all the data.
+    int32_t          mMaxPaintableValue {0U}; //!< Min possible value that we might ever paint, given by the configuaton and all the data.
 
     std::unordered_map<s64, Types::eDirection> mPreferredDirections;   //!< For each track, in which direction do most people cross it.
     std::vector<QPolygonF>                     mVectorialArrows;       //!< We save the vectorial arrows to paint them all at once.

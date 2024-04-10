@@ -68,6 +68,11 @@ void CMainWindow::InitWidgets()
 {
     mUi.DoubleSliderMax->setValue(mUi.DoubleSlider->GetUpperValue());
     mUi.DoubleSliderMin->setValue(mUi.DoubleSlider->GetLowerValue());
+
+    mDataManager->SetPaintRangeCurrentLower(mUi.DoubleSlider->GetLowerValue());
+    mDataManager->SetPaintRangeCurrentUpper(mUi.DoubleSlider->GetUpperValue());
+    mDataManager->SetPaintRangeMax(mUi.DoubleSlider->GetMaximun());
+    mDataManager->SetPaintRangeMin(mUi.DoubleSlider->GetMinimun());
 }
 
 void CMainWindow::FolderButtonPressed()
@@ -194,8 +199,6 @@ void CMainWindow::LoadTracksButtonPressed()
         DateFilter.FilteredMonths[12] = true;
     }
 
-    // TODO: Configure month filter using the checkboxes
-
     mDataManager->SetDateFilter(DateFilter);
 
     const auto& TerrainLoadingModule {mLoadingModulesMap.at(TERRAIN_MODULE_TYPE)};
@@ -258,6 +261,24 @@ void CMainWindow::LoadingModuleFinished(Types::eLoadingModule aModule)
         }
         case TRACKS_MODULE_TYPE:
         {
+            // std::cout << "Finished track loading module" << std::endl;
+            // std::cout << "Current slider upper" << mUi.DoubleSlider->GetUpperValue() << std::endl;
+            // std::cout << "Current slider max" << mUi.DoubleSlider->GetMaximun() << std::endl;
+            if (mUi.DoubleSlider->GetMinimun() != mDataManager->GetPaintRangeMin())
+            {
+                mUi.DoubleSlider->SetMinimum(mDataManager->GetPaintRangeMin());
+            }
+            if (mUi.DoubleSlider->GetMaximun() != mDataManager->GetPaintRangeMax())
+            {
+                mUi.DoubleSlider->SetMaximum(mDataManager->GetPaintRangeMax());
+            }
+            // mUi.DoubleSlider->SetUpperValue(mDataManager->GetPaintRangeCurrentUpper());
+            // mUi.DoubleSlider->SetLowerValue(mDataManager->GetPaintRangeCurrentLower());
+            // std::cout << "Set things to things" << std::endl;
+            // std::cout << "Current slider upper" << mUi.DoubleSlider->GetUpperValue() << std::endl;
+            // std::cout << "Current slider max" << mUi.DoubleSlider->GetMaximun() << std::endl;
+            // std::cout << "DataManager values: Max" << mDataManager->GetPaintRangeMax() << " Upper: " << mDataManager->GetPaintRangeCurrentUpper() << std::endl;
+
             mUi.MainGraphics->LoadTexture(mDataManager->GetTracksTexture());
             SetButtonsEnabled(eButtonsEnabledLayout::Loaded);
             break;
@@ -333,13 +354,13 @@ void CMainWindow::SetButtonsEnabled(eButtonsEnabledLayout aLayout)
 void CMainWindow::RangeSliderUpperValueChanged(int aNewHigh)
 {
     mUi.DoubleSliderMax->setValue(aNewHigh);
-    mDataManager->SetPaintRangeMax(aNewHigh);
+    mDataManager->SetPaintRangeCurrentUpper(aNewHigh);
 }
 
 void CMainWindow::RangeSliderLowerValueChanged(int aNewLow)
 {
     mUi.DoubleSliderMin->setValue(aNewLow);
-    mDataManager->SetPaintRangeMax(aNewLow);
+    mDataManager->SetPaintRangeCurrentLower(aNewLow);
 }
 
 void CMainWindow::RangeSliderStoppedSlinding()

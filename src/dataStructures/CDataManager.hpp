@@ -25,6 +25,12 @@ class CDataManager
      */
     CDataManager();
 
+    void SetPaintRangeCurrentUpper(int32_t aPaintRangeMax);
+    void SetPaintRangeCurrentLower(int32_t aPaintRangeMin);
+
+    int32_t GetPaintRangeCurrentUpper() const;
+    int32_t GetPaintRangeCurrentLower() const;
+
     void SetPaintRangeMax(int32_t aPaintRangeMax);
     void SetPaintRangeMin(int32_t aPaintRangeMin);
 
@@ -162,8 +168,11 @@ class CDataManager
     std::unique_ptr<STexture>     mTerrainTexture; //!< Texture to draw onto the terrain.
     std::unique_ptr<STexture>     mTracksTexture;  //!< Texture to draw onto the terrain.
 
-    int32_t               mPaintRangeMax {0};
-    int32_t               mPaintRangeMin {0};
+    int32_t mPaintRangeCurrentUpper {0};
+    int32_t mPaintRangeCurrentLower {0};
+    int32_t mPaintRangeMax {0};
+    int32_t mPaintRangeMin {0};
+
     Types::ePaintStrategy mPaintStrategy {Types::ePaintStrategy::None}; //!< Paint strategy to paint tracks.
     Types::sDateFilter    mDateFilter {};                               //!< Date filter.
 };

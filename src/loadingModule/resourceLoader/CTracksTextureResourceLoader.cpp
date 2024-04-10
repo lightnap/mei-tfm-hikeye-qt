@@ -52,26 +52,30 @@ void CTracksTextureResourceLoader::DrawGroundTruth(QImage& aImage)
 {
     mVectorialArrows.clear();
     mImageArrowsTransforms.clear();
+    mPaintValues.clear();
+    mMinPaintableValue = 0;
+    mMaxPaintableValue = 0;
 
     QPainter Painter {&aImage};
+
+    std::cout << "Image size is " << aImage.size().height() << " , " << aImage.size().width() << std::endl;
+    ComputePaintingValues();
+
+    // TODO: HK-52 Take min and max values from the terrain resolution.
+    // So avoid being harcoded.
+    const Math::Vector2D<f64> Min(444825.0, 4633335.0 - 2 * aImage.height());
+    const Math::Vector2D<f64> Max(444825.0 + 2 * aImage.width(), 4633335.0);
+    const Math::Box2D         DomainBox {Min, Max};
 
     Types::ePaintStrategy PaintStrategy {mDataManager.GetPaintStrategy()};
     const SGroundTruth&   GroundTruth {mDataManager.GetGroundTruth()};
 
-    std::cout << "Image size is " << aImage.size().height() << " , " << aImage.size().width() << std::endl;
-
     for (u32 TrackIndex {0U}; TrackIndex < GroundTruth.oNetwork.size(); TrackIndex++)
     {
         const auto&  Track {GroundTruth.oNetwork.at(TrackIndex)};
-        const auto   PaintingPercentage {GetPaintingPercentage(TrackIndex, PaintStrategy)};
+        const f32    PaintingPercentage {GetPaintingPercentage(TrackIndex, PaintStrategy)};
         QPen         Pen {GetPen(PaintingPercentage, PaintStrategy)};
         QPainterPath PathPainter;
-
-        // TODO: HK-52 Take min and max values from the terrain resolution.
-        // So avoid being harcoded.
-        const Math::Vector2D<f64> Min(444825.0, 4633335.0 - 2 * aImage.height());
-        const Math::Vector2D<f64> Max(444825.0 + 2 * aImage.width(), 4633335.0);
-        const Math::Box2D         DomainBox {Min, Max};
 
         const auto& StartPoint {Track.oPoints.front()};
         const auto& EndPoint {Track.oPoints.back()};
@@ -98,33 +102,51 @@ void CTracksTextureResourceLoader::DrawGroundTruth(QImage& aImage)
     mImageArrowsTransforms.clear();
 }
 
-f32 CTracksTextureResourceLoader::GetPaintingPercentage(u32 aTrackIndex, Types::ePaintStrategy aStrategy)
+void CTracksTextureResourceLoader::ComputePaintingValues()
+{
+    mMinPaintableValue = 0;
+    mMaxPaintableValue = 0;
+
+    Types::ePaintStrategy PaintStrategy {mDataManager.GetPaintStrategy()};
+    const SGroundTruth&   GroundTruth {mDataManager.GetGroundTruth()};
+
+    if (PaintStrategy == Types::ePaintStrategy::None)
+    {
+        return;
+    }
+
+    for (u32 TrackIndex {0U}; TrackIndex < GroundTruth.oNetwork.size(); TrackIndex++)
+    {
+        const auto& Track {GroundTruth.oNetwork.at(TrackIndex)};
+        const s32   PaintingValue {GetPaintingValue(TrackIndex, PaintStrategy)};
+        mPaintValues.push_back(PaintingValue);
+        mMinPaintableValue = std::min(PaintingValue, mMinPaintableValue);
+        mMaxPaintableValue = std::max(PaintingValue, mMaxPaintableValue);
+    }
+
+    mDataManager.SetPaintRangeMax(mMaxPaintableValue);
+    mDataManager.SetPaintRangeMin(mMinPaintableValue);
+}
+
+s32 CTracksTextureResourceLoader::GetPaintingValue(u32 aTrackIndex, Types::ePaintStrategy aStrategy)
 {
     switch (aStrategy)
     {
-        case Types::ePaintStrategy::None:
-        {
-            return 0.0f;
-            break;
-        }
         case Types::ePaintStrategy::CountCrossings:
         {
-            const s32 MaxCrossings {mDataManager.GetPaintRangeMax()};
-            const s32 MinCrossings {mDataManager.GetPaintRangeMin()};
+            const s32 MaxCrossings {mDataManager.GetPaintRangeCurrentUpper()};
+            const s32 MinCrossings {mDataManager.GetPaintRangeCurrentLower()};
 
             const auto& Queries {mDataManager.GetQueries()};
             const s32   CrossingCount {static_cast<s32>(Queries.oCrossingsInfo.count(aTrackIndex))};
 
-            f32 CrossingsPercentage {static_cast<f32>(CrossingCount - MinCrossings) / static_cast<f32>(MaxCrossings - MinCrossings)};
-            CrossingsPercentage = std::clamp(CrossingsPercentage, 0.0f, 1.0f);
-
-            return CrossingsPercentage;
+            return CrossingCount;
             break;
         }
         case Types::ePaintStrategy::CountCrossingsPerMatch:
         {
-            const s32 MaxCrossings {mDataManager.GetPaintRangeMax()};
-            const s32 MinCrossings {mDataManager.GetPaintRangeMin()};
+            const s32 MaxCrossings {mDataManager.GetPaintRangeCurrentUpper()};
+            const s32 MinCrossings {mDataManager.GetPaintRangeCurrentLower()};
 
             const auto& Queries {mDataManager.GetQueries()};
             const auto& [LowerElementIt, HigherElementIt] {Queries.oCrossingsInfo.equal_range(aTrackIndex)};
@@ -133,10 +155,7 @@ f32 CTracksTextureResourceLoader::GetPaintingPercentage(u32 aTrackIndex, Types::
             std::for_each(LowerElementIt, HigherElementIt, [&MatchesIdsOnTrack](const auto& CrossingInfoIt) { MatchesIdsOnTrack.insert(CrossingInfoIt.second.MatchIndex); });
             const s32 NonRepeatingCrossingCount {static_cast<s32>(MatchesIdsOnTrack.size())};
 
-            f32 CrossingsPercentage {static_cast<f32>(NonRepeatingCrossingCount - MinCrossings) / static_cast<f32>(MaxCrossings - MinCrossings)};
-            CrossingsPercentage = std::clamp(CrossingsPercentage, 0.0f, 1.0f);
-
-            return CrossingsPercentage;
+            return NonRepeatingCrossingCount;
             break;
         }
         case Types::ePaintStrategy::Directions:
@@ -164,19 +183,44 @@ f32 CTracksTextureResourceLoader::GetPaintingPercentage(u32 aTrackIndex, Types::
                 mPreferredDirections[aTrackIndex] = Types::eDirection::None;
             }
 
-            const s32 MaxDirectorialHits {mDataManager.GetPaintRangeMax()};
-            const s32 MinDirectorialHits {mDataManager.GetPaintRangeMin()};
-
-            f32 DirectionPercentage {static_cast<f32>(std::abs(DirectionalHits) - MinDirectorialHits) / static_cast<f32>(MaxDirectorialHits - MinDirectorialHits)};
-            DirectionPercentage = std::clamp(DirectionPercentage, 0.0f, 1.0f);
-
-            return DirectionPercentage;
+            return std::abs(DirectionalHits);
             break;
         }
         default:
         {
             return 0.0f;
             break;
+        }
+    }
+
+    return 0.0f;
+}
+
+f32 CTracksTextureResourceLoader::GetPaintingPercentage(u32 aTrackIndex, Types::ePaintStrategy aStrategy)
+{
+    // TODO THIS:
+    if (aStrategy == Types::ePaintStrategy::None)
+    {
+        return 0.0f;
+    }
+
+    const s32 MaxCrossings {mDataManager.GetPaintRangeCurrentUpper()};
+    const s32 MinCrossings {mDataManager.GetPaintRangeCurrentLower()};
+
+    switch (aStrategy)
+    {
+        case Types::ePaintStrategy::CountCrossings:
+        case Types::ePaintStrategy::CountCrossingsPerMatch:
+        case Types::ePaintStrategy::Directions:
+        {
+            f32 Percentage {static_cast<f32>(mPaintValues[aTrackIndex] - MinCrossings) / static_cast<f32>(MaxCrossings - MinCrossings)};
+            Percentage = std::clamp(Percentage, 0.0f, 1.0f);
+            return Percentage;
+        }
+
+        default:
+        {
+            return 0.0f;
         }
     }
 
@@ -275,8 +319,10 @@ void CTracksTextureResourceLoader::AddVectorialArrow(s64 aTrackIndex, Math::Vect
     const QPointF ArrowRightQPoint {ArrowRightPoint.oX, ArrowRightPoint.oY};
 
     // std::cout << "Adding a vector arrow: "
-    //           << "StartPoint: " << aStartPoint.oX << "," << aStartPoint.oY << " endPoint: " << aEndPoint.oX << "," << aEndPoint.oY << " middle point " << TrackMiddle.oX << ","
-    //           << TrackMiddle.oY << " tip " << ArrowTip.oX << "," << ArrowTip.oY << " left= " << ArrowLeftPoint.oX << "," << ArrowLeftPoint.oY << " right " << ArrowRightPoint.oX
+    //           << "StartPoint: " << aStartPoint.oX << "," << aStartPoint.oY << " endPoint: " << aEndPoint.oX << "," << aEndPoint.oY << " middle point " << TrackMiddle.oX <<
+    //           ","
+    //           << TrackMiddle.oY << " tip " << ArrowTip.oX << "," << ArrowTip.oY << " left= " << ArrowLeftPoint.oX << "," << ArrowLeftPoint.oY << " right " <<
+    //           ArrowRightPoint.oX
     //           << "," << ArrowRightPoint.oY << std::endl;
 
     QPolygonF Arrow;
