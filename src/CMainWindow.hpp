@@ -27,6 +27,9 @@ class CMainWindow : public QWidget
 
     void RangeSliderLowerValueChanged(int aNewLow);
     void RangeSliderUpperValueChanged(int aNewHigh);
+    void RangeSliderStoppedSlinding();
+    void MinRangeSpinBoxChanged(int aNewValue);
+    void MaxRangeSpinBoxChanged(int aNewValue);
 
     /**
      * @brief Slots for reacting to open folder button press.
@@ -93,6 +96,8 @@ class CMainWindow : public QWidget
      * @brief Creates loading modules.
      */
     void CreateLoadingModules();
+
+    void InitWidgets();
 
     /**
      * @brief Sets the app buttons enabled/disabled, based on a layout.

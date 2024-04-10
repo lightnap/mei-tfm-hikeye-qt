@@ -8,6 +8,7 @@
 #include <QFileDialog>
 #include <QKeyEvent>
 #include <QPushButton>
+#include <QSpinBox>
 
 #include <iostream>
 #include <memory>
@@ -30,6 +31,7 @@ CMainWindow::CMainWindow(QWidget* aParent)
 
     CreateLoadingModules();
     BindActions();
+    InitWidgets();
 }
 
 void CMainWindow::CreateLoadingModules()
@@ -49,6 +51,9 @@ void CMainWindow::BindActions()
 
     connect(mUi.DoubleSlider, &RangeSlider::lowerValueChanged, this, &CMainWindow::RangeSliderLowerValueChanged);
     connect(mUi.DoubleSlider, &RangeSlider::upperValueChanged, this, &CMainWindow::RangeSliderUpperValueChanged);
+    connect(mUi.DoubleSlider, &RangeSlider::slidingFinished, this, &CMainWindow::RangeSliderStoppedSlinding);
+    connect(mUi.DoubleSliderMin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &CMainWindow::MinRangeSpinBoxChanged);
+    connect(mUi.DoubleSliderMax, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &CMainWindow::MaxRangeSpinBoxChanged);
 
     connect(mLoadingModulesMap[TERRAIN_MODULE_TYPE].get(), &CLoadingModule::FinishedSignal, this, &CMainWindow::LoadingModuleFinished);
     connect(mLoadingModulesMap[TRACKS_MODULE_TYPE].get(), &CLoadingModule::FinishedSignal, this, &CMainWindow::LoadingModuleFinished);
@@ -57,6 +62,12 @@ void CMainWindow::BindActions()
     connect(mLoadingModulesMap[TERRAIN_MODULE_TYPE].get(), &CLoadingModule::LoadInterrupted, this, &CMainWindow::OnLoadInterrupted);
     connect(mLoadingModulesMap[TRACKS_MODULE_TYPE].get(), &CLoadingModule::LoadInterrupted, this, &CMainWindow::OnLoadInterrupted);
     connect(mLoadingModulesMap[SAVE_IMAGE_MODULE_TYPE].get(), &CLoadingModule::LoadInterrupted, this, &CMainWindow::OnLoadInterrupted);
+}
+
+void CMainWindow::InitWidgets()
+{
+    mUi.DoubleSliderMax->setValue(mUi.DoubleSlider->GetUpperValue());
+    mUi.DoubleSliderMin->setValue(mUi.DoubleSlider->GetLowerValue());
 }
 
 void CMainWindow::FolderButtonPressed()
@@ -321,10 +332,31 @@ void CMainWindow::SetButtonsEnabled(eButtonsEnabledLayout aLayout)
 
 void CMainWindow::RangeSliderUpperValueChanged(int aNewHigh)
 {
+    mUi.DoubleSliderMax->setValue(aNewHigh);
     mDataManager->SetPaintRangeMax(aNewHigh);
 }
 
 void CMainWindow::RangeSliderLowerValueChanged(int aNewLow)
 {
+    mUi.DoubleSliderMin->setValue(aNewLow);
     mDataManager->SetPaintRangeMax(aNewLow);
+}
+
+void CMainWindow::RangeSliderStoppedSlinding()
+{
+    // TODO: Nothing for now.
+}
+
+void CMainWindow::MinRangeSpinBoxChanged(int aNewValue)
+{
+    const int NewLowerValue {std::min(mUi.DoubleSlider->GetUpperValue(), aNewValue)};
+    mUi.DoubleSlider->SetLowerValue(NewLowerValue);
+    mUi.DoubleSliderMin->setValue(NewLowerValue);
+}
+
+void CMainWindow::MaxRangeSpinBoxChanged(int aNewValue)
+{
+    const int NewUpperValue {std::max(mUi.DoubleSlider->GetLowerValue(), aNewValue)};
+    mUi.DoubleSlider->SetUpperValue(NewUpperValue);
+    mUi.DoubleSliderMax->setValue(NewUpperValue);
 }

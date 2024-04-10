@@ -110,14 +110,14 @@
            <item>
             <widget class="QRadioButton" name="CrossingsStrategyButton">
              <property name="text">
-              <string>Crossings</string>
+              <string>Transit (Total)</string>
              </property>
             </widget>
            </item>
            <item>
             <widget class="QRadioButton" name="CrossingsPerMatchButton">
              <property name="text">
-              <string>Crossings (per match)</string>
+              <string>Transit (Person)</string>
              </property>
             </widget>
            </item>
@@ -146,6 +146,19 @@
           <layout class="QVBoxLayout" name="verticalLayout_7">
            <item>
             <widget class="RangeSlider" name="DoubleSlider" native="true"/>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QSpinBox" name="DoubleSliderMin"/>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="DoubleSliderMax"/>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>
