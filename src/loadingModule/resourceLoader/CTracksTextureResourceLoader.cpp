@@ -126,6 +126,34 @@ void CTracksTextureResourceLoader::ComputePaintingValues()
 
     mDataManager.SetPaintRangeMax(mMaxPaintableValue);
     mDataManager.SetPaintRangeMin(mMinPaintableValue);
+
+    // DEBUG:
+    // Print histogram.
+    std::map<s32, s32> HistogramMap;
+
+    for (u32 TrackIndex {0U}; TrackIndex < GroundTruth.oNetwork.size(); TrackIndex++)
+    {
+        const s32 Value {mPaintValues[TrackIndex]};
+
+        const auto HistogramIt {HistogramMap.find(Value)};
+        if (HistogramIt == HistogramMap.end())
+        {
+            HistogramMap[Value] = 1;
+        }
+        else
+        {
+            HistogramIt->second++;
+        }
+    }
+
+    std::cout << "Printing Visualization Hisogram:" << std::endl;
+
+    for (const auto& [Value, TimesItHappened] : HistogramMap)
+    {
+        std::cout << "A segment painted with value: " << Value << " was found: " << TimesItHappened << " times" << std::endl;
+        // std::cout << Value << std::endl;
+        // std::cout << TimesItHappened << std::endl;
+    }
 }
 
 s32 CTracksTextureResourceLoader::GetPaintingValue(u32 aTrackIndex, Types::ePaintStrategy aStrategy)

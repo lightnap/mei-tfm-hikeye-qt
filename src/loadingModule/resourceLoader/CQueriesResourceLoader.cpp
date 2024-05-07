@@ -54,7 +54,7 @@ Types::eLoadResult CQueriesResourceLoader::LoadResource()
 
     // TODO: Remove this.
     // Print crossings count historigram.
-    /*  std::map<size_t, s32> CrossingsCountHistogram;
+    /*std::map<size_t, s32> CrossingsCountHistogram;
       for (uint32_t TrackIndex {0U}; TrackIndex < GroundTruth.oNetwork.size(); TrackIndex++)
       {
           const size_t Count {CrossingsInfo.count(TrackIndex)};
