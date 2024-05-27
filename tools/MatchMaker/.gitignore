@@ -1,0 +1,22 @@
+
+# Editor byproducts
+.DS_Store
+.idea
+*.log
+tmp/
+
+
+# python byproducs
+*.py[cod]
+*.egg
+build
+htmlcov
+
+# etenral
+/matches
+/matcher
+
+# data
+/importer/*
+!/importer/*.py
+!/importer/*.sh
