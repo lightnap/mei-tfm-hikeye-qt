@@ -1,0 +1,50 @@
+{
+  "FileName": "BoundingBox",
+  "BoundingBox": {
+    "NorthLimit": "42.255331895816",
+    "SouthLimit": "42.19838506744",
+    "EastLimit": "2.4341583251953",
+    "WestLimit": "2.3436069488525"
+  },
+  "GaiaGPSRegions": {
+    "spain": [ "catalu%C3%B1a" ]
+  },
+  "RegionsByBoundingBox": {
+    "montseny": {
+      "Name": "Monsteny",
+      "BoundingBox": [
+        "42.255331895816",
+        "42.19838506744",
+        "2.4341583251953",
+        "2.3436069488525"
+      ]
+    },
+    "matagalls": {
+      "Name": "Matagalls",
+      "BoundingBox": [
+        "41.84999424693",
+        "41.78341500048",
+        "2.432706074654",
+        "2.335337455553"
+      ]
+    },
+    "vall_de_nuria": {
+      "Name": "Vall de Nuria",
+      "BoundingBox": [
+        "42.4545",
+        "42.3414",
+        "2.3372",
+        "2.0677"
+      ]
+    },
+    "aiguestortes": {
+      "Name": "Aiguestortes i estant de Sant Maurici",
+      "BoundingBox": [
+        "42.6288",
+        "42.5160",
+        "1.0657",
+        "0.7962"
+      ]
+    }
+  }
+}

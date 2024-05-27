@@ -1,0 +1,13 @@
+{
+  "FileName": "BoundingBox",
+  "BoundingBox": {
+    "NorthLimit": "42.255331895816",
+    "SouthLimit": "42.19838506744",
+    "EastLimit": "2.4341583251953",
+    "WestLimit": "2.3436069488525"
+  },
+  "GaiaGPSRegions": {
+    "spain": [ "catalu%C3%B1a", "islas-baleares" ],
+    "canada": [ "alberta", "newfoundland-and-labrador" ]
+  }
+}
